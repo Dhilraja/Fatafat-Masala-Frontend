@@ -1,0 +1,22 @@
+<section class="section fade-up">
+  <div class="products">
+    <div class="card" *ngFor="let product of allProducts">
+      <div class="img"></div>
+      <h3>{{ product.name }}</h3>
+      <p class="price-span">
+        <b class="price">₹{{ product.price }}</b
+        ><span class="dashed-price">₹{{ product.mrp }}</span>
+      </p>
+      <div class="cart-btn-container">
+        <!-- Add to cart -->
+        <button *ngIf="product.quantity === 0" class="add-btn" (click)="addToCart(product)">Add to Cart</button>
+        <!-- Quantity control -->
+        <div *ngIf="product.quantity > 0" class="qty-controller">
+          <button (click)="decrement(product._id)">−</button>
+          <span>{{ product.quantity }}</span>
+          <button (click)="increment(product._id)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

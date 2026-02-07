@@ -1,0 +1,166 @@
+<div *ngIf="isLogin" class="login-page">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <!-- Illustration -->
+      <div class="illustration">🌶️ 🫙 🌿</div>
+
+      <h1>Welcome Back!</h1>
+      <p class="subtitle">Sign in to your account to continue</p>
+      <p *ngIf="data?.timedOut" class="subtitle" style="color: red">Session timed out</p>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm">
+        <div class="input-group">
+          <img class="left-icon" src="../../assets/images/user.png" />
+          <input type="text" placeholder="Username" formControlName="username" />
+        </div>
+        <span *ngIf="showErrorLogin && loginForm.controls.username.hasError('required')" class="error-message"
+          >Please enter username</span
+        >
+
+        <div class="input-group">
+          <img class="left-icon" src="../../assets/images/padlock.png" />
+          <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" />
+          <div class="right-icons-container">
+            <img *ngIf="showPassword" (click)="togglePassword()" class="right-icon" src="../../assets/images/eye.png" />
+            <img
+              *ngIf="!showPassword"
+              (click)="togglePassword()"
+              class="right-icon"
+              src="../../assets/images/hidden.png"
+            />
+            <a href="#" class="forgot">Forgot?</a>
+          </div>
+        </div>
+        <span *ngIf="showErrorLogin && loginForm.controls.password.hasError('required')" class="error-message"
+          >Please enter password</span
+        >
+
+        <button class="primary-btn" (click)="onLogin()">Login</button>
+
+        <!-- <div class="divider">
+          <span>or</span>
+        </div>
+
+        <button class="secondary-btn">📱 Continue with OTP</button> -->
+      </form>
+
+      <p class="signup">
+        Don’t have an account?
+        <span (click)="toggleView()">Sign Up →</span>
+      </p>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isLogin" class="login-page">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <!-- Illustration -->
+      <div class="illustration">🌶️ 🫙 🌿</div>
+
+      <h1>Create an Account!</h1>
+      <p class="subtitle">Join us for fresh spices</p>
+
+      <!-- Login Form -->
+      <form [formGroup]="signUpForm">
+        <div class="input-group">
+          <img class="left-icon" src="../../assets/images/user.png" />
+          <input type="text" placeholder="Name" formControlName="name" />
+        </div>
+        <span *ngIf="showError && signUpForm.controls.name.hasError('required')" class="error-message"
+          >Please enter name</span
+        >
+
+        <div class="input-group">
+          <img class="left-icon" src="../../assets/images/user.png" />
+          <input type="text" placeholder="Username" formControlName="username" />
+        </div>
+        <span *ngIf="showError && signUpForm.controls.username.hasError('required')" class="error-message"
+          >Please enter username</span
+        >
+        <span
+          *ngIf="
+            showError &&
+            signUpForm.controls.username.hasError('pattern') &&
+            !signUpForm.controls.username.hasError('required')
+          "
+          class="error-message"
+          >Please enter a valid username</span
+        >
+
+        <div class="input-group">
+          <img class="left-icon" src="../../assets/images/padlock.png" />
+          <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" />
+          <img
+            *ngIf="showPassword"
+            (click)="togglePassword()"
+            class="single-right-icon"
+            src="../../assets/images/eye.png"
+          />
+          <img
+            *ngIf="!showPassword"
+            (click)="togglePassword()"
+            class="single-right-icon"
+            src="../../assets/images/hidden.png"
+          />
+        </div>
+        <span *ngIf="showError && signUpForm.controls.password.hasError('required')" class="error-message"
+          >Please enter password</span
+        >
+        <span
+          *ngIf="
+            showError &&
+            signUpForm.controls.password.hasError('pattern') &&
+            !signUpForm.controls.password.hasError('required')
+          "
+          class="error-message"
+          >Password must have atleast one upppercase, one lowercase, one digit and one special character</span
+        >
+        <span
+          *ngIf="
+            showError &&
+            signUpForm.controls.password.hasError('minLength') &&
+            !signUpForm.controls.password.hasError('required')
+          "
+          class="error-message"
+          >Password must have atleast 8 characters</span
+        >
+
+        <div class="input-group">
+          <img class="left-icon" src="../../assets/images/padlock.png" />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            formControlName="confirmPassword"
+            (paste)="$event.preventDefault()"
+          />
+        </div>
+        <span *ngIf="showError && signUpForm.controls.confirmPassword.hasError('required')" class="error-message"
+          >Please re-enter your password</span
+        >
+        <span
+          *ngIf="
+            showError &&
+            signUpForm.controls.confirmPassword.value != signUpForm.controls.password.value &&
+            !signUpForm.controls.confirmPassword.hasError('required')
+          "
+          class="error-message"
+          >Passwords does not match</span
+        >
+
+        <button (click)="onSignUp()" class="primary-btn">Sign Up</button>
+
+        <!-- <div class="divider">
+          <span>or</span>
+        </div>
+
+        <button class="secondary-btn">📱 Continue with OTP</button> -->
+      </form>
+
+      <p class="signup">
+        Already have an account?
+        <span (click)="toggleView()">Log in →</span>
+      </p>
+    </div>
+  </div>
+</div>

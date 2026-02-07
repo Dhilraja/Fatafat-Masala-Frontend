@@ -1,0 +1,35 @@
+<!-- ================= HEADER ================= -->
+<div class="page">
+  <header class="header">
+    <div class="logo">LOGO</div>
+    <nav>
+      <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/products" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Products</a>
+      <a routerLink="/about-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">About Us</a>
+      <!-- <a routerLink="/gallery" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Gallery</a> -->
+      <a routerLink="/contact-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+        >Contact Us</a
+      >
+    </nav>
+    <button *ngIf="!service.isLoggedIn" mat-button matFab extended (click)="onLogin()">
+      <mat-icon>login</mat-icon>Login
+    </button>
+    <div *ngIf="service.isLoggedIn" class="profile">
+      <span
+        >Welcome, <span class="name">{{ service.userDetails.name }}!</span></span
+      >
+      <img (click)="onLogout()" src="../assets/images/account.png" />
+    </div>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+  <app-floating-cart></app-floating-cart>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer fade-in">
+    <p>© 2026 Fatafat Masala. All Rights Reserved.</p>
+  </footer>
+</div>

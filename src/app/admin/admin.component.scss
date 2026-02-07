@@ -1,0 +1,265 @@
+.outer-container {
+  padding: 3em;
+}
+.search-input-group {
+  position: relative;
+  // margin-top: 16px;
+}
+
+.search-input-group input {
+  // width: 20%;
+  margin-bottom: 1em;
+  padding: 12px 14px 12px;
+  border-radius: 30px;
+  border: 2px solid var(--primary);
+  // background-color: #efe7dc;
+  font-size: 1.1rem;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-input-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(196, 106, 43, 0.15);
+}
+
+/* Table wrapper (card look) */
+.mat-mdc-table {
+  background: #efe7dc;
+  border-radius: 14px;
+  overflow: hidden;
+  // box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* Header row */
+.mat-mdc-header-row {
+  background: var(--primary);
+}
+
+/* Header cells */
+.mat-mdc-header-cell {
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  color: white;
+  padding: 0.5;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Data rows */
+.mat-mdc-row {
+  transition: background-color 0.2s ease;
+}
+
+/* Hover */
+// .mat-mdc-row:hover {
+//   background: #f1f5f9;
+// }
+
+/* Data cells */
+.mat-mdc-cell {
+  padding: 10px 16px;
+  font-size: 1rem;
+  text-align: center;
+  color: #334155;
+  border-bottom: 2px solid var(--primary);
+  border-right: 2px solid var(--primary);
+}
+
+/* Remove last row border */
+.mat-mdc-row:last-child .mat-mdc-cell {
+  border-bottom: none;
+}
+
+.mat-mdc-row .mat-mdc-cell:last-child {
+  border-right: none;
+}
+
+/* Paginator */
+.mat-mdc-paginator {
+  // border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+/* Filter input spacing */
+mat-form-field {
+  width: 300px;
+  margin-bottom: 12px;
+}
+
+.product-form {
+  width: 100%;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* layout rows */
+.form-row {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+/* exactly 3 inputs in one line */
+.three-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* textarea row */
+.full {
+  grid-template-columns: 1fr;
+}
+
+/* button row */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* your existing styles (slightly extended) */
+.input-group {
+  position: relative;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  margin-bottom: 0.2em;
+  margin-top: 0.5em;
+  padding: 12px 14px;
+  border-radius: 15px;
+  border: 2px solid var(--primary);
+  font-size: 1.1rem;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input-group textarea {
+  border-radius: 18px; /* textarea looks better slightly less round */
+  resize: vertical;
+  font-family: sans-serif;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(196, 106, 43, 0.15);
+}
+
+/* responsive: stack on small screens */
+@media (max-width: 768px) {
+  .three-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}
+
+.product-form *,
+.product-form *::before,
+.product-form *::after {
+  box-sizing: border-box;
+}
+
+.field-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.primary-btn {
+  // width: 100%;
+  padding: 12px 25px;
+  border-radius: 15px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), #a5541f);
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.primary-btn2 {
+  // width: 100%;
+  padding: 6px 10px;
+  margin-left: 10px;
+  border-radius: 12px;
+  border: none;
+  background: var(--linear);
+  color: white !important;
+  font-size: 15px;
+  cursor: pointer;
+  // margin-top: 16px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.primary-btn2:disabled {
+  background: grey;
+}
+
+.primary-btn2:hover {
+  // transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.error {
+  color: red;
+}
+
+.description-label-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* change the paginator buttons */
+.mat-mdc-paginator .mat-mdc-button {
+  background-color: var(--primary); /* arrow color */
+}
+
+/* change the selected page number background */
+.mat-mdc-paginator .mat-mdc-selected {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 4px;
+}
+
+/* change hover color for page buttons */
+.mat-mdc-paginator .mat-mdc-button:hover {
+  background-color: rgba(245, 124, 0, 0.1);
+}

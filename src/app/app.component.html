@@ -10,6 +10,13 @@
       <a routerLink="/contact-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
         >Contact Us</a
       >
+      <a
+        *ngIf="service.userDetails?.role == 'ADMIN'"
+        routerLink="/admin"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Admin</a
+      >
     </nav>
     <button *ngIf="!service.isLoggedIn" mat-button matFab extended (click)="onLogin()">
       <mat-icon>login</mat-icon>Login

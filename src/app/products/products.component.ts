@@ -11,96 +11,87 @@ import { AppService } from '../app.service';
 export class ProductsComponent implements OnInit {
   constructor(private service: AppService) {}
 
-  addToCart(product: any): void {
-    const selectedProduct = this.allProducts.find((ele: any) => ele._id == product._id);
-    selectedProduct['quantity'] = 1;
-    this.service.addItem(this.allProducts);
+  addToCart(id: any): void {
+    if (this.service.isLoggedIn) {
+      this.service.addRemoveCartProduct(id, true).subscribe((res: any) => {
+        const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+        selectedProduct['quantity'] = 1;
+        this.service.addItem(this.allProducts);
+      });
+    } else {
+      const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+      selectedProduct['quantity'] = 1;
+      this.service.addItem(this.allProducts);
+    }
   }
 
   increment(id: any): void {
-    const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
-    selectedProduct['quantity']++;
-    this.service.addItem(this.allProducts);
-    // this.service.addRemoveCartProduct(id, true).subscribe((res: any) => {
-    //   this.ngOnInit();
-    // });
+    if (this.service.isLoggedIn) {
+      this.service.addRemoveCartProduct(id, true).subscribe((res: any) => {
+        const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+        selectedProduct['quantity']++;
+        this.service.addItem(this.allProducts);
+      });
+    } else {
+      const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+      selectedProduct['quantity']++;
+      this.service.addItem(this.allProducts);
+    }
   }
 
   decrement(id: any): void {
-    const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
-    if (selectedProduct['quantity'] > 0) {
-      selectedProduct['quantity']--;
-      this.service.removeItem(this.allProducts);
+    if (this.service.isLoggedIn) {
+      this.service.addRemoveCartProduct(id, false).subscribe((res: any) => {
+        const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+        if (selectedProduct['quantity'] > 0) {
+          selectedProduct['quantity']--;
+          this.service.removeItem(this.allProducts);
+        }
+      });
+    } else {
+      const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+      if (selectedProduct['quantity'] > 0) {
+        selectedProduct['quantity']--;
+        this.service.removeItem(this.allProducts);
+      }
     }
-    // this.service.addRemoveCartProduct(id, false).subscribe((res: any) => {
-    //   this.ngOnInit();
-    // });
+  }
+
+  trackByProductId(index: number, product: any): string {
+    return product._id; // or product._id if using MongoDB
   }
 
   allProducts: any;
 
   ngOnInit(): void {
-    // this.allProducts = [
-    //   {
-    //     id: '1',
-    //     name: 'Sambar Powder',
-    //     price: '₹129',
-    //     mrp: '₹129',
-    //     quantity: 0,
-    //   },
-    //   {
-    //     id: '2',
-    //     name: 'Chilli Powder',
-    //     price: '₹129',
-    //     mrp: '₹129',
-    //     quantity: 0,
-    //   },
-    //   {
-    //     id: '3',
-    //     name: 'Chicken Powder',
-    //     price: '₹129',
-    //     mrp: '₹129',
-    //     quantity: 0,
-    //   },
-    //   {
-    //     id: '4',
-    //     name: 'Coriander Powder',
-    //     price: '₹129',
-    //     mrp: '₹129',
-    //     quantity: 0,
-    //   },
-    //   {
-    //     id: '5',
-    //     name: 'Garam Masala',
-    //     price: '₹129',
-    //     mrp: '₹129',
-    //     quantity: 0,
-    //   },
-    // ];
+    this.service.totalItems = 0;
     this.service.getLoginDetails().subscribe((res: any) => {
       this.service.isLoggedIn = res.flag;
       this.service.userDetails = res.data;
-      // if (this.service.isLoggedIn) {
-      //   this.service.getLoggedInCartProducts().subscribe((res: any) => {});
-      // } else
-      if (this.service.getAllProducts()) this.allProducts = this.service.getAllProducts();
+      if (this.service.isLoggedIn) {
+        this.service.getProducts().subscribe((res: any) => {
+          this.allProducts = res.data.map((ele: any) => {
+            ele['quantity'] = 0;
+            return ele;
+          });
+          this.service.getLoggedInCartProducts().subscribe((res: any) => {
+            for (const cartProduct of res.data) {
+              const selectedProduct = this.allProducts.find((ele: any) => ele._id == cartProduct.productId);
+              for (let i = 0; i < cartProduct.quantity; i++) {
+                selectedProduct['quantity']++;
+                this.service.addItem(this.allProducts);
+              }
+            }
+          });
+        });
+      } else if (this.service.getAllProducts()) this.allProducts = this.service.getAllProducts();
       else {
         this.service.getProducts().subscribe((res: any) => {
           this.allProducts = res.data.map((ele: any) => {
             ele['quantity'] = 0;
-            // ele['mrp'] = '₹' + ele['mrp'];
-            // ele['price'] = '₹' + ele['price'];
             return ele;
           });
           this.allProducts = [...this.allProducts];
-          // this.service.getCartProducts().subscribe((res: any) => {
-          //   for (const cart of res.data) {
-          //     const product = this.allProducts.find((product: any) => product._id === cart.productId);
-          //     if (product) {
-          //       product.quantity = cart.quantity;
-          //     }
-          //   }
-          // });
         });
       }
     });

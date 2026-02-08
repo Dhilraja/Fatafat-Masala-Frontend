@@ -28,7 +28,7 @@ export class FloatingCartComponent implements OnInit {
       this.animate = false;
       setTimeout(() => {
         this.animate = true;
-      }, 0);
+      }, 10);
     });
   }
 

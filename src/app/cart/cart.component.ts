@@ -23,6 +23,7 @@ export class CartComponent implements OnInit {
   cartProducts: any;
   totalPrice: number = 0;
   deliveryFees = 50;
+  allProducts: any;
 
   ngOnInit(): void {
     // this.cartProducts = [
@@ -48,29 +49,103 @@ export class CartComponent implements OnInit {
     //     quantity: 0,
     //   },
     // ];
-    this.totalPrice = 0;
-    if (this.service.getCartProducts()?.length > 0) {
-      this.cartProducts = this.service.getCartProducts();
-      this.cartProducts.forEach((ele: any) => {
-        this.totalPrice += Number(ele.price) * Number(ele.quantity);
-      });
-    } else {
-      this.router.navigate(['/products']);
-    }
+
+    // this.totalPrice = 0;
+    // if (this.service.getCartProducts()?.length > 0) {
+    //   this.cartProducts = this.service.getCartProducts();
+    //   this.cartProducts.forEach((ele: any) => {
+    //     this.totalPrice += Number(ele.price) * Number(ele.quantity);
+    //   });
+    // } else {
+    //   this.router.navigate(['/products']);
+    // }
+
+    this.service.totalItems = 0;
+    this.service.getLoginDetails().subscribe((res: any) => {
+      this.service.isLoggedIn = res.flag;
+      this.service.userDetails = res.data;
+      if (this.service.isLoggedIn) {
+        this.service.getProducts().subscribe((res: any) => {
+          this.allProducts = res.data.map((ele: any) => {
+            ele['quantity'] = 0;
+            return ele;
+          });
+          this.service.getLoggedInCartProducts().subscribe((res: any) => {
+            if (res?.data?.length == 0) this.router.navigate(['/products']);
+            for (const cartProduct of res.data) {
+              const selectedProduct = this.allProducts.find((ele: any) => ele._id == cartProduct.productId);
+              for (let i = 0; i < cartProduct.quantity; i++) {
+                selectedProduct['quantity']++;
+                this.service.addItem(this.allProducts);
+              }
+            }
+            this.totalPrice = 0;
+            if (this.service.getCartProducts()?.length > 0) {
+              this.cartProducts = this.service.getCartProducts();
+              this.cartProducts.forEach((ele: any) => {
+                this.totalPrice += Number(ele.price) * Number(ele.quantity);
+              });
+            } else {
+              this.router.navigate(['/products']);
+            }
+          });
+        });
+      } else if (this.service.getAllProducts()) this.allProducts = this.service.getAllProducts();
+      else {
+        // this.service.getProducts().subscribe((res: any) => {
+        //   this.allProducts = res.data.map((ele: any) => {
+        //     ele['quantity'] = 0;
+        //     return ele;
+        //   });
+        //   this.allProducts = [...this.allProducts];
+        // });
+        this.router.navigate(['/products']);
+      }
+    });
   }
 
   onIncrement(id: any) {
-    const selectedProduct = this.service.getAllProducts().find((ele: any) => ele._id == id);
-    selectedProduct['quantity']++;
-    this.service.addItem(this.service.getAllProducts());
-    this.ngOnInit();
+    // const selectedProduct = this.service.getAllProducts().find((ele: any) => ele._id == id);
+    // selectedProduct['quantity']++;
+    // this.service.addItem(this.service.getAllProducts());
+    // this.ngOnInit();
+
+    if (this.service.isLoggedIn) {
+      this.service.addRemoveCartProduct(id, true).subscribe((res: any) => {
+        const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+        selectedProduct['quantity']++;
+        this.service.addItem(this.allProducts);
+      });
+    } else {
+      const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+      selectedProduct['quantity']++;
+      this.service.addItem(this.allProducts);
+    }
   }
 
   onDecrement(id: any) {
-    const selectedProduct = this.service.getAllProducts().find((ele: any) => ele._id == id);
-    selectedProduct['quantity']--;
-    this.service.removeItem(this.service.getAllProducts());
-    this.ngOnInit();
+    // const selectedProduct = this.service.getAllProducts().find((ele: any) => ele._id == id);
+    // selectedProduct['quantity']--;
+    // this.service.removeItem(this.service.getAllProducts());
+    // this.ngOnInit();
+
+    if (this.service.isLoggedIn) {
+      this.service.addRemoveCartProduct(id, false).subscribe((res: any) => {
+        const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+        if (selectedProduct['quantity'] > 0) {
+          selectedProduct['quantity']--;
+          this.service.removeItem(this.allProducts);
+        }
+        this.cartProducts = this.cartProducts.filter((ele: any) => ele.quantity > 0);
+      });
+    } else {
+      const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
+      if (selectedProduct['quantity'] > 0) {
+        selectedProduct['quantity']--;
+        this.service.removeItem(this.allProducts);
+      }
+      this.cartProducts = this.cartProducts.filter((ele: any) => ele.quantity > 0);
+    }
   }
 
   onRemove(id: any) {}

@@ -57,6 +57,10 @@ export class AppComponent implements OnInit {
     this.service.logout().subscribe((res: any) => {
       this.service.isLoggedIn = false;
       this.service.userDetails = null;
+      this.router.navigate(['/home']);
+      setTimeout(() => {
+        window.location.reload();
+      });
     });
     // this.router.navigateByUrl('/home');
   }

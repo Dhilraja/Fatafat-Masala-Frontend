@@ -87,6 +87,8 @@ export class LoginComponent {
           this.dialogRef.close();
           if (this.data?.redirectTo) {
             this.router.navigateByUrl(this.data.redirectTo);
+          } else if (this.router.url == '/products' || this.router.url == '/cart') {
+            this.checkAndUpdateCartProducts();
           }
         },
         error: (err: any) => {
@@ -96,5 +98,23 @@ export class LoginComponent {
     } else {
       this.showErrorLogin = true;
     }
+  }
+
+  checkAndUpdateCartProducts() {
+    this.service.getLoggedInCartProducts().subscribe((res: any) => {
+      if (res.data?.length == 0) {
+        if (this.service.totalItems > 0) {
+          const products = this.service.getCartProducts()?.map((ele: any) => {
+            return {
+              id: ele._id,
+              quantity: ele.quantity,
+            };
+          });
+          this.service.setCartProducts(products).subscribe((res: any) => {});
+        }
+      } else {
+        window.location.reload();
+      }
+    });
   }
 }

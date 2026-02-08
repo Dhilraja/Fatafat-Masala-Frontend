@@ -14,7 +14,7 @@ export class AppService {
   private totalItemsSubject = new BehaviorSubject<number>(0);
   totalItems$ = this.totalItemsSubject.asObservable();
 
-  private totalItems = 0;
+  totalItems = 0;
 
   private allProducts: any = null;
 
@@ -86,7 +86,7 @@ export class AppService {
   }
 
   addRemoveCartProduct(id: string, flag: boolean) {
-    return this.http.post(this.url + '/add-remove-cart-products', { id: id, flag: flag });
+    return this.http.post(this.url + '/add-remove-cart-products', { id: id, flag: flag }, { withCredentials: true });
   }
 
   setCartProducts(products: any[]) {
@@ -94,7 +94,7 @@ export class AppService {
   }
 
   getLoggedInCartProducts() {
-    return this.http.get(this.url + '/cart-products');
+    return this.http.get(this.url + '/cart-products', { withCredentials: true });
   }
 
   generateDescription(input: string) {

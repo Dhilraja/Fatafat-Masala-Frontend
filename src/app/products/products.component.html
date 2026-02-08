@@ -1,6 +1,6 @@
 <section class="section fade-up">
   <div class="products">
-    <div class="card" *ngFor="let product of allProducts">
+    <div class="card" *ngFor="let product of allProducts; trackBy: trackByProductId">
       <div class="img"></div>
       <h3>{{ product.name }}</h3>
       <p class="price-span">
@@ -9,7 +9,7 @@
       </p>
       <div class="cart-btn-container">
         <!-- Add to cart -->
-        <button *ngIf="product.quantity === 0" class="add-btn" (click)="addToCart(product)">Add to Cart</button>
+        <button *ngIf="product.quantity === 0" class="add-btn" (click)="addToCart(product._id)">Add to Cart</button>
         <!-- Quantity control -->
         <div *ngIf="product.quantity > 0" class="qty-controller">
           <button (click)="decrement(product._id)">−</button>

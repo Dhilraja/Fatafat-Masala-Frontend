@@ -1,8 +1,8 @@
 <section class="hero fade-in">
   <div class="hero-text">
-    <h1>Pure. Fresh.<br>Authentic Indian Spices.</h1>
+    <h1>Pure. Fresh.<br />Authentic Indian Spices.</h1>
     <p>
-      Handpicked spices, traditionally ground,<br>
+      Handpicked spices, traditionally ground,<br />
       bringing real flavor to every dish.
     </p>
     <div class="hero-buttons">
@@ -13,7 +13,7 @@
 
   <div class="hero-image">
     <!-- <div class="image-placeholder"> -->
-      <img src="../assets/images/image1.jpeg">
+    <img src="../assets/images/image1.jpeg" />
     <!-- </div> -->
   </div>
 </section>
@@ -23,16 +23,17 @@
   <h2>Our Best Sellers</h2>
 
   <div class="products">
-    <div class="card">
-      <div class="img">
-        
-      </div>
-      <h3>Garam Masala</h3>
-      <p class="price">₹129</p>
-      <button>Add to Cart</button>
+    <div class="card" *ngFor="let product of products">
+      <div class="img"></div>
+      <h3>{{ product.name }}</h3>
+      <p class="price-span">
+        <b class="price">₹{{ product.price }}</b
+        ><span class="dashed-price">₹{{ product.mrp }}</span>
+      </p>
+      <button (click)="gotoProducts()">Check Product</button>
     </div>
 
-    <div class="card">
+    <!-- <div class="card">
       <div class="img">
         
       </div>
@@ -57,7 +58,7 @@
       <h3>Pepper Powder</h3>
       <p class="price">₹139</p>
       <button>Add to Cart</button>
-    </div>
+    </div> -->
   </div>
 </section>
 
@@ -67,7 +68,7 @@
 
   <div class="why">
     <div class="why-image">
-        <img src="../../assets/images/fatafat-masala-logo.jpg">
+      <img src="../../assets/images/fatafat-masala-logo.jpg" />
     </div>
     <ul>
       <li>✔ 100% Natural Ingredients</li>

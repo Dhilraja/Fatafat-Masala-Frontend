@@ -23,7 +23,9 @@
   border: none;
   cursor: pointer;
   font-size: 14px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .primary {
@@ -40,7 +42,7 @@
 
 .hero-buttons button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .hero-image img {
@@ -75,12 +77,14 @@
   background: white;
   border-radius: 20px;
   padding: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
 }
 
 .card .img {
@@ -94,9 +98,20 @@
   font-size: 16px;
 }
 
+.price-span {
+  margin: 10px 0;
+}
+
 .price {
   color: var(--primary);
-  margin: 10px 0;
+  font-size: 1.2rem;
+}
+
+.dashed-price {
+  margin-left: 10px;
+  text-decoration: line-through;
+  color: var(--primary);
+  font-size: 1rem;
 }
 
 .card button {
@@ -133,8 +148,14 @@
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .fade-in {
@@ -146,11 +167,21 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

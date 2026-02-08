@@ -60,11 +60,11 @@ export class CartComponent implements OnInit {
     //   this.router.navigate(['/products']);
     // }
 
-    this.service.totalItems = 0;
     this.service.getLoginDetails().subscribe((res: any) => {
       this.service.isLoggedIn = res.flag;
       this.service.userDetails = res.data;
       if (this.service.isLoggedIn) {
+        this.service.totalItems = 0;
         this.service.getProducts().subscribe((res: any) => {
           this.allProducts = res.data.map((ele: any) => {
             ele['quantity'] = 0;
@@ -90,8 +90,18 @@ export class CartComponent implements OnInit {
             }
           });
         });
-      } else if (this.service.getAllProducts()) this.allProducts = this.service.getAllProducts();
-      else {
+      } else if (this.service.getAllProducts()) {
+        this.totalPrice = 0;
+        this.allProducts = this.service.getAllProducts();
+        if (this.service.getCartProducts()?.length > 0) {
+          this.cartProducts = this.service.getCartProducts();
+          this.cartProducts.forEach((ele: any) => {
+            this.totalPrice += Number(ele.price) * Number(ele.quantity);
+          });
+        } else {
+          this.router.navigate(['/products']);
+        }
+      } else {
         // this.service.getProducts().subscribe((res: any) => {
         //   this.allProducts = res.data.map((ele: any) => {
         //     ele['quantity'] = 0;
@@ -115,11 +125,25 @@ export class CartComponent implements OnInit {
         const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
         selectedProduct['quantity']++;
         this.service.addItem(this.allProducts);
+        this.totalPrice = 0;
+        if (this.service.getCartProducts()?.length > 0) {
+          this.cartProducts = this.service.getCartProducts();
+          this.cartProducts.forEach((ele: any) => {
+            this.totalPrice += Number(ele.price) * Number(ele.quantity);
+          });
+        }
       });
     } else {
       const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
       selectedProduct['quantity']++;
       this.service.addItem(this.allProducts);
+      this.totalPrice = 0;
+      if (this.service.getCartProducts()?.length > 0) {
+        this.cartProducts = this.service.getCartProducts();
+        this.cartProducts.forEach((ele: any) => {
+          this.totalPrice += Number(ele.price) * Number(ele.quantity);
+        });
+      }
     }
   }
 
@@ -137,6 +161,11 @@ export class CartComponent implements OnInit {
           this.service.removeItem(this.allProducts);
         }
         this.cartProducts = this.cartProducts.filter((ele: any) => ele.quantity > 0);
+        this.totalPrice = 0;
+        this.cartProducts.forEach((ele: any) => {
+          this.totalPrice += Number(ele.price) * Number(ele.quantity);
+        });
+        if (this.cartProducts?.length == 0) this.router.navigate(['/products']);
       });
     } else {
       const selectedProduct = this.allProducts.find((ele: any) => ele._id == id);
@@ -145,6 +174,12 @@ export class CartComponent implements OnInit {
         this.service.removeItem(this.allProducts);
       }
       this.cartProducts = this.cartProducts.filter((ele: any) => ele.quantity > 0);
+      this.totalPrice = 0;
+      this.cartProducts.forEach((ele: any) => {
+        this.totalPrice += Number(ele.price) * Number(ele.quantity);
+      });
+
+      if (this.cartProducts?.length == 0) this.router.navigate(['/products']);
     }
   }
 

@@ -5,7 +5,7 @@
       <div class="illustration">🌶️ 🫙 🌿</div>
 
       <h1>Welcome Back!</h1>
-      <p class="subtitle">Sign in to your account to continue</p>
+      <p class="subtitle">Sign in to your account</p>
       <p *ngIf="data?.timedOut" class="subtitle" style="color: red">Session timed out</p>
 
       <!-- Login Form -->
@@ -73,10 +73,10 @@
 
         <div class="input-group">
           <img class="left-icon" src="../../assets/images/user.png" />
-          <input type="text" placeholder="Username" formControlName="username" />
+          <input type="text" placeholder="Email" formControlName="username" />
         </div>
         <span *ngIf="showError && signUpForm.controls.username.hasError('required')" class="error-message"
-          >Please enter username</span
+          >Please enter email</span
         >
         <span
           *ngIf="
@@ -85,7 +85,7 @@
             !signUpForm.controls.username.hasError('required')
           "
           class="error-message"
-          >Please enter a valid username</span
+          >Please enter a valid email</span
         >
 
         <div class="input-group">

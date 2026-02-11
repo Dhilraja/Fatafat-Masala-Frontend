@@ -64,11 +64,11 @@ export class ProductsComponent implements OnInit {
   allProducts: any;
 
   ngOnInit(): void {
-    this.service.totalItems = 0;
     this.service.getLoginDetails().subscribe((res: any) => {
       this.service.isLoggedIn = res.flag;
       this.service.userDetails = res.data;
       if (this.service.isLoggedIn) {
+        this.service.totalItems = 0;
         this.service.getProducts().subscribe((res: any) => {
           this.allProducts = res.data.map((ele: any) => {
             ele['quantity'] = 0;

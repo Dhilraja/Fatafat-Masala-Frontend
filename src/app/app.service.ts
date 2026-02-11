@@ -35,6 +35,17 @@ export class AppService {
     }
   }
 
+  private _loading = new BehaviorSubject<boolean>(false);
+  loading$ = this._loading.asObservable();
+
+  show() {
+    this._loading.next(true);
+  }
+
+  hide() {
+    this._loading.next(false);
+  }
+
   getTotalItems() {
     return this.totalItems;
   }
@@ -100,5 +111,13 @@ export class AppService {
   generateDescription(input: string) {
     const params = new HttpParams().set('input', input);
     return this.http.get(this.url + '/generate-description', { params: params, withCredentials: true });
+  }
+
+  sendOtp(payload: any) {
+    return this.http.post(this.url + '/send-otp', payload);
+  }
+
+  validateOtp(payload: any) {
+    return this.http.post(this.url + '/validate-otp', payload);
   }
 }

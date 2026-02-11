@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from './login/login.component';
+import { LoaderComponent } from './loader/loader.component';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ import { LoginComponent } from './login/login.component';
     MatIconModule,
     MatButtonModule,
     CommonModule,
+    LoaderComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

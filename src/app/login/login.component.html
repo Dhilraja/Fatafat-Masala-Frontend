@@ -1,4 +1,4 @@
-<div *ngIf="isLogin" class="login-page">
+<div *ngIf="isLogin === true" class="login-page">
   <div class="login-wrapper">
     <div class="login-card">
       <!-- Illustration -->
@@ -52,7 +52,7 @@
     </div>
   </div>
 </div>
-<div *ngIf="!isLogin" class="login-page">
+<div *ngIf="isLogin === false" class="login-page">
   <div class="login-wrapper">
     <div class="login-card">
       <!-- Illustration -->
@@ -74,6 +74,14 @@
         <div class="input-group">
           <img class="left-icon" src="../../assets/images/user.png" />
           <input type="text" placeholder="Email" formControlName="username" />
+          <button
+            *ngIf="showOtpButton"
+            class="single-right-button"
+            [disabled]="otpDisabled || !signUpForm.controls.username.valid"
+            (click)="onGetOtp()"
+          >
+            {{ otpButtonLabel }}
+          </button>
         </div>
         <span *ngIf="showError && signUpForm.controls.username.hasError('required')" class="error-message"
           >Please enter email</span
@@ -87,6 +95,36 @@
           class="error-message"
           >Please enter a valid email</span
         >
+        <span
+          *ngIf="
+            showError &&
+            this.signUpForm.controls.username.valid &&
+            this.signUpForm.controls.username.status != 'DISABLED'
+          "
+          class="error-message"
+          >Please verify with OTP</span
+        >
+        <span
+          *ngIf="existingUsername != undefined && existingUsername == signUpForm.controls.username.value"
+          class="error-message"
+          >Username already exists</span
+        >
+
+        <div *ngIf="showOtpInput" class="input-group">
+          <img class="left-icon" src="../../assets/images/password-protection.png" />
+          <input type="text" placeholder="OTP" formControlName="otp" maxlength="6" />
+          <button
+            class="single-right-button"
+            [disabled]="
+              signUpForm.controls.otp.hasError('minlength') ||
+              signUpForm.controls.otp.hasError('required') ||
+              signUpForm.controls.otp.hasError('pattern')
+            "
+            (click)="onValidateOtp()"
+          >
+            Validate OTP
+          </button>
+        </div>
 
         <div class="input-group">
           <img class="left-icon" src="../../assets/images/padlock.png" />
@@ -111,7 +149,8 @@
           *ngIf="
             showError &&
             signUpForm.controls.password.hasError('pattern') &&
-            !signUpForm.controls.password.hasError('required')
+            !signUpForm.controls.password.hasError('required') &&
+            !signUpForm.controls.password.hasError('minlength')
           "
           class="error-message"
           >Password must have atleast one upppercase, one lowercase, one digit and one special character</span
@@ -119,7 +158,7 @@
         <span
           *ngIf="
             showError &&
-            signUpForm.controls.password.hasError('minLength') &&
+            signUpForm.controls.password.hasError('minlength') &&
             !signUpForm.controls.password.hasError('required')
           "
           class="error-message"
@@ -164,3 +203,24 @@
     </div>
   </div>
 </div>
+<!-- <div *ngIf="showSuccess && isLogin == null" class="success-wrapper login-page">
+  <div class="checkmark">✓</div>
+  <p>Login successful!</p>
+</div> -->
+
+<ng-lottie
+  style="width: 50%; margin: 0 auto"
+  *ngIf="showSignUpSuccess && isLogin == null"
+  [options]="lottieOptions"
+  (complete)="onAnimationCompleteSignUp()"
+  (animationCreated)="animationCreatedSignUp($event)"
+>
+</ng-lottie>
+<ng-lottie
+  style="width: 50%; margin: 0 auto"
+  *ngIf="showLogInSuccess && isLogin == null"
+  [options]="lottieOptions"
+  (complete)="onAnimationCompleteLogIn()"
+  (animationCreated)="animationCreatedLogIn($event)"
+>
+</ng-lottie>

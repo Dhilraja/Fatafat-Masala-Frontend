@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppService } from '../app.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { LottieComponent } from 'ngx-lottie';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LottieComponent, MatSnackBarModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -17,15 +19,67 @@ export class LoginComponent {
     private router: Router,
     private dialogRef: MatDialogRef<LoginComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private cd: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
   ) {}
 
-  isLogin = true;
+  lottieOptions = {
+    path: '../../assets/animations/success.json',
+    loop: false,
+    autoplay: true,
+  };
+
+  private animationItemLogIn: any;
+  private animationItemSignUp: any;
+
+  animationCreatedSignUp(animation: any) {
+    this.animationItemSignUp = animation;
+    this.setSpeedSignUp(3);
+  }
+  animationCreatedLogIn(animation: any) {
+    this.animationItemLogIn = animation;
+    this.setSpeedLogIn(3);
+  }
+
+  setSpeedLogIn(speed: number) {
+    if (this.animationItemLogIn) {
+      this.animationItemLogIn.setSpeed(speed);
+    }
+  }
+
+  setSpeedSignUp(speed: number) {
+    if (this.animationItemSignUp) {
+      this.animationItemSignUp.setSpeed(speed);
+    }
+  }
+
+  onAnimationCompleteLogIn() {
+    this.dialogRef.close(true);
+  }
+
+  onAnimationCompleteSignUp() {
+    this.isLogin = true;
+    this.showPassword = false;
+    this.showSignUpSuccess = false;
+    this.showLogInSuccess = false;
+    this.cd.detectChanges();
+  }
+
+  isLogin: boolean | null = true;
+  showSignUpSuccess = false;
+  showLogInSuccess = false;
   showPassword = false;
   showError = false;
   showErrorLogin = false;
+  existingUsername: any;
+  otpDisabled = false;
+  showOtpInput = false;
+  showOtpButton = true;
+  otpButtonLabel: string = 'Send OTP';
 
   toggleView() {
     this.isLogin = !this.isLogin;
+    this.showPassword = false;
   }
 
   togglePassword() {
@@ -38,6 +92,7 @@ export class LoginComponent {
       Validators.required,
       Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/),
     ]),
+    otp: new FormControl(null, [Validators.required, Validators.minLength(6), Validators.pattern('^\\d+$')]),
     password: new FormControl(null, [
       Validators.required,
       Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
@@ -54,19 +109,30 @@ export class LoginComponent {
   onSignUp() {
     if (
       this.signUpForm.valid &&
-      this.signUpForm.controls.confirmPassword.value == this.signUpForm.controls.password.value
+      this.signUpForm.controls.confirmPassword.value == this.signUpForm.controls.password.value &&
+      this.signUpForm.controls.username.status == 'DISABLED'
     ) {
       const payload = {
-        username: this.signUpForm.controls.username.value,
-        name: this.signUpForm.controls.name.value,
+        username: String(this.signUpForm.controls.username.value)?.trim(),
+        name: String(this.signUpForm.controls.name.value)?.trim(),
         password: this.signUpForm.controls.password.value,
       };
       this.service.signup(payload).subscribe({
         next: (res: any) => {
-          this.isLogin = true;
+          this.showSignUpSuccess = true;
+          this.isLogin = null;
         },
         error: (err: any) => {
-          alert(err.error.message);
+          const message = err.error.message;
+          if (message == 'User already exists') {
+            this.snackBar.open('Username already exists', 'Close', {
+              duration: 3000, // 3 seconds
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['error-snackbar'],
+            });
+            this.existingUsername = this.signUpForm.controls.username.value;
+          }
         },
       });
     } else {
@@ -84,15 +150,25 @@ export class LoginComponent {
         next: (res: any) => {
           this.service.isLoggedIn = true;
           this.service.userDetails = res.data;
-          this.dialogRef.close();
-          if (this.data?.redirectTo) {
-            this.router.navigateByUrl(this.data.redirectTo);
-          } else if (this.router.url == '/products' || this.router.url == '/cart') {
-            this.checkAndUpdateCartProducts();
-          }
+          this.showLogInSuccess = true;
+          this.isLogin = null;
+          // setTimeout(() => {
+          // this.dialogRef.close(true);
+          // if (this.data?.redirectTo) {
+          //   this.router.navigateByUrl(this.data.redirectTo);
+          // } else if (this.router.url == '/products' || this.router.url == '/cart') {
+          //   this.checkAndUpdateCartProducts();
+          // }
+          // }, 5000);
         },
         error: (err: any) => {
-          alert(err.error.message);
+          this.snackBar.open(err.error.message, 'Close', {
+            duration: 3000, // 3 seconds
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar'],
+          });
+          // alert(err.error.message);
         },
       });
     } else {
@@ -115,6 +191,71 @@ export class LoginComponent {
       } else {
         window.location.reload();
       }
+    });
+  }
+
+  onGetOtp() {
+    const payload = {
+      email: this.signUpForm.controls.username.value,
+      resendFlag: this.otpButtonLabel == 'Resend OTP',
+    };
+    this.service.sendOtp(payload).subscribe((res: any) => {
+      this.showOtpInput = true;
+      this.otpDisabled = true;
+      this.otpButtonLabel = 'Resend in 30';
+      let count = 29;
+      let intervalId = setInterval(() => {
+        if (count == 0) {
+          this.otpButtonLabel = 'Resend OTP';
+          this.otpDisabled = false;
+          clearInterval(intervalId);
+          return;
+        }
+        this.otpButtonLabel = `Resend in ${count}`;
+        count--;
+      }, 1000);
+    });
+  }
+
+  onValidateOtp() {
+    const payload = {
+      email: this.signUpForm.controls.username.value,
+      otp: this.signUpForm.controls.otp.value,
+    };
+    this.service.validateOtp(payload).subscribe({
+      next: (res: any) => {
+        this.snackBar.open(res.message, 'Close', {
+          duration: 3000, // 3 seconds
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar'],
+        });
+        if (res.message == 'Too many incorrect attempts') {
+          this.showOtpInput = false;
+          this.signUpForm.controls.username.reset();
+          this.otpButtonLabel = 'Send OTP';
+          return;
+        }
+        if (res?.flag) {
+          this.showOtpInput = false;
+          this.signUpForm.controls.username.disable();
+          this.showOtpButton = false;
+        } else {
+          this.signUpForm.controls.otp.setValue(null);
+          // this.signUpForm.controls.otp.markAsTouched();
+          // this.signUpForm.controls.otp.markAsTouched();
+          // this.signUpForm.controls.otp.updateValueAndValidity();
+        }
+      },
+      error: (error: any) => {
+        console.log(error);
+        this.snackBar.open(error.message, 'Close', {
+          duration: 3000, // 3 seconds
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar'],
+        });
+      },
     });
   }
 }

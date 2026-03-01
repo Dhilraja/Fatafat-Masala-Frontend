@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AppService } from '../app.service';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { Router } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss',
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, OnDestroy {
   constructor(
     public service: AppService,
     private matDialog: MatDialog,
@@ -24,6 +26,21 @@ export class CartComponent implements OnInit {
   totalPrice: number = 0;
   deliveryFees = 50;
   allProducts: any;
+  subscription!: Subscription;
+
+  cartForm = new FormGroup({
+    line1: new FormControl(null, [Validators.required]),
+    line2: new FormControl(null, [Validators.required]),
+    landmark: new FormControl(null, [Validators.required]),
+    city: new FormControl(null, [Validators.required]),
+    state: new FormControl(null, [Validators.required]),
+    pincode: new FormControl(null, [Validators.required]),
+  });
+
+  ngOnDestroy(): void {
+    console.log('Unsubscibed');
+    this.subscription.unsubscribe();
+  }
 
   ngOnInit(): void {
     // this.cartProducts = [
@@ -59,8 +76,8 @@ export class CartComponent implements OnInit {
     // } else {
     //   this.router.navigate(['/products']);
     // }
-
-    this.service.getLoginDetails().subscribe((res: any) => {
+    this.subscription = this.service.loginStatus$.subscribe((res: any) => {
+      // this.service.getLoginDetails().subscribe((res: any) => {
       this.service.isLoggedIn = res.flag;
       this.service.userDetails = res.data;
       if (this.service.isLoggedIn) {
@@ -187,18 +204,13 @@ export class CartComponent implements OnInit {
 
   onCheckout() {
     if (this.service.isLoggedIn) {
-      const products = this.service.getCartProducts()?.map((ele: any) => {
-        return {
-          id: ele._id,
-          quantity: ele.quantity,
-        };
-      });
-      this.service.setCartProducts(products).subscribe((res: any) => {
-        // alert('Success!');
-      });
+      this.router.navigateByUrl('/checkout');
     } else {
       this.matDialog.open(LoginComponent, {
         width: '70%',
+        data: {
+          redirectTo: '/checkout',
+        },
       });
     }
   }

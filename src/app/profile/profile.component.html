@@ -1,0 +1,39 @@
+<section class="cart-header">
+  <h1 class="profile-heading">PROFILE</h1>
+  <div class="addresses-heading-container">
+    <h1>Addresses</h1>
+    <button mat-button matFab extended (click)="onAdd()">Add<mat-icon>add</mat-icon></button>
+  </div>
+  <div class="no-address-container">
+    <span class="no-address" *ngIf="addresses.length == 0">No addresses found!</span>
+  </div>
+  <div *ngFor="let address of addresses" class="address-container">
+    <div class="address-right">
+      <span class="address-name"
+        ><b>{{ address?.name }},</b></span
+      >
+      <span>{{
+        address?.line1 + ', ' + address?.line2 + ', ' + address?.city + ', ' + address?.state + ' - ' + address?.pincode
+      }}</span>
+    </div>
+    <div class="address-left">
+      <mat-icon (click)="onEditAddress(address)">edit</mat-icon>
+    </div>
+    <div class="address-left">
+      <mat-icon (click)="onDeleteAddress(address._id)">delete</mat-icon>
+    </div>
+  </div>
+  <div class="addresses-heading-container">
+    <h1>Orders</h1>
+  </div>
+  <div class="no-address-container">
+    <span class="no-address" *ngIf="orders.length == 0">No orders found!</span>
+  </div>
+  <div *ngFor="let order of orders" class="address-container">
+    <div class="address-right">
+      <span class="address-name"
+        ><b>{{ order?.name }},</b></span
+      >
+    </div>
+  </div>
+</section>

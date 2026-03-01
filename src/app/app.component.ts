@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from './login/login.component';
 import { LoaderComponent } from './loader/loader.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ import { LoaderComponent } from './loader/loader.component';
     MatButtonModule,
     CommonModule,
     LoaderComponent,
+    MatMenuModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -37,12 +39,16 @@ export class AppComponent implements OnInit {
   name = null;
 
   ngOnInit(): void {
-    this.service.getLoginDetails().subscribe((res: any) => {
-      this.service.isLoggedIn = res.flag;
+    this.service.checkLogin();
+    this.service.loginStatus$.subscribe((res: any) => {
       this.isLoggedIn = res.flag;
-      this.service.userDetails = res.data;
-      // alert(res.flag ? 'User is logged in' : 'User is not logged in');
     });
+    // this.service.getLoginDetails().subscribe((res: any) => {
+    //   this.service.isLoggedIn = res.flag;
+    //   this.isLoggedIn = res.flag;
+    //   this.service.userDetails = res.data;
+    //   // alert(res.flag ? 'User is logged in' : 'User is not logged in');
+    // });
   }
 
   showCart(): boolean {
@@ -65,5 +71,9 @@ export class AppComponent implements OnInit {
       });
     });
     // this.router.navigateByUrl('/home');
+  }
+
+  onProfile() {
+    this.router.navigateByUrl('/profile');
   }
 }

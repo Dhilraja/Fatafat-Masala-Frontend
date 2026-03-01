@@ -1,3 +1,145 @@
+<div class="container page">
+  <h1>Admin Dashboard</h1>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label"><mat-icon>bar_chart</mat-icon> Revenue</div>
+      <p class="stat-value green">&#8377;{{ '1000' }}</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><mat-icon>shopping_cart</mat-icon> Orders</div>
+      <p class="stat-value primary">{{ '100' }}</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><mat-icon>inventory_2</mat-icon> Products</div>
+      <p class="stat-value secondary">{{ '10' }}</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><mat-icon>people</mat-icon> Customers</div>
+      <p class="stat-value accent">{{ '1' }}</p>
+    </div>
+  </div>
+
+  <!-- Orders Tab -->
+  <!-- <mat-tab-group animationDuration="200ms">
+    <mat-tab> -->
+  <ng-template mat-tab-label><mat-icon>shopping_cart</mat-icon>&nbsp;Orders</ng-template>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (o of orders; track o._id) {
+          <tr [attr.data-testid]="'admin-order-' + o._id">
+            <td>{{ o.orderNumber }}</td>
+            <td>{{ o.shippingAddress.name }}</td>
+            <td>{{ o.items?.length }} items</td>
+            <td class="bold">&#8377;{{ o.totalAmount }}</td>
+            <td>{{ o.createdAt | date: 'dd/MM/YYYY' }}</td>
+            <td>
+              <!-- <mat-form-field appearance="outline" class="status-select"> -->
+              <select
+                [value]="o.status"
+                (change)="updateOrderStatus(o._id, $event)"
+                [attr.data-testid]="'order-status-' + o._id"
+              >
+                @for (s of statuses; track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </select>
+              <!-- </mat-form-field> -->
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <!-- </mat-tab> -->
+
+  <!-- Products Tab -->
+  <!-- <mat-tab>
+      <ng-template mat-tab-label><mat-icon>inventory_2</mat-icon>&nbsp;Products</ng-template>
+      <div class="tab-actions">
+        <button mat-raised-button color="primary" class="btn-tactile" (click)="openProductForm()" data-testid="add-product-btn">
+          <mat-icon>add</mat-icon> Add Product
+        </button>
+      </div>
+      @if (showProductForm) {
+        <div class="product-form">
+          <h3>{{ editingProduct ? 'Edit Product' : 'Add Product' }}</h3>
+          @for (f of productFields; track f[0]) {
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>{{ f[1] }}</mat-label>
+              <input matInput [(ngModel)]="productForm[f[0]]" [attr.data-testid]="'product-field-' + f[0]" />
+            </mat-form-field>
+          }
+          <div class="toggle-row">
+            <mat-slide-toggle [(ngModel)]="productForm.is_featured" data-testid="product-featured-toggle">Featured Product</mat-slide-toggle>
+          </div>
+          <div class="form-actions">
+            <button mat-raised-button color="primary" (click)="saveProduct()" data-testid="save-product-btn">
+              {{ editingProduct ? 'Update' : 'Create' }}
+            </button>
+            <button mat-stroked-button (click)="showProductForm = false">Cancel</button>
+          </div>
+        </div>
+      }
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Featured</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (p of products; track p.id) {
+              <tr [attr.data-testid]="'admin-product-' + p.id">
+                <td><img [src]="p.image_url" class="table-img" /></td>
+                <td class="bold">{{ p.name }}</td>
+                <td>{{ p.category }}</td>
+                <td>&#8377;{{ p.price }}</td>
+                <td>{{ p.stock }}</td>
+                <td><span class="featured-tag" [class.active]="p.is_featured">{{ p.is_featured ? 'Yes' : 'No' }}</span></td>
+                <td>
+                  <button mat-icon-button (click)="openProductForm(p)" [attr.data-testid]="'edit-product-' + p.id"><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="deleteProduct(p.id)" [attr.data-testid]="'delete-product-' + p.id"><mat-icon>delete</mat-icon></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-tab> -->
+
+  <!-- Login History Tab -->
+  <!-- <mat-tab>
+      <ng-template mat-tab-label><mat-icon>history</mat-icon>&nbsp;Login History</ng-template>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Email</th><th>Action</th><th>Date & Time</th><th>IP Address</th></tr></thead>
+          <tbody>
+            @for (h of history; track h.id) {
+              <tr [attr.data-testid]="'history-' + h.id">
+                <td>{{ h.email }}</td>
+                <td><span class="action-tag" [class.signup]="h.action === 'signup'">{{ h.action }}</span></td>
+                <td>{{ h.timestamp | date:'medium' }}</td>
+                <td>{{ h.ip_address }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </mat-tab> 
+  </mat-tab-group> -->
+</div>
+
 <div class="outer-container">
   <div class="search-input-group">
     <input (keyup)="applyFilter($event)" type="text" placeholder="Search products" />
@@ -89,6 +231,12 @@
         <input type="number" name="price" placeholder="Price" [(ngModel)]="formModel.price" required />
         <span *ngIf="showError && !formModel.price" class="error">Please enter Price</span>
       </div>
+
+      <!-- <div class="input-group">
+        <label class="field-label">Image</label>
+        <input accept="image/*" #fileInput type="file" (change)="onFileSelect($event)" />
+        <span *ngIf="showError && !selectedFile" class="error">Please upload image</span>
+      </div> -->
     </div>
 
     <!-- Row 2: textarea full width -->
@@ -121,6 +269,21 @@
         </textarea>
         <span *ngIf="showError && !formModel.description" class="error">Please enter Description</span>
       </div>
+    </div>
+    <div style="margin-top: 1em">
+      <label class="field-label">Image</label>
+    </div>
+    <div class="file-upload-wrapper">
+      <input type="file" #fileInput (change)="onFileSelect($event)" class="hidden-input" accept="image/*" />
+      <button type="button" class="upload-btn" (click)="fileInput.click()">
+        <mat-icon>attach_file</mat-icon>
+        Choose File
+      </button>
+      <span class="file-name">{{ selectedFile?.name || 'No file chosen' }}</span>
+    </div>
+    <div class="preview">
+      <img [src]="previewUrl" (load)="onImageLoad()" />
+      <div *ngIf="imageLoading" class="skeleton-image"></div>
     </div>
 
     <!-- Row 3: button full width -->

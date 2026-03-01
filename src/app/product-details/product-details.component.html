@@ -1,0 +1,114 @@
+<div class="product-page" [class.loaded]="isLoaded">
+  <!-- Background Orbs -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="page-wrapper">
+    <button class="back-to-products" (click)="goBack()">
+      <span class="arrow">←</span>
+      <span>Back to {{ backTo }}</span>
+    </button>
+    <div class="product-container">
+      <!-- LEFT: Image Section -->
+      <div class="image-section">
+        <!-- <div class="image-badge">NEW</div> -->
+        <div class="image-frame">
+          <img
+            [src]="productDetails?.images?.[0]?.url"
+            [alt]="productDetails?.name"
+            class="product-image"
+            (load)="onImageLoad()"
+            [class.img-visible]="imgLoaded"
+          />
+          <div class="image-shimmer" [class.hidden]="imgLoaded"></div>
+        </div>
+
+        <!-- Thumbnail Row -->
+        <!-- <div class="thumbnails">
+          <div
+            class="thumb"
+            *ngFor="let thumb of product.thumbnails; let i = index"
+            [class.active]="activeThumb === i"
+            (click)="selectThumb(i, thumb)"
+          >
+            <img [src]="thumb" alt="thumb" />
+          </div>
+        </div> -->
+      </div>
+
+      <!-- RIGHT: Details Section -->
+      <div class="details-section">
+        <div class="tag-row">
+          <span class="category-tag">SPICE</span>
+          <span class="stock-tag" [class.in-stock]="true"> ● In Stock </span>
+        </div>
+
+        <h1 class="product-name">{{ productDetails?.name }}</h1>
+
+        <!-- <div class="rating-row">
+          <div class="stars">
+            <span *ngFor="let s of stars" class="star" [class.filled]="s <= product.rating">★</span>
+          </div>
+          <span class="review-count">({{ product.reviews }} reviews)</span>
+        </div> -->
+
+        <div class="price-row">
+          <span class="price">₹{{ productDetails?.price }}</span>
+          <span class="original-price"> ₹{{ productDetails?.mrp }} </span>
+          <span class="discount-badge">-{{ productDetails?.discount }}%</span>
+        </div>
+
+        <p class="description">{{ productDetails?.description }}</p>
+
+        <!-- Color Selector -->
+        <!-- <div class="option-group">
+          <label class="option-label"
+            >Color — <strong>{{ selectedColor }}</strong></label
+          >
+          <div class="color-swatches">
+            <div
+              class="swatch"
+              *ngFor="let color of product.colors"
+              [style.background]="color.hex"
+              [class.active]="selectedColor === color.name"
+              [title]="color.name"
+              (click)="selectedColor = color.name"
+            ></div>
+          </div>
+        </div> -->
+
+        <!-- Size Selector -->
+        <!-- <div class="option-group">
+          <label class="option-label">Size</label>
+          <div class="size-buttons">
+            <button
+              class="size-btn"
+              *ngFor="let size of product.sizes"
+              [class.active]="selectedSize === size"
+              (click)="selectedSize = size"
+            >
+              {{ size }}
+            </button>
+          </div>
+        </div> -->
+
+        <!-- Quantity + CTA -->
+        <div class="action-row">
+          <button class="add-to-cart" *ngIf="product?.quantity == 0" (click)="addToCart(productDetails?._id)">
+            Add to Cart
+          </button>
+
+          <div class="quantity-control" *ngIf="product?.quantity > 0">
+            <button class="qty-btn" (click)="decrement(productDetails?._id)"><span>−</span></button>
+            <span class="qty-value">{{ product?.quantity }}</span>
+            <button class="qty-btn" (click)="increment(productDetails?._id)"><span>+</span></button>
+          </div>
+        </div>
+
+        <!-- Features -->
+        <ul class="feature-list">
+          <li *ngFor="let f of features"><span class="feature-icon">✦</span> {{ f }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

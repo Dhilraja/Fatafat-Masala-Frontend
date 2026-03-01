@@ -23,14 +23,17 @@
   <h2>Our Best Sellers</h2>
 
   <div class="products">
-    <div class="card" *ngFor="let product of products">
-      <div class="img"></div>
+    <div class="card" *ngFor="let product of products" (click)="onClickProduct(product._id)">
+      <div class="img">
+        <img class="image" [src]="product?.images?.[0]?.url || '../../assets/images/fatafat-masala-logo.jpg'" />
+      </div>
       <h3>{{ product.name }}</h3>
       <p class="price-span">
         <b class="price">₹{{ product.price }}</b
-        ><span class="dashed-price">₹{{ product.mrp }}</span>
+        ><span class="dashed-price">₹{{ product.mrp }}</span
+        ><span class="discount-badge">-{{ (((product.mrp - product.price) / product.mrp) * 100).toFixed(0) }}%</span>
       </p>
-      <button (click)="gotoProducts()">Check Product</button>
+      <button>Check Product</button>
     </div>
 
     <!-- <div class="card">
@@ -59,6 +62,12 @@
       <p class="price">₹139</p>
       <button>Add to Cart</button>
     </div> -->
+  </div>
+  <div class="view-all-btn-container">
+    <button class="back-to-products" (click)="gotoProducts()">
+      <span>View All Products</span>
+      <span class="arrow">→</span>
+    </button>
   </div>
 </section>
 

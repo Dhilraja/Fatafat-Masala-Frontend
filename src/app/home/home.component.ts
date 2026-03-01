@@ -26,4 +26,7 @@ export class HomeComponent implements OnInit {
   gotoProducts() {
     this.router.navigateByUrl('/products');
   }
+  onClickProduct(id: string) {
+    this.router.navigate(['/product'], { queryParams: { id: id } });
+  }
 }

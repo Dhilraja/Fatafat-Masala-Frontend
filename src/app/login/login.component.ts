@@ -55,6 +55,18 @@ export class LoginComponent {
 
   onAnimationCompleteLogIn() {
     this.dialogRef.close(true);
+    if (this.data?.redirectTo) {
+      this.router.navigateByUrl(this.data.redirectTo);
+    } else if (this.router.url == '/products' || this.router.url == '/cart') {
+      this.checkAndUpdateCartProducts();
+    }
+    const payload = {
+      flag: true,
+      data: this.service.userDetails,
+    };
+    setTimeout(() => {
+      this.service.loginNext(payload);
+    });
   }
 
   onAnimationCompleteSignUp() {
@@ -257,5 +269,17 @@ export class LoginComponent {
         });
       },
     });
+  }
+
+  onForgot() {
+    if (this.loginForm.controls.username.invalid) {
+      this.snackBar.open('Please enter username', 'Close', {
+        duration: 3000, // 3 seconds
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        panelClass: ['error-snackbar'],
+      });
+      return;
+    }
   }
 }

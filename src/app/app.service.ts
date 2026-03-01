@@ -1,13 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { environment } from '../environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar,
+  ) {}
 
   url = environment.apiUrl;
 
@@ -17,9 +21,13 @@ export class AppService {
   totalItems = 0;
 
   private allProducts: any = null;
+  tempAllProducts: any = null;
+  tempLoggedInCartProducts: any = null;
 
   isLoggedIn = false;
   userDetails: any = null;
+
+  fromHomePage = false;
 
   addItem(allProducts: any): void {
     this.allProducts = allProducts;
@@ -37,6 +45,21 @@ export class AppService {
 
   private _loading = new BehaviorSubject<boolean>(false);
   loading$ = this._loading.asObservable();
+
+  private loginStatus = new ReplaySubject<any>(1);
+  loginStatus$ = this.loginStatus.asObservable();
+
+  checkLogin() {
+    this.http.get(this.url + '/login-details', { withCredentials: true }).subscribe((res: any) => {
+      this.loginStatus.next(res);
+      this.isLoggedIn = res.flag;
+      this.userDetails = res.data;
+    });
+  }
+
+  loginNext(data: any) {
+    this.loginStatus.next(data);
+  }
 
   show() {
     this._loading.next(true);
@@ -119,5 +142,48 @@ export class AppService {
 
   validateOtp(payload: any) {
     return this.http.post(this.url + '/validate-otp', payload);
+  }
+
+  getCheckoutProducts() {
+    return this.http.get(this.url + '/checkout-products', { withCredentials: true });
+  }
+
+  getProfile() {
+    return this.http.get(this.url + '/profile', { withCredentials: true });
+  }
+
+  addUpdateAddress(payload: any) {
+    return this.http.post(this.url + '/address', payload, { withCredentials: true });
+  }
+
+  deleteAddress(id: string) {
+    const params = new HttpParams().set('id', id);
+    return this.http.delete(this.url + '/delete-address', { params: params, withCredentials: true });
+  }
+
+  placeOrder(payload: any) {
+    return this.http.post(this.url + '/place-order', payload, { withCredentials: true });
+  }
+
+  getOrders() {
+    return this.http.get(this.url + '/get-orders', { withCredentials: true });
+  }
+
+  getSnackbar(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000, // 3 seconds
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      panelClass: ['error-snackbar'],
+    });
+  }
+
+  uploadImage(formData: any) {
+    return this.http.post(this.url + '/upload-image', formData, { withCredentials: true });
+  }
+
+  getProductDetails(id: string) {
+    const params = new HttpParams().set('id', id);
+    return this.http.get(this.url + '/product-details', { params: params });
   }
 }

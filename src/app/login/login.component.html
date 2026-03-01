@@ -29,7 +29,7 @@
               class="right-icon"
               src="../../assets/images/hidden.png"
             />
-            <a href="#" class="forgot">Forgot?</a>
+            <span class="forgot" (click)="onForgot()" class="forgot">Forgot?</span>
           </div>
         </div>
         <span *ngIf="showErrorLogin && loginForm.controls.password.hasError('required')" class="error-message"
@@ -72,7 +72,7 @@
         >
 
         <div class="input-group">
-          <img class="left-icon" src="../../assets/images/user.png" />
+          <img class="left-icon" src="../../assets/images/mail.png" />
           <input type="text" placeholder="Email" formControlName="username" />
           <button
             *ngIf="showOtpButton"

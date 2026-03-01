@@ -1,0 +1,81 @@
+<!-- Cart Layout -->
+<section class="cart-container">
+  <!-- LEFT: Cart Items -->
+  <div class="cart-items">
+    <div class="addresses-heading-container">
+      <h1>Addresses</h1>
+      <span class="address-description">(You can add or update addresses in profile page)</span>
+    </div>
+    <div class="no-address-container">
+      <span class="no-address" *ngIf="addresses.length == 0">No addresses found!</span>
+    </div>
+    <div class="address-outer">
+      <div
+        *ngFor="let address of addresses"
+        class="address-container"
+        [ngClass]="{ selected: address.selected }"
+        (click)="onClickAddress(address)"
+      >
+        <div class="address-right">
+          <div class="name-check">
+            <span class="address-name"
+              ><b>{{ address?.name }},</b></span
+            >
+            <mat-icon *ngIf="address.selected" style="font-weight: 600">check</mat-icon>
+          </div>
+          <span>{{
+            address?.line1 +
+              ', ' +
+              address?.line2 +
+              ', ' +
+              address?.city +
+              ', ' +
+              address?.state +
+              ' - ' +
+              address?.pincode
+          }}</span>
+        </div>
+      </div>
+    </div>
+    <h1>
+      Items <span style="font-weight: normal">({{ totalQuantity }} item{{ totalQuantity > 1 ? 's' : '' }})</span>
+    </h1>
+    <div class="cart-item" *ngFor="let product of checkoutProducts">
+      <div class="item-img"></div>
+
+      <div class="item-info">
+        <h3>{{ product.productName }}</h3>
+        <p>100g</p>
+      </div>
+
+      <div class="item-actions">
+        <span class="price">₹{{ product.price }}</span>
+        <div class="qty">
+          <span>{{ product.quantity }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Order Summary -->
+  <aside class="summary">
+    <h1>Order Summary</h1>
+
+    <div class="row">
+      <span>Subtotal ({{ totalQuantity }} item{{ totalQuantity > 1 ? 's' : '' }})</span>
+      <span>₹{{ totalPrice }}</span>
+    </div>
+
+    <div class="row">
+      <span>Delivery</span>
+      <span>₹{{ deliveryFees }}</span>
+    </div>
+
+    <div class="row total">
+      <span>Total</span>
+      <span>₹{{ totalPrice + deliveryFees }}</span>
+    </div>
+
+    <button class="checkout" (click)="onPlaceOrder()">Place Order →</button>
+  </aside>
+</section>

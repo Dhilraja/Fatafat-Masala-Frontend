@@ -18,7 +18,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         const timedOut = service.isLoggedIn;
         service.isLoggedIn = false;
-        service.userDetails = null;
+        const payload = {
+          flag: false,
+          data: null,
+        };
+        if (timedOut) {
+          service.getAllProducts;
+          service.loginNext(payload);
+          service.userDetails = null;
+        }
 
         if (!dialogOpen) {
           dialogOpen = true;
@@ -30,6 +38,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             .afterClosed()
             .subscribe(() => {
               dialogOpen = false;
+              if (!service.isLoggedIn) {
+                window.location.reload();
+              }
             });
         }
       }

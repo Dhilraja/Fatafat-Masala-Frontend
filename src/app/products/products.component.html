@@ -1,20 +1,148 @@
-<section class="section fade-up">
+<!-- <section class="section fade-up">
   <div class="products">
-    <div class="card" *ngFor="let product of allProducts; trackBy: trackByProductId">
-      <div class="img"></div>
+    <div
+      class="card"
+      *ngFor="let product of allProducts; trackBy: trackByProductId"
+      (click)="onClickProduct(product._id)"
+    >
+      <div class="img">
+        <img class="image" [src]="product?.images[0]?.url || '../../assets/images/fatafat-masala-logo.jpg'" />
+      </div>
       <h3>{{ product.name }}</h3>
       <p class="price-span">
         <b class="price">₹{{ product.price }}</b
         ><span class="dashed-price">₹{{ product.mrp }}</span>
+        <span class="discount-badge">-{{ (((product.mrp - product.price) / product.mrp) * 100).toFixed(0) }}%</span>
       </p>
       <div class="cart-btn-container">
-        <!-- Add to cart -->
-        <button *ngIf="product.quantity === 0" class="add-btn" (click)="addToCart(product._id)">Add to Cart</button>
-        <!-- Quantity control -->
+        <button
+          *ngIf="product.quantity === 0"
+          class="add-btn"
+          (click)="addToCart(product._id); $event.stopPropagation()"
+        >
+          Add to Cart
+        </button>
         <div *ngIf="product.quantity > 0" class="qty-controller">
-          <button (click)="decrement(product._id)">−</button>
+          <button (click)="decrement(product._id); $event.stopPropagation()">−</button>
           <span>{{ product.quantity }}</span>
-          <button (click)="increment(product._id)">+</button>
+          <button (click)="increment(product._id); $event.stopPropagation()">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+<div class="page">
+  <!-- page header -->
+  <div class="page-top">
+    <div class="page-heading">
+      <p class="page-eyebrow">Our Collection</p>
+      <h1 class="page-title">Pure & Fresh <em>Spices</em></h1>
+      <p class="page-desc">Handpicked, traditionally ground, made with care.</p>
+    </div>
+  </div>
+
+  <!-- toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4" />
+        <path d="M10.5 10.5l3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </svg>
+      <!-- (keyup)="onChangeInput()" -->
+      <input
+        type="text"
+        [(ngModel)]="search"
+        class="search-input"
+        id="searchInput"
+        placeholder="Search — turmeric, cumin, masala..."
+      />
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="masala">Masala Blends</button>
+      <button class="filter-tab" data-filter="powder">Powders</button>
+      <button class="filter-tab" data-filter="whole">Whole Spices</button>
+    </div>
+    <span class="results-count" id="resultsCount"
+      >{{ filteredProducts?.length }} product{{ filteredProducts?.length > 1 ? 's' : '' }}</span
+    >
+  </div>
+
+  <!-- grid -->
+  <div class="products-grid" id="productsGrid">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">No spices found</div>
+      <div class="empty-desc">Try a different search or filter.</div>
+    </div>
+  </div>
+</div>
+<!-- <div class="prod-card" *ngFor="let product of allProducts; trackBy: trackByProductId">
+  <div class="prod-img">
+    <img [src]="product?.images?.[0]?.url" [alt]="product.name" loading="lazy" />
+    <div class="disc-badge">-{{ (((product.mrp - product.price) / product.mrp) * 100).toFixed(0) }}</div>
+  </div>
+  <div class="prod-info">
+    <div class="prod-name">{{ product.name }}</div>
+    <div class="prod-weight">100g · Net Weight</div>
+    <div class="prod-pricing">
+      <div class="prod-price">₹{{ product.price }}</div>
+      <div class="prod-mrp">₹{{ product.mrp }}</div>
+      <div class="prod-save">Save ₹{{ product.mrp - product.price }}</div>
+    </div>
+    <div class="cart-control">
+      <button class="add-to-cart">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+          <path
+            d="M1 1h2l1.5 7.5h7L13 5H4.5"
+            stroke="white"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="6.5" cy="12.5" r="1" fill="white" />
+          <circle cx="11" cy="12.5" r="1" fill="white" />
+        </svg>
+        Add to Cart
+      </button>
+      <div class="qty-control">
+        <button class="qty-btn"><span>−</span></button>
+        <span class="qty-num">1</span>
+        <button class="qty-btn"><span>+</span></button>
+      </div>
+    </div>
+  </div>
+</div> -->
+<section class="section fade-up">
+  <div class="products">
+    <div
+      class="card"
+      *ngFor="let product of filteredProducts; trackBy: trackByProductId"
+      (click)="onClickProduct(product._id)"
+    >
+      <div class="img">
+        <img class="image" [src]="product?.images[0]?.url || '../../assets/images/fatafat-masala-logo.jpg'" />
+      </div>
+      <h3>{{ product.name }}</h3>
+      <p class="price-span">
+        <b class="price">₹{{ product.price }}</b
+        ><span class="dashed-price">₹{{ product.mrp }}</span>
+        <span class="discount-badge">-{{ (((product.mrp - product.price) / product.mrp) * 100).toFixed(0) }}%</span>
+      </p>
+      <div class="cart-btn-container">
+        <button
+          mat-button
+          *ngIf="product.quantity === 0"
+          class="add-btn"
+          (click)="addToCart(product._id); $event.stopPropagation()"
+        >
+          <mat-icon>shopping_cart</mat-icon>
+          Add to Cart
+        </button>
+        <div *ngIf="product.quantity > 0" class="qty-controller">
+          <button (click)="decrement(product._id); $event.stopPropagation()">−</button>
+          <span>{{ product.quantity }}</span>
+          <button (click)="increment(product._id); $event.stopPropagation()">+</button>
         </div>
       </div>
     </div>

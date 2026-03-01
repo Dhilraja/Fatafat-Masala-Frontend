@@ -1,0 +1,435 @@
+<!-- HERO -->
+<div style="overflow: hidden; position: relative">
+  <svg
+    class="hero-mandala-bg"
+    viewBox="0 0 500 500"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      opacity: 0.03;
+      pointer-events: none;
+    "
+  >
+    <circle cx="250" cy="250" r="240" stroke="#6b3e2e" stroke-width="1" />
+    <circle cx="250" cy="250" r="200" stroke="#6b3e2e" stroke-width="0.5" />
+    <circle cx="250" cy="250" r="160" stroke="#6b3e2e" stroke-width="1" />
+    <circle cx="250" cy="250" r="120" stroke="#6b3e2e" stroke-width="0.5" />
+    <circle cx="250" cy="250" r="80" stroke="#6b3e2e" stroke-width="1" />
+    <line x1="250" y1="10" x2="250" y2="490" stroke="#6b3e2e" stroke-width="0.5" />
+    <line x1="10" y1="250" x2="490" y2="250" stroke="#6b3e2e" stroke-width="0.5" />
+    <line x1="74" y1="74" x2="426" y2="426" stroke="#6b3e2e" stroke-width="0.5" />
+    <line x1="426" y1="74" x2="74" y2="426" stroke="#6b3e2e" stroke-width="0.5" />
+  </svg>
+
+  <div class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">100% Natural · Traditionally Ground</p>
+      <h1 class="hero-title">Pure. Fresh.<br /><em>Authentic</em><br />Indian Spices.</h1>
+      <p class="hero-subtitle">made with care</p>
+      <p class="hero-desc">
+        Handpicked spices, traditionally ground, bringing real flavor to every dish. From our kitchen to yours — no
+        additives, no shortcuts, just honest spice.
+      </p>
+      <div class="hero-actions">
+        <button (click)="gotoProducts()" class="btn-primary">
+          Shop Now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path
+              d="M1 7h12M7 1l6 6-6 6"
+              stroke="white"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <button (click)="gotoAboutUs()" class="btn-secondary">Our Story →</button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-pill">
+          <div class="trust-pill-dot"></div>
+          No Preservatives
+        </div>
+        <div class="trust-pill">
+          <div class="trust-pill-dot"></div>
+          Farm Sourced
+        </div>
+        <div class="trust-pill">
+          <div class="trust-pill-dot"></div>
+          Small Batch Blends
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-card-main">
+        <img src="../../assets/images/fatafat-masala-logo.jpg" alt="Fatafat Masala" class="hero-img-logo" />
+      </div>
+
+      <div class="float-badge float-badge-1">
+        <div class="badge-icon">🌿</div>
+        <div class="badge-text">
+          <span class="badge-label">All Natural</span>
+          <span class="badge-value">0 Additives</span>
+        </div>
+      </div>
+
+      <div class="float-badge float-badge-2">
+        <div class="badge-icon">⭐</div>
+        <div class="badge-text">
+          <span class="badge-label">Customer Rating</span>
+          <span class="badge-value">4.9 / 5.0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <!-- repeated twice for infinite loop -->
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Garam Masala
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Turmeric Powder
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Coriander Seeds
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Cumin Powder
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Red Chilli Powder
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Cardamom
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Black Pepper
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Cinnamon Sticks
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Garam Masala
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Turmeric Powder
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Coriander Seeds
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Cumin Powder
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Red Chilli Powder
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Cardamom
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Black Pepper
+    </div>
+    <div class="marquee-item">
+      <div class="marquee-dot"></div>
+      Cinnamon Sticks
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features-section">
+  <div class="features-inner">
+    <div class="section-header">
+      <p class="label reveal">Why Fatafat Masala</p>
+      <h2 class="reveal d1">Spices the way<br />they were meant to be.</h2>
+      <p class="section-sub reveal d2">
+        We never compromise on purity, process, or provenance. Every spice is a promise.
+      </p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <span class="feat-icon">🌱</span>
+        <div class="feat-title">Farm Direct</div>
+        <div class="feat-desc">Sourced directly from trusted Indian farms. We know where every spice comes from.</div>
+      </div>
+      <div class="feat-card reveal d1">
+        <span class="feat-icon">🔆</span>
+        <div class="feat-title">Sun Dried</div>
+        <div class="feat-desc">
+          Naturally dried under the sun — no artificial heat treatment, preserving full aroma.
+        </div>
+      </div>
+      <div class="feat-card reveal d2">
+        <span class="feat-icon">🤲</span>
+        <div class="feat-title">Hand Crafted</div>
+        <div class="feat-desc">
+          Ground and blended in small batches with the care and patience that quality demands.
+        </div>
+      </div>
+      <div class="feat-card reveal d3">
+        <span class="feat-icon">🫙</span>
+        <div class="feat-title">Sealed Fresh</div>
+        <div class="feat-desc">
+          Aroma-lock packaging seals in freshness right after grinding, so you get it at its best.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="products-section">
+  <div class="products-top">
+    <div>
+      <p class="label reveal">Our Products</p>
+      <h2 class="reveal d1">Our most loved<br />spice blends.</h2>
+    </div>
+    <!-- <a href="#" class="view-all reveal">View All Products →</a> -->
+  </div>
+  <div class="view-all-btn-container">
+    <button class="back-to-products" (click)="gotoProducts()">
+      <span>View All Products</span>
+      <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <div class="products">
+    <div class="card" *ngFor="let product of products" (click)="onClickProduct(product._id)">
+      <div class="img">
+        <img class="image" [src]="product?.images[0]?.url || '../../assets/images/fatafat-masala-logo.jpg'" />
+      </div>
+      <h3>{{ product.name }}</h3>
+      <p class="price-span">
+        <!-- <b class="price">₹{{ product.price }}</b
+        ><span class="dashed-price">₹{{ product.mrp }}</span>
+        <span class="discount-badge">-{{ (((product.mrp - product.price) / product.mrp) * 100).toFixed(0) }}%</span> -->
+        {{ product.description }}
+      </p>
+      <div class="cart-btn-container">
+        <button mat-button class="add-btn" (click)="onClickProduct(product._id)">Check Product</button>
+        <mat-icon>visibility</mat-icon>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="products-grid"> -->
+  <!-- <div class="prod-card reveal">
+      <div class="prod-img">
+        🫙
+        <div class="prod-badge">Bestseller</div>
+      </div>
+      <div class="prod-info">
+        <div class="prod-name">Garam Masala</div>
+        <div class="prod-desc">The soul of Indian cooking — warm, complex, and beautifully balanced.</div>
+        <div class="prod-footer">
+          <div class="prod-price">₹120 <span>/ 100g</span></div>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod-card reveal d1">
+      <div class="prod-img">🌶️</div>
+      <div class="prod-info">
+        <div class="prod-name">Red Chilli Powder</div>
+        <div class="prod-desc">Vibrant colour, deep heat — made from the finest dried red chillies.</div>
+        <div class="prod-footer">
+          <div class="prod-price">₹90 <span>/ 100g</span></div>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod-card reveal d2">
+      <div class="prod-img">
+        💛
+        <div class="prod-badge">Pure</div>
+      </div>
+      <div class="prod-info">
+        <div class="prod-name">Turmeric Powder</div>
+        <div class="prod-desc">High-curcumin turmeric, stone ground for full potency and colour.</div>
+        <div class="prod-footer">
+          <div class="prod-price">₹80 <span>/ 100g</span></div>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod-card reveal d3">
+      <div class="prod-img">🌿</div>
+      <div class="prod-info">
+        <div class="prod-name">Coriander Powder</div>
+        <div class="prod-desc">Earthy, citrusy, and fresh — the base note every great curry needs.</div>
+        <div class="prod-footer">
+          <div class="prod-price">₹75 <span>/ 100g</span></div>
+          <button class="add-btn">+</button>
+        </div>
+      </div>
+    </div> -->
+  <!-- </div> -->
+</div>
+
+<!-- WHY US -->
+<div class="why-section">
+  <div class="why-visual reveal">
+    <div class="why-card">
+      <img src="../../assets/images/fatafat-masala-logo.jpg" alt="Fatafat Masala" class="why-card-logo" />
+    </div>
+    <div class="why-stat-badge b1">
+      <div class="wsb-num">10K+</div>
+      <div class="wsb-label">Happy Families</div>
+    </div>
+    <div class="why-stat-badge b2">
+      <div class="wsb-num">50+</div>
+      <div class="wsb-label">Spice Blends</div>
+    </div>
+  </div>
+
+  <div>
+    <p class="label reveal">Why Choose Us</p>
+    <h2 class="reveal d1">Real spices,<br />real difference.</h2>
+    <p class="section-sub reveal d2" style="margin: 0 0 8px; text-align: left">
+      We built Fatafat Masala on one commitment — that your food deserves the best spices, and the best spices deserve
+      honest crafting.
+    </p>
+
+    <div class="why-points">
+      <div class="why-point reveal d2">
+        <div class="why-point-icon">🧪</div>
+        <div>
+          <div class="why-point-title">Zero Artificial Additives</div>
+          <div class="why-point-desc">
+            No artificial colours, no preservatives, no anti-caking agents. What you see on the label is exactly what's
+            in the pack.
+          </div>
+        </div>
+      </div>
+      <div class="why-point reveal d3">
+        <div class="why-point-icon">📦</div>
+        <div>
+          <div class="why-point-title">Freshness Guaranteed</div>
+          <div class="why-point-desc">
+            We grind and seal in the same facility within hours. Our packaging locks in the aroma so it reaches you as
+            fresh as possible.
+          </div>
+        </div>
+      </div>
+      <div class="why-point reveal d4">
+        <div class="why-point-icon">💛</div>
+        <div>
+          <div class="why-point-title">Made with Generations of Care</div>
+          <div class="why-point-desc">
+            Our blending ratios are rooted in traditional recipes passed down through families — not invented in a food
+            lab.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="testimonials-bg">
+  <div class="testimonials-inner">
+    <div class="section-header">
+      <p class="label reveal">What Customers Say</p>
+      <h2 class="reveal d1" style="color: var(--cream)">Loved in kitchens<br />across India.</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">
+          "The garam masala is unlike anything I've bought from a store. You can actually smell the difference the
+          moment you open it. My biryani has never been better."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar">👩</div>
+          <div>
+            <div class="testi-name">Sameena Banu</div>
+            <div class="testi-loc">Chennai, Tamil Nadu</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal d2">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">
+          "I've been buying from Fatafat Masala for a year now. The turmeric colour and aroma is something else
+          entirely. Pure gold. I won't go back to supermarket brands."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar">👨</div>
+          <div>
+            <div class="testi-name">Muhammad Aadhil</div>
+            <div class="testi-loc">Ahmedabad, Gujarat</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal d3">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">
+          "Ordered as a gift for my mother and she called me the same evening to say it reminded her of spices from her
+          childhood. That's the biggest compliment I can give."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar">👩</div>
+          <div>
+            <div class="testi-name">Sumayya</div>
+            <div class="testi-loc">Pondicherry, Puducherry</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-logo reveal">
+    <img src="../../assets/images/fatafat-masala-logo.jpg" alt="Fatafat Masala" />
+  </div>
+  <h2 class="cta-title reveal d1">Taste the difference<br />of <em>real spices.</em></h2>
+  <p class="cta-desc reveal d2">
+    Join thousands of home cooks who've made the switch to pure, additive-free Fatafat Masala blends.
+  </p>
+  <div class="reveal d3">
+    <button (click)="gotoProducts()" class="btn-primary" style="display: inline-flex">
+      Shop All Spices
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path
+          d="M1 7h12M7 1l6 6-6 6"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+  </div>
+</div>

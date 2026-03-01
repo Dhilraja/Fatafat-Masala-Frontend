@@ -1,0 +1,132 @@
+/* Header */
+.cart-header {
+  padding: 10px 40px 24px;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* layout rows */
+.form-row {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+/* exactly 3 inputs in one line */
+.three-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+  .three-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}
+
+/* your existing styles (slightly extended) */
+.input-group {
+  position: relative;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+  width: 100%;
+  margin-bottom: 0.2em;
+  margin-top: 0.5em;
+  padding: 12px 14px;
+  border-radius: 15px;
+  border: 2px solid var(--primary);
+  font-size: 1.1rem;
+  background-color: white;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input-group textarea {
+  border-radius: 18px; /* textarea looks better slightly less round */
+  resize: vertical;
+  font-family: sans-serif;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(196, 106, 43, 0.15);
+}
+
+.field-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.input-field {
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px solid #6b3b2a;
+  background-color: #f2f2f2;
+  font-size: 16px;
+  outline: none;
+  appearance: none; /* Removes default browser styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Optional: Custom dropdown arrow */
+.input-field {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%236b3b2a' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 18px;
+  cursor: pointer;
+}
+/* Buttons */
+.primary-btn {
+  width: fit-content;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), #a5541f);
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.25s ease;
+}
+
+.primary-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.primary-btn:disabled {
+  background: grey;
+  cursor: unset;
+  .primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* button row */
+.actions {
+  margin-top: 1em;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
+}

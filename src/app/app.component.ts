@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { FloatingCartComponent } from './floating-cart/floating-cart.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,13 +51,30 @@ export class AppComponent implements OnInit {
     // });
   }
 
+  isMenuOpen = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
+
+  @HostListener('window:resize', [])
+  onResize() {
+    if (window.innerWidth > 768) {
+      this.closeMenu();
+    }
+  }
+
   showCart(): boolean {
     return this.router.url !== '/cart';
   }
 
   onLogin() {
     this.dialog.open(LoginComponent, {
-      width: '70%',
+      width: '90%',
     });
   }
 

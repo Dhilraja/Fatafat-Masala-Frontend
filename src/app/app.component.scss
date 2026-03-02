@@ -493,3 +493,361 @@ footer::after {
     gap: 12px;
   }
 }
+
+/* ── HEADER ── */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: rgba(253, 246, 236, 0.93);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  height: 68px;
+  padding: 0 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── LOGO ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+  z-index: 201;
+}
+
+.logo img {
+  height: 44px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+nav a {
+  justify-content: center;
+  margin-left: 25px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 400;
+  position: relative;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  background: var(--linear);
+  left: 0;
+  bottom: -5px;
+  transition: width 0.3s ease;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+nav a.active-link::after {
+  width: 100%;
+}
+
+/* ── DESKTOP NAV ── */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.desktop-nav a {
+  justify-content: center;
+  margin-left: 25px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 400;
+  position: relative;
+  font-size: 20px;
+  cursor: pointer;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background: var(--linear);
+    left: 0;
+    bottom: -5px;
+    transition: width 0.3s ease;
+  }
+}
+
+.desktop-nav a:hover::after {
+  width: 100%;
+}
+
+.desktop-nav a.active-link::after {
+  width: 100%;
+}
+
+.login-button {
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-image: linear-gradient(135deg, var(--primary), #a5541f);
+  color: white !important;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.login-button:hover {
+  background-color: #c47f00;
+}
+// .desktop-nav a:hover {
+//   color: var(--brown);
+//   background: rgba(107, 62, 46, 0.06);
+// }
+// .desktop-nav a.active {
+//   color: var(--brown);
+//   font-weight: 500;
+// }
+
+/* ── LOGIN BUTTON ── */
+.btn-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--brown);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 20px;
+  border-radius: 100px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.25s,
+    color 0.25s;
+  flex-shrink: 0;
+  z-index: 201;
+}
+
+.btn-login::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: 0;
+}
+
+.btn-login span,
+.btn-login svg {
+  position: relative;
+  z-index: 1;
+}
+.btn-login:hover {
+  border-color: transparent;
+  color: white;
+}
+.btn-login:hover::before {
+  opacity: 1;
+}
+
+/* ── HAMBURGER BUTTON ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 201;
+  flex-shrink: 0;
+}
+
+.hamburger .bar {
+  display: block;
+  width: 24px;
+  height: 1.8px;
+  background: var(--brown);
+  border-radius: 2px;
+  transition:
+    transform 0.35s ease,
+    opacity 0.25s ease,
+    width 0.3s ease;
+  transform-origin: center;
+}
+
+/* animated X state */
+.hamburger.open .bar:nth-child(1) {
+  transform: translateY(6.8px) rotate(45deg);
+}
+.hamburger.open .bar:nth-child(2) {
+  opacity: 0;
+  width: 0;
+}
+.hamburger.open .bar:nth-child(3) {
+  transform: translateY(-6.8px) rotate(-45deg);
+}
+
+/* ── MOBILE DRAWER ── */
+.mobile-drawer {
+  position: fixed;
+  top: 68px;
+  left: 0;
+  right: 0;
+  background: rgba(253, 246, 236, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 199;
+
+  /* closed state */
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.mobile-drawer.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.mobile-drawer a {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 13px 16px;
+  border-radius: 12px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-drawer a::after {
+  content: '→';
+  font-size: 13px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  color: var(--orange);
+}
+
+.mobile-drawer a:hover {
+  color: var(--brown);
+  background: var(--cream2);
+}
+
+.mobile-drawer a:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mobile-drawer a.active {
+  color: var(--brown);
+  font-weight: 500;
+  background: var(--cream2);
+}
+.mobile-drawer a.active::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.drawer-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 10px 0;
+}
+
+.drawer-login {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 13px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity 0.2s;
+  justify-content: center;
+}
+
+.drawer-login:hover {
+  opacity: 0.9;
+}
+
+/* ── OVERLAY ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(58, 34, 24, 0.25);
+  z-index: 198;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  header {
+    padding: 0 20px;
+  }
+  .desktop-nav {
+    display: none;
+  }
+  .btn-login {
+    display: none;
+  }
+  .hamburger {
+    display: flex;
+  }
+  header .login-button {
+    display: none;
+  }
+  header .profile {
+    display: none;
+  }
+}
+
+/* demo spacing */
+.spacer {
+  height: 68px;
+}

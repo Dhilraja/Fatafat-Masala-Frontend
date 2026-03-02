@@ -258,6 +258,23 @@ body {
   .actions button {
     width: 100%;
   }
+  .cart-container {
+    grid-template-columns: none; /* ← changed */
+    padding: 0 30px !important;
+  }
+  .trust {
+    padding: 15px !important;
+    margin: 30px !important;
+  }
+  .trust-card {
+    img {
+      height: 40px;
+    }
+    span {
+      font-size: 1rem !important;
+      text-align: center;
+    }
+  }
 }
 
 /* your existing styles (slightly extended) */

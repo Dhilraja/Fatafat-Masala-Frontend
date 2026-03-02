@@ -91,7 +91,7 @@ nav {
 
 /* ── HERO ── */
 .hero {
-  min-height: 100vh;
+  // min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -1065,7 +1065,7 @@ footer {
 @media (max-width: 960px) {
   .hero {
     grid-template-columns: 1fr;
-    padding: 120px 28px 80px;
+    padding: 50px 20px 80px;
     gap: 48px;
   }
   // .hero-right {
@@ -1074,8 +1074,14 @@ footer {
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .feat-card {
+    padding: 10px;
+  }
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .products-section {
+    padding: 40px 52px;
   }
   .testi-grid {
     grid-template-columns: 1fr;
@@ -1083,6 +1089,7 @@ footer {
   .why-section {
     grid-template-columns: 1fr;
     gap: 48px;
+    padding: 30px 52px;
   }
   .why-visual {
     display: none;
@@ -1099,6 +1106,26 @@ footer {
   .why-section {
     padding-left: 24px;
     padding-right: 24px;
+  }
+  .float-badge-2 {
+    top: -30px;
+    right: 0;
+  }
+  .float-badge-1 {
+    bottom: -30px;
+    left: 0;
+  }
+  .hero-card-main {
+    height: fit-content;
+  }
+  .back-to-products {
+    padding: 8px 10px !important;
+    span {
+      font-size: 0.8rem !important;
+    }
+  }
+  .testimonials-bg {
+    padding: 50px 0;
   }
 }
 

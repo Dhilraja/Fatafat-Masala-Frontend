@@ -1,12 +1,11 @@
 <!-- ================= HEADER ================= -->
 <div class="page">
-  <header class="header">
+  <!-- <header class="header">
     <div class="logo">LOGO</div>
     <nav>
       <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       <a routerLink="/products" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Products</a>
       <a routerLink="/about-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">About Us</a>
-      <!-- <a routerLink="/gallery" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Gallery</a> -->
       <a routerLink="/contact-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
         >Contact Us</a
       >
@@ -29,10 +28,112 @@
       <mat-menu #beforeMenu="matMenu" xPosition="before">
         <button mat-menu-item matFab extended (click)="onProfile()"><mat-icon>account_circle</mat-icon>Profile</button>
         <button mat-menu-item matFab extended (click)="onLogout()"><mat-icon>login</mat-icon>Logout</button>
-        <!-- <button mat-menu-item>Item 2</button> -->
       </mat-menu>
     </div>
+  </header> -->
+
+  <div class="overlay" [class.open]="isMenuOpen" id="overlay" (click)="closeMenu()"></div>
+
+  <!-- HEADER -->
+  <header>
+    <a href="/" class="logo">
+      <img src="../assets/images/fatafat-masala-logo.jpg" alt="Fatafat Masala" />
+    </a>
+
+    <!-- DESKTOP NAV -->
+    <nav class="desktop-nav">
+      <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/products" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Products</a>
+      <a routerLink="/about-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">About Us</a>
+      <a routerLink="/contact-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+        >Contact Us</a
+      >
+      <a
+        *ngIf="service.userDetails?.role == 'ADMIN'"
+        routerLink="/admin"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Admin</a
+      >
+    </nav>
+
+    <!-- DESKTOP LOGIN -->
+    <button class="login-button" *ngIf="!service.isLoggedIn" mat-button matFab extended (click)="onLogin()">
+      <mat-icon>login</mat-icon>Login
+    </button>
+    <div *ngIf="service.isLoggedIn" class="profile">
+      <span
+        >Welcome, <span class="name">{{ service.userDetails.name }}!</span></span
+      >
+      <img [matMenuTriggerFor]="beforeMenu" src="../assets/images/account.png" />
+      <mat-menu #beforeMenu="matMenu" xPosition="before">
+        <button mat-menu-item matFab extended (click)="onProfile()"><mat-icon>account_circle</mat-icon>Profile</button>
+        <button mat-menu-item matFab extended (click)="onLogout()"><mat-icon>login</mat-icon>Logout</button>
+      </mat-menu>
+    </div>
+
+    <!-- HAMBURGER -->
+    <button class="hamburger" [class.open]="isMenuOpen" id="hamburger" (click)="toggleMenu()" aria-label="Toggle menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
   </header>
+
+  <!-- MOBILE DRAWER -->
+  <div class="mobile-drawer" id="mobileDrawer" [class.open]="isMenuOpen">
+    <a
+      routerLink="/home"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="isMenuOpen = false"
+      >Home</a
+    >
+    <a
+      routerLink="/products"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="isMenuOpen = false"
+      >Products</a
+    >
+    <a
+      routerLink="/about-us"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="isMenuOpen = false"
+      >About Us</a
+    >
+    <a
+      routerLink="/contact-us"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="isMenuOpen = false"
+      >Contact Us</a
+    >
+    <a
+      *ngIf="service.userDetails?.role == 'ADMIN'"
+      routerLink="/admin"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Admin</a
+    >
+    <div class="drawer-divider"></div>
+    <button class="login-button" *ngIf="!service.isLoggedIn" mat-button matFab extended (click)="onLogin()">
+      <mat-icon>login</mat-icon>Login
+    </button>
+    <div *ngIf="service.isLoggedIn" class="profile">
+      <span
+        >Welcome, <span class="name">{{ service.userDetails.name }}!</span></span
+      >
+      <img [matMenuTriggerFor]="beforeMenu" src="../assets/images/account.png" />
+      <mat-menu #beforeMenu="matMenu" xPosition="before">
+        <button mat-menu-item matFab extended (click)="onProfile()"><mat-icon>account_circle</mat-icon>Profile</button>
+        <button mat-menu-item matFab extended (click)="onLogout()"><mat-icon>login</mat-icon>Logout</button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
 
   <!-- ================= HERO ================= -->
   <div class="content">

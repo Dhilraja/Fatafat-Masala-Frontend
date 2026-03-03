@@ -296,6 +296,7 @@ body {
   .item-img {
     width: 120px;
     height: 80px;
+    padding: 5px !important;
   }
   .quantity-control {
     border-radius: 6px !important;
@@ -383,7 +384,7 @@ body {
   cursor: pointer;
   span {
     position: absolute; // take it out of flow entirely
-    top: 44%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;

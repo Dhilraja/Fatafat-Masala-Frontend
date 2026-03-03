@@ -145,8 +145,13 @@ body {
   transition: transform 0.2s ease;
 }
 
-.qty button:hover {
-  transform: scale(1.2);
+@media (hover: hover) and (pointer: fine) {
+  .qty button:hover {
+    transform: scale(1.2);
+  }
+}
+.qty button:active {
+  transform: scale(0.9);
 }
 
 /* Summary */
@@ -194,7 +199,7 @@ body {
   margin-top: 18px;
   padding: 14px;
   border: none;
-  border-radius: 30px;
+  border-radius: 14px;
   background: var(--linear);
   color: white;
   font-size: 16px;
@@ -204,7 +209,13 @@ body {
     box-shadow 0.25s ease;
 }
 
-.checkout:hover {
+@media (hover: hover) and (pointer: fine) {
+  .checkout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+.checkout:active {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
@@ -260,20 +271,55 @@ body {
   }
   .cart-container {
     grid-template-columns: none; /* ← changed */
-    padding: 0 30px !important;
+    padding: 0 20px !important;
   }
   .trust {
-    padding: 15px !important;
-    margin: 30px !important;
+    padding: 15px 0 !important;
+    margin: 30px 20px !important;
+    gap: 10px;
   }
   .trust-card {
+    gap: 15px !important;
     img {
-      height: 40px;
+      height: 32px;
     }
     span {
-      font-size: 1rem !important;
+      font-size: 0.8rem !important;
       text-align: center;
     }
+  }
+  .cart-item {
+    align-items: center;
+    padding: 8px;
+    gap: 10px;
+  }
+  .item-img {
+    width: 120px;
+    height: 80px;
+  }
+  .quantity-control {
+    border-radius: 6px !important;
+    gap: 5px;
+  }
+  .qty-btn {
+    width: 25px !important;
+    height: 30px !important;
+    font-size: 18px !important;
+  }
+  .qty-value {
+    min-width: 20px !important;
+  }
+  .summary {
+    padding: 16px;
+    .row {
+      margin: 10px 0;
+    }
+  }
+  .checkout {
+    padding: 10px;
+  }
+  .cart-header {
+    padding: 30px 20px 24px !important;
   }
 }
 
@@ -351,7 +397,12 @@ body {
     transition: opacity 0.2s ease; // opacity CAN be transitioned smoothly
     z-index: 0;
   }
-  &:hover::before {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::before {
+      opacity: 1;
+    }
+  }
+  &:active::before {
     opacity: 1;
   }
 }

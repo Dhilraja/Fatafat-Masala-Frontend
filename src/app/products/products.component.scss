@@ -1105,7 +1105,10 @@ header {
     align-items: flex-start;
   }
   .section {
-    padding: 20px 20px 70px !important;
+    padding: 20px 40px 70px !important;
+  }
+  .card .img {
+    height: 170px;
   }
 }
 @media (max-width: 480px) {
@@ -1113,3 +1116,15 @@ header {
     grid-template-columns: 1fr;
   }
 }
+
+// /* Desktop only */
+// @media (hover: hover) {
+//   .add-to-cart-btn:hover {
+//     transform: scale(1.03);
+//   }
+// }
+
+// /* Mobile tap feedback */
+// .add-to-cart-btn:active {
+//   transform: scale(0.98);
+// }

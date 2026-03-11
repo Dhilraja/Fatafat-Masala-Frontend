@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
 
   onLogin() {
     this.dialog.open(LoginComponent, {
-      width: '90%',
+      width: '95%',
     });
   }
 

@@ -326,7 +326,48 @@
 }
 
 @media (max-width: 768px) {
-  .login-card h1 {
-    font-size: 1.5rem;
+  .login-card {
+    padding: 25px 15px 15px !important;
+    h1 {
+      font-size: 1.5rem;
+    }
   }
+  .input-group {
+    margin-top: 10px !important;
+    .left-icon {
+      width: 15px !important;
+    }
+    input {
+      padding: 10px 10px 8px 35px !important;
+      font-size: 0.9rem !important;
+    }
+  }
+  .forgot {
+    font-size: 0.7rem !important;
+  }
+  .primary-btn {
+    padding: 8px !important;
+  }
+  .right-icon {
+    width: 15px !important;
+  }
+  .signup {
+    font-size: 12px !important;
+  }
+  .illustration {
+    font-size: 25px !important;
+  }
+  .single-right-button {
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+  }
+  .single-right-icon {
+    width: 15px !important;
+  }
+}
+
+.close-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
 }

@@ -82,47 +82,68 @@
 
   <!-- MOBILE DRAWER -->
   <div class="mobile-drawer" id="mobileDrawer" [class.open]="isMenuOpen">
+    <div *ngIf="service.isLoggedIn" class="profile">
+      <span>Welcome, </span>
+      <span class="name">{{ service.userDetails.name }}!</span>
+    </div>
+    <div *ngIf="service.isLoggedIn" class="drawer-divider"></div>
     <a
       routerLink="/home"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="isMenuOpen = false"
-      >Home</a
+      ><mat-icon>home</mat-icon>Home</a
     >
     <a
       routerLink="/products"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="isMenuOpen = false"
-      >Products</a
+      ><mat-icon>shopping_bag</mat-icon>Products</a
     >
     <a
       routerLink="/about-us"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="isMenuOpen = false"
-      >About Us</a
+      ><mat-icon>info</mat-icon>About Us</a
     >
     <a
       routerLink="/contact-us"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="isMenuOpen = false"
-      >Contact Us</a
+      ><mat-icon>mail</mat-icon>Contact Us</a
+    >
+    <div class="drawer-divider"></div>
+    <a
+      *ngIf="service.isLoggedIn"
+      routerLink="/profile"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="isMenuOpen = false"
+      ><mat-icon>account_circle</mat-icon>Profile</a
     >
     <a
-      *ngIf="service.userDetails?.role == 'ADMIN'"
+      *ngIf="service.userDetails?.role == 'ADMIN' && service.isLoggedIn"
       routerLink="/admin"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="isMenuOpen = false"
-      >Admin</a
+      ><mat-icon>admin_panel_settings</mat-icon>Admin</a
     >
-    <div class="drawer-divider"></div>
-    <button class="login-button" *ngIf="!service.isLoggedIn" mat-button matFab extended (click)="onLogin()">
+    <a *ngIf="service.isLoggedIn" (click)="isMenuOpen = false; onLogout()"><mat-icon>logout</mat-icon>Logout</a>
+    <button
+      class="login-button"
+      *ngIf="!service.isLoggedIn"
+      mat-button
+      matFab
+      extended
+      (click)="isMenuOpen = false; onLogin()"
+    >
       <mat-icon>login</mat-icon>Login
     </button>
-    <div *ngIf="service.isLoggedIn" class="profile">
+    <!-- <div *ngIf="service.isLoggedIn" class="profile">
       <span
         >Welcome, <span class="name">{{ service.userDetails.name }}!</span></span
       >
@@ -131,7 +152,7 @@
         <button mat-menu-item matFab extended (click)="onProfile()"><mat-icon>account_circle</mat-icon>Profile</button>
         <button mat-menu-item matFab extended (click)="onLogout()"><mat-icon>login</mat-icon>Logout</button>
       </mat-menu>
-    </div>
+    </div> -->
   </div>
 
   <div class="spacer"></div>

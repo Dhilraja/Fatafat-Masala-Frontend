@@ -19,6 +19,11 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
+@media (max-width: 360px) {
+  .item-img {
+    width: stretch !important;
+  }
+}
 @media (max-width: 768px) {
   .three-cols {
     grid-template-columns: 1fr;
@@ -30,6 +35,97 @@
 
   .actions button {
     width: 100%;
+  }
+  .cart-container {
+    grid-template-columns: none !important; /* ← changed */
+    padding: 0 20px 20px !important;
+  }
+  .trust {
+    padding: 15px 0 !important;
+    margin: 30px 20px !important;
+    gap: 10px;
+  }
+  .trust-card {
+    gap: 15px !important;
+    img {
+      height: 32px;
+    }
+    span {
+      font-size: 0.8rem !important;
+      text-align: center;
+    }
+  }
+  .cart-item {
+    align-items: center;
+    padding: 8px;
+    gap: 10px;
+  }
+  .item-img {
+    width: 120px;
+    height: 80px;
+    // width: auto;
+    padding: 5px !important;
+  }
+  .quantity-control {
+    border-radius: 6px !important;
+    gap: 5px;
+  }
+  .qty-btn {
+    width: 25px !important;
+    height: 30px !important;
+    font-size: 18px !important;
+  }
+  .qty-value {
+    min-width: 20px !important;
+  }
+  .summary {
+    padding: 16px;
+    .row {
+      margin: 10px 0;
+    }
+  }
+  .checkout {
+    padding: 10px;
+  }
+  .cart-header {
+    padding: 30px 20px 24px !important;
+  }
+  .qty-btn span {
+    top: 46% !important;
+  }
+  .item-info {
+    width: min-content;
+  }
+  .address-outer {
+    width: fit-content !important;
+  }
+  .address-name {
+    font-size: 1.2rem !important;
+  }
+  .address-line {
+    font-size: 1rem !important;
+  }
+  .address-description {
+    font-size: 0.9rem !important;
+  }
+  .addresses-heading-container h1,
+  .cart-item h1 {
+    font-size: 1.7rem;
+  }
+  .items-qty {
+    font-size: 1.5rem;
+  }
+}
+
+.item-img {
+  width: 150px;
+  height: 80px;
+  background: #eee;
+  img {
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 

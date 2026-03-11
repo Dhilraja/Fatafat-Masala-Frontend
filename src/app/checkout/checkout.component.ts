@@ -35,6 +35,7 @@ export class CheckoutComponent implements OnInit {
             const products = this.service.getCartProducts()?.map((ele: any) => {
               return {
                 id: ele._id,
+
                 quantity: ele.quantity,
               };
             });

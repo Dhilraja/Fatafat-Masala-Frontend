@@ -485,3 +485,23 @@ h1 {
     border-radius: 10px;
   }
 }
+
+@media (max-width: 768px) {
+  .product-form {
+    padding: 10px !important;
+    display: contents !important;
+  }
+  .outer-container {
+    padding: 1em !important;
+  }
+  .mat-mdc-header-cell {
+    font-size: 0.9rem !important;
+  }
+  .stats-grid {
+    gap: 2%;
+  }
+  mat-paginator {
+    margin-top: 15px !important;
+  }
+  // .mat-mdc-row .mat-mdc-cell:last-child td button
+}

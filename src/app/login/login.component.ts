@@ -6,10 +6,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LottieComponent } from 'ngx-lottie';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, LottieComponent, MatSnackBarModule],
+  imports: [CommonModule, ReactiveFormsModule, LottieComponent, MatSnackBarModule, MatIconModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -144,6 +145,11 @@ export class LoginComponent {
               panelClass: ['error-snackbar'],
             });
             this.existingUsername = this.signUpForm.controls.username.value;
+            this.signUpForm.controls.username.enable();
+            this.showOtpButton = true;
+            clearInterval(this.intervalId);
+            this.otpButtonLabel = 'Send OTP';
+            this.otpDisabled = false;
           }
         },
       });
@@ -206,21 +212,24 @@ export class LoginComponent {
     });
   }
 
+  intervalId: any;
+
   onGetOtp() {
     const payload = {
       email: this.signUpForm.controls.username.value,
       resendFlag: this.otpButtonLabel == 'Resend OTP',
     };
     this.service.sendOtp(payload).subscribe((res: any) => {
+      this.service.getSnackbar('Your OTP is ' + res.data);
       this.showOtpInput = true;
       this.otpDisabled = true;
       this.otpButtonLabel = 'Resend in 30';
       let count = 29;
-      let intervalId = setInterval(() => {
+      this.intervalId = setInterval(() => {
         if (count == 0) {
           this.otpButtonLabel = 'Resend OTP';
           this.otpDisabled = false;
-          clearInterval(intervalId);
+          clearInterval(this.intervalId);
           return;
         }
         this.otpButtonLabel = `Resend in ${count}`;

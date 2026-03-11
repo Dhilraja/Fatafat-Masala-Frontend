@@ -213,13 +213,13 @@
     <!-- <a href="#" class="view-all reveal">View All Products →</a> -->
   </div>
   <div class="view-all-btn-container">
-    <button class="back-to-products" (click)="gotoProducts()">
+    <button class="back-to-products reveal" (click)="gotoProducts()">
       <span>View All Products</span>
       <span class="arrow">→</span>
     </button>
   </div>
 
-  <div class="products">
+  <div class="products reveal">
     <div class="card" *ngFor="let product of products" (click)="onClickProduct(product._id)">
       <div class="img">
         <img class="image" [src]="product?.images[0]?.url || '../../assets/images/fatafat-masala-logo.jpg'" />

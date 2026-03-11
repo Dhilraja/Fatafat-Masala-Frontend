@@ -257,6 +257,11 @@ body {
   grid-template-columns: repeat(3, 1fr);
 }
 
+@media (max-width: 360px) {
+  .item-img {
+    width: stretch !important;
+  }
+}
 @media (max-width: 768px) {
   .three-cols {
     grid-template-columns: 1fr;
@@ -296,6 +301,7 @@ body {
   .item-img {
     width: 120px;
     height: 80px;
+    // width: auto;
     padding: 5px !important;
   }
   .quantity-control {
@@ -321,6 +327,12 @@ body {
   }
   .cart-header {
     padding: 30px 20px 24px !important;
+  }
+  .qty-btn span {
+    top: 46% !important;
+  }
+  .item-info {
+    width: min-content;
   }
 }
 

@@ -5,19 +5,19 @@
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-label"><mat-icon>bar_chart</mat-icon> Revenue</div>
-      <p class="stat-value green">&#8377;{{ '1000' }}</p>
+      <p class="stat-value green">&#8377;{{ totalRevenue }}</p>
     </div>
     <div class="stat-card">
       <div class="stat-label"><mat-icon>shopping_cart</mat-icon> Orders</div>
-      <p class="stat-value primary">{{ '100' }}</p>
+      <p class="stat-value primary">{{ this.orders.length }}</p>
     </div>
     <div class="stat-card">
       <div class="stat-label"><mat-icon>inventory_2</mat-icon> Products</div>
-      <p class="stat-value secondary">{{ '10' }}</p>
+      <p class="stat-value secondary">{{ totalQuantities }}</p>
     </div>
     <div class="stat-card">
       <div class="stat-label"><mat-icon>people</mat-icon> Customers</div>
-      <p class="stat-value accent">{{ '1' }}</p>
+      <p class="stat-value accent">{{ distinctOrderIds?.length }}</p>
     </div>
   </div>
 
@@ -25,7 +25,7 @@
   <!-- <mat-tab-group animationDuration="200ms">
     <mat-tab> -->
   <ng-template mat-tab-label><mat-icon>shopping_cart</mat-icon>&nbsp;Orders</ng-template>
-  <div class="table-wrap">
+  <!-- <div class="table-wrap">
     <table class="data-table">
       <thead>
         <tr>
@@ -46,7 +46,6 @@
             <td class="bold">&#8377;{{ o.totalAmount }}</td>
             <td>{{ o.createdAt | date: 'dd/MM/YYYY' }}</td>
             <td>
-              <!-- <mat-form-field appearance="outline" class="status-select"> -->
               <select
                 [value]="o.status"
                 (change)="updateOrderStatus(o._id, $event)"
@@ -56,17 +55,96 @@
                   <option [value]="s">{{ s }}</option>
                 }
               </select>
-              <!-- </mat-form-field> -->
             </td>
           </tr>
         }
       </tbody>
     </table>
-  </div>
-  <!-- </mat-tab> -->
+  </div> -->
+  <div class="outer-container">
+    <div class="search-input-group">
+      <input (keyup)="applyFilterOrders($event)" type="text" placeholder="Search orders" />
+    </div>
 
-  <!-- Products Tab -->
-  <!-- <mat-tab>
+    <table mat-table [dataSource]="dataSource2" matSort class="full-width-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="sNo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>S. No.</th>
+        <td mat-cell *matCellDef="let orders; let i = index">{{ i + 1 }}</td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="orderId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Order ID</th>
+        <td mat-cell *matCellDef="let orders">{{ orders.orderNumber }}</td>
+      </ng-container>
+
+      <!-- MRP Column -->
+      <ng-container matColumnDef="customerName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</th>
+        <td mat-cell *matCellDef="let orders">{{ orders.shippingAddress.name }}</td>
+      </ng-container>
+
+      <!-- Price Column -->
+      <ng-container matColumnDef="quantities">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantities</th>
+        <td mat-cell *matCellDef="let orders">{{ orders.totalQuantities }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalAmount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Amount</th>
+        <td mat-cell *matCellDef="let orders">{{ orders.totalAmount }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let orders">{{ orders.createdAt | date: 'dd/MM/YYYY' }}</td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <!-- <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>Action</th>
+
+      <td mat-cell *matCellDef="let orders; let i = index" class="action-cell">
+        <button mat-icon-button color="red" aria-label="Edit" (click)="onEdit(orders)">
+          <mat-icon style="color: var(--primary)">edit</mat-icon>
+        </button>
+
+        <button mat-icon-button color="warn" aria-label="Delete" (click)="onDelete(orders._id)">
+          <mat-icon style="color: var(--primary)">delete</mat-icon>
+        </button>
+
+        <button
+          *ngIf="!orders.isActive"
+          mat-icon-button
+          color="warn"
+          aria-label="Check"
+          (click)="onEnableDisable(orders._id, true)"
+        >
+          <mat-icon style="color: var(--primary); font-weight: 700">check</mat-icon>
+        </button>
+
+        <button
+          *ngIf="orders.isActive"
+          mat-icon-button
+          color="warn"
+          aria-label="Close"
+          (click)="onEnableDisable(orders._id, false)"
+        >
+          <mat-icon style="color: var(--primary); font-weight: 700">close</mat-icon>
+        </button>
+      </td>
+    </ng-container> -->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns2"></tr>
+    </table>
+
+    <mat-paginator #paginator2 [pageSizeOptions]="[5, 10]" showFirstLastButtons> </mat-paginator>
+    <!-- </mat-tab> -->
+
+    <!-- Products Tab -->
+    <!-- <mat-tab>
       <ng-template mat-tab-label><mat-icon>inventory_2</mat-icon>&nbsp;Products</ng-template>
       <div class="tab-actions">
         <button mat-raised-button color="primary" class="btn-tactile" (click)="openProductForm()" data-testid="add-product-btn">
@@ -118,8 +196,8 @@
       </div>
     </mat-tab> -->
 
-  <!-- Login History Tab -->
-  <!-- <mat-tab>
+    <!-- Login History Tab -->
+    <!-- <mat-tab>
       <ng-template mat-tab-label><mat-icon>history</mat-icon>&nbsp;Login History</ng-template>
       <div class="table-wrap">
         <table class="data-table">
@@ -138,171 +216,172 @@
       </div>
     </mat-tab> 
   </mat-tab-group> -->
-</div>
-
-<div class="outer-container">
-  <div class="search-input-group">
-    <input (keyup)="applyFilter($event)" type="text" placeholder="Search products" />
   </div>
 
-  <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
-    <!-- ID Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>S. No.</th>
-      <td mat-cell *matCellDef="let product; let i = index">{{ i + 1 }}</td>
-    </ng-container>
+  <div class="outer-container">
+    <div class="search-input-group">
+      <input (keyup)="applyFilter($event)" type="text" placeholder="Search products" />
+    </div>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-      <td mat-cell *matCellDef="let product">{{ product.name }}</td>
-    </ng-container>
+    <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>S. No.</th>
+        <td mat-cell *matCellDef="let product; let i = index">{{ i + 1 }}</td>
+      </ng-container>
 
-    <!-- MRP Column -->
-    <ng-container matColumnDef="mrp">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>MRP</th>
-      <td mat-cell *matCellDef="let product">{{ product.mrp }}</td>
-    </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+        <td mat-cell *matCellDef="let product">{{ product.name }}</td>
+      </ng-container>
 
-    <!-- Price Column -->
-    <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-      <td mat-cell *matCellDef="let product">{{ product.price }}</td>
-    </ng-container>
+      <!-- MRP Column -->
+      <ng-container matColumnDef="mrp">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>MRP</th>
+        <td mat-cell *matCellDef="let product">{{ product.mrp }}</td>
+      </ng-container>
 
-    <!-- Action Column -->
-    <ng-container matColumnDef="action">
-      <th mat-header-cell *matHeaderCellDef>Action</th>
+      <!-- Price Column -->
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+        <td mat-cell *matCellDef="let product">{{ product.price }}</td>
+      </ng-container>
 
-      <td mat-cell *matCellDef="let product; let i = index" class="action-cell">
-        <button mat-icon-button color="red" aria-label="Edit" (click)="onEdit(product)">
-          <mat-icon style="color: var(--primary)">edit</mat-icon>
-        </button>
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
 
-        <button mat-icon-button color="warn" aria-label="Delete" (click)="onDelete(product._id)">
-          <mat-icon style="color: var(--primary)">delete</mat-icon>
-        </button>
+        <td mat-cell *matCellDef="let product; let i = index" class="action-cell">
+          <button mat-icon-button color="red" aria-label="Edit" (click)="onEdit(product)">
+            <mat-icon style="color: var(--primary)">edit</mat-icon>
+          </button>
 
-        <button
-          *ngIf="!product.isActive"
-          mat-icon-button
-          color="warn"
-          aria-label="Check"
-          (click)="onEnableDisable(product._id, true)"
-        >
-          <mat-icon style="color: var(--primary); font-weight: 700">check</mat-icon>
-        </button>
+          <button mat-icon-button color="warn" aria-label="Delete" (click)="onDelete(product._id)">
+            <mat-icon style="color: var(--primary)">delete</mat-icon>
+          </button>
 
-        <button
-          *ngIf="product.isActive"
-          mat-icon-button
-          color="warn"
-          aria-label="Close"
-          (click)="onEnableDisable(product._id, false)"
-        >
-          <mat-icon style="color: var(--primary); font-weight: 700">close</mat-icon>
-        </button>
-      </td>
-    </ng-container>
+          <button
+            *ngIf="!product.isActive"
+            mat-icon-button
+            color="warn"
+            aria-label="Check"
+            (click)="onEnableDisable(product._id, true)"
+          >
+            <mat-icon style="color: var(--primary); font-weight: 700">check</mat-icon>
+          </button>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
-  </table>
+          <button
+            *ngIf="product.isActive"
+            mat-icon-button
+            color="warn"
+            aria-label="Close"
+            (click)="onEnableDisable(product._id, false)"
+          >
+            <mat-icon style="color: var(--primary); font-weight: 700">close</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-  <mat-paginator [pageSizeOptions]="[5, 10]" showFirstLastButtons> </mat-paginator>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+    </table>
 
-  <form class="product-form" (ngSubmit)="onSave()" #f="ngForm">
-    <!-- Row 1: 3 inputs -->
-    <div class="form-row three-cols">
-      <div class="input-group">
-        <label class="field-label">Product name</label>
-        <input name="name" placeholder="Name" [(ngModel)]="formModel.name" required />
-        <span *ngIf="showError && !formModel.name" class="error">Please enter Product name</span>
-      </div>
+    <mat-paginator #paginator1 [pageSizeOptions]="[5, 10]" showFirstLastButtons> </mat-paginator>
 
-      <div class="input-group">
-        <label class="field-label">MRP</label>
-        <input type="number" name="mrp" placeholder="MRP" [(ngModel)]="formModel.mrp" />
-        <span *ngIf="showError && !formModel.mrp" class="error">Please enter MRP</span>
-      </div>
+    <form class="product-form" (ngSubmit)="onSave()" #f="ngForm">
+      <!-- Row 1: 3 inputs -->
+      <div class="form-row three-cols">
+        <div class="input-group">
+          <label class="field-label">Product name</label>
+          <input name="name" placeholder="Name" [(ngModel)]="formModel.name" required />
+          <span *ngIf="showError && !formModel.name" class="error">Please enter Product name</span>
+        </div>
 
-      <div class="input-group">
-        <label class="field-label">Price</label>
-        <input type="number" name="price" placeholder="Price" [(ngModel)]="formModel.price" required />
-        <span *ngIf="showError && !formModel.price" class="error">Please enter Price</span>
-      </div>
+        <div class="input-group">
+          <label class="field-label">MRP</label>
+          <input type="number" name="mrp" placeholder="MRP" [(ngModel)]="formModel.mrp" />
+          <span *ngIf="showError && !formModel.mrp" class="error">Please enter MRP</span>
+        </div>
 
-      <!-- <div class="input-group">
+        <div class="input-group">
+          <label class="field-label">Price</label>
+          <input type="number" name="price" placeholder="Price" [(ngModel)]="formModel.price" required />
+          <span *ngIf="showError && !formModel.price" class="error">Please enter Price</span>
+        </div>
+
+        <!-- <div class="input-group">
         <label class="field-label">Image</label>
         <input accept="image/*" #fileInput type="file" (change)="onFileSelect($event)" />
         <span *ngIf="showError && !selectedFile" class="error">Please upload image</span>
       </div> -->
-    </div>
+      </div>
 
-    <!-- Row 2: textarea full width -->
-    <div class="form-row full">
-      <div class="input-group">
-        <div class="description-label-container">
-          <label class="field-label">Description</label>
-          <button
-            class="primary-btn2"
-            mat-button
-            *ngIf="this.formModel.name"
-            type="button"
-            [disabled]="isGenerating"
-            (click)="onGenerate(this.formModel.name)"
-          >
-            <!-- mat-button
+      <!-- Row 2: textarea full width -->
+      <div class="form-row full">
+        <div class="input-group">
+          <div class="description-label-container">
+            <label class="field-label">Description</label>
+            <button
+              class="primary-btn2"
+              mat-button
+              *ngIf="this.formModel.name"
+              type="button"
+              [disabled]="isGenerating"
+              (click)="onGenerate(this.formModel.name)"
+            >
+              <!-- mat-button
             matFab
             extended -->
-            Generate 🤖
-          </button>
-          <div *ngIf="isGenerating" class="spinner"></div>
+              Generate 🤖
+            </button>
+            <div *ngIf="isGenerating" class="spinner"></div>
+          </div>
+          <textarea
+            [disabled]="isGenerating"
+            rows="3"
+            name="description"
+            placeholder="Description"
+            [(ngModel)]="formModel.description"
+          >
+          </textarea>
+          <span *ngIf="showError && !formModel.description" class="error">Please enter Description</span>
         </div>
-        <textarea
-          [disabled]="isGenerating"
-          rows="3"
-          name="description"
-          placeholder="Description"
-          [(ngModel)]="formModel.description"
-        >
-        </textarea>
-        <span *ngIf="showError && !formModel.description" class="error">Please enter Description</span>
       </div>
-    </div>
-    <div style="margin-top: 1em">
-      <label class="field-label">Image</label>
-    </div>
-    <div class="file-upload-wrapper">
-      <input type="file" #fileInput (change)="onFileSelect($event)" class="hidden-input" accept="image/*" />
-      <button type="button" class="upload-btn" (click)="fileInput.click()">
-        <mat-icon>attach_file</mat-icon>
-        Choose File
-      </button>
-      <span class="file-name">{{ selectedFile?.name || 'No file chosen' }}</span>
-    </div>
-    <div class="preview">
-      <img [src]="previewUrl" (load)="onImageLoad()" />
-      <div *ngIf="imageLoading" class="skeleton-image"></div>
-    </div>
+      <div style="margin-top: 1em">
+        <label class="field-label">Image</label>
+      </div>
+      <div class="file-upload-wrapper">
+        <input type="file" #fileInput (change)="onFileSelect($event)" class="hidden-input" accept="image/*" />
+        <button type="button" class="upload-btn" (click)="fileInput.click()">
+          <mat-icon>attach_file</mat-icon>
+          Choose File
+        </button>
+        <span class="file-name">{{ selectedFile?.name || 'No file chosen' }}</span>
+      </div>
+      <div class="preview">
+        <img [src]="previewUrl" (load)="onImageLoad()" />
+        <div *ngIf="imageLoading" class="skeleton-image"></div>
+      </div>
 
-    <!-- Row 3: button full width -->
-    <!-- <div class="form-row actions">
+      <!-- Row 3: button full width -->
+      <!-- <div class="form-row actions">
       <button mat-raised-button color="primary" type="submit">
         {{ editingIndex !== null ? 'Update' : 'Add' }}
       </button>
     </div> -->
-    <div class="actions">
-      <button
-        *ngIf="this.formModel._id !== ''"
-        style="margin-right: 20px"
-        class="primary-btn"
-        type="button"
-        (click)="onStopEditing()"
-      >
-        Stop editing
-      </button>
-      <button class="primary-btn" type="submit">{{ this.formModel._id !== '' ? 'Update' : 'Add' }}</button>
-    </div>
-  </form>
+      <div class="actions">
+        <button
+          *ngIf="this.formModel._id !== ''"
+          style="margin-right: 20px"
+          class="primary-btn"
+          type="button"
+          (click)="onStopEditing()"
+        >
+          Stop editing
+        </button>
+        <button class="primary-btn" type="submit">{{ this.formModel._id !== '' ? 'Update' : 'Add' }}</button>
+      </div>
+    </form>
+  </div>
 </div>

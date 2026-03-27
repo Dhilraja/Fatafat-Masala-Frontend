@@ -186,4 +186,9 @@ export class AppService {
     const params = new HttpParams().set('id', id);
     return this.http.get(this.url + '/product-details', { params: params });
   }
+
+  getOrderDetails(id: string) {
+    const params = new HttpParams().set('id', id);
+    return this.http.get(this.url + '/order-details', { params: params });
+  }
 }

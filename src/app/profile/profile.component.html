@@ -1,4 +1,4 @@
-<section class="cart-header">
+<!-- <section class="cart-header">
   <h1 class="profile-heading">PROFILE</h1>
   <div class="addresses-heading-container">
     <h1>Addresses</h1>
@@ -36,4 +36,394 @@
       >
     </div>
   </div>
-</section>
+</section> -->
+
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
+<!-- PAGE -->
+<div class="page">
+  <!-- PROFILE HERO -->
+  <div class="profile-hero">
+    <!-- mandala deco -->
+    <svg class="hero-deco" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="95" stroke="white" stroke-width="1" />
+      <circle cx="100" cy="100" r="75" stroke="white" stroke-width=".6" />
+      <circle cx="100" cy="100" r="55" stroke="white" stroke-width="1" />
+      <circle cx="100" cy="100" r="35" stroke="white" stroke-width=".6" />
+      <line x1="100" y1="5" x2="100" y2="195" stroke="white" stroke-width=".5" />
+      <line x1="5" y1="100" x2="195" y2="100" stroke="white" stroke-width=".5" />
+      <line x1="29" y1="29" x2="171" y2="171" stroke="white" stroke-width=".5" />
+      <line x1="171" y1="29" x2="29" y2="171" stroke="white" stroke-width=".5" />
+    </svg>
+
+    <div class="avatar-lg">{{ data?.userDetails?.name[0] }}</div>
+
+    <div class="hero-info">
+      <div class="hero-name">{{ data?.userDetails?.name }}</div>
+      <div class="hero-email">{{ data?.userDetails?.username }}</div>
+      <div class="hero-pills">
+        <div class="hero-pill">
+          <div class="hero-pill-dot"></div>
+          {{ data?.orders?.length }} Order{{ data?.orders?.length > 1 ? 's' : '' }}
+        </div>
+        <div class="hero-pill">
+          <div class="hero-pill-dot"></div>
+          {{ data?.userDetails?.addresses?.length }} Address{{ data?.userDetails?.addresses?.length > 1 ? 'es' : '' }}
+        </div>
+        <div class="hero-pill">
+          <div class="hero-pill-dot"></div>
+          Verified Account
+        </div>
+        <div class="hero-pill" *ngIf="data?.userDetails?.role == 'ADMIN'">
+          <div class="hero-pill-dot"></div>
+          Admin
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-member">
+      <div class="member-since">Member Since</div>
+      <div class="member-date">{{ data?.userDetails?.createdAt | date: 'YYYY' }}</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <button class="tab-btn" [class.active]="activeTab === 'orders'" (click)="switchTab('orders')">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path
+          d="M1 1h2l1.5 7.5h7L13 5H4.5"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <circle cx="6.5" cy="12.5" r="1" fill="currentColor" />
+        <circle cx="11" cy="12.5" r="1" fill="currentColor" />
+      </svg>
+      <span>My Orders</span>
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'addresses'" (click)="switchTab('addresses')">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path
+          d="M7.5 1C5.015 1 3 3.015 3 5.5c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5C12 3.015 9.985 1 7.5 1z"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linejoin="round"
+        />
+        <circle cx="7.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.4" />
+      </svg>
+      <span>Addresses</span>
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'password'" (click)="switchTab('password')">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <rect x="2" y="7" width="11" height="7" rx="2" stroke="currentColor" stroke-width="1.4" />
+        <path d="M5 7V4.5a2.5 2.5 0 015 0V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        <circle cx="7.5" cy="10.5" r="1" fill="currentColor" />
+      </svg>
+      <span>Change Password</span>
+    </button>
+  </div>
+
+  <!-- ── ORDERS PANEL ── -->
+  <div class="panel" [class.active]="activeTab === 'orders'" id="panel-orders">
+    <div class="section-top">
+      <div>
+        <p class="section-label">History</p>
+        <h2 class="section-title">My Orders</h2>
+      </div>
+    </div>
+
+    <div class="orders-list">
+      <!-- Order 1 — delivered -->
+      <div class="order-card" *ngFor="let order of data?.orders">
+        <div class="order-header">
+          <div class="order-id-wrap">
+            <span class="order-id-label">Order ID</span>
+            <span class="order-id-val">#{{ order?.orderNumber }}</span>
+          </div>
+          <span class="order-status delivered"> <span class="order-status-dot"></span>{{ order?.status }}</span>
+          <span class="order-date">{{ order?.createdAt | date: 'dd MMM YYYY' }}</span>
+          <span class="order-total">₹{{ order?.totalAmount }}</span>
+        </div>
+        <div class="order-items">
+          <div class="order-item">
+            <img
+              class="item-img"
+              [src]="order?.items?.[0]?.productId?.images?.[0]?.url ?? '../../assets/images/fatafat-masala-logo.jpg'"
+            />
+            <div class="item-info">
+              <div class="item-name">{{ order?.items?.[0]?.name }}</div>
+              <div class="item-meta">100g · Qty: {{ order?.items?.[0]?.quantity }}</div>
+            </div>
+          </div>
+          <div class="order-item" *ngIf="order?.items?.length > 1">
+            <img
+              class="item-img"
+              [src]="order?.items?.[1]?.productId?.images?.[0]?.url ?? '../../assets/images/fatafat-masala-logo.jpg'"
+            />
+            <div class="item-info">
+              <div class="item-name">{{ order?.items?.[1]?.name }}</div>
+              <div class="item-meta">100g · Qty: {{ order?.items?.[1]?.quantity }}</div>
+            </div>
+          </div>
+          <span class="order-more" *ngIf="order?.items?.length > 2"
+            >+{{ order?.items?.length - 2 }} more product{{ order?.items?.length - 2 > 1 ? 's' : '' }}</span
+          >
+        </div>
+        <div class="order-footer">
+          <button class="order-action primary">Track Order</button>
+          <button class="order-action">View Details</button>
+        </div>
+      </div>
+
+      <!-- <div class="order-card">
+        <div class="order-header">
+          <div class="order-id-wrap">
+            <span class="order-id-label">Order ID</span>
+            <span class="order-id-val">#FM-20519</span>
+          </div>
+          <span class="order-status processing"> <span class="order-status-dot"></span>Processing </span>
+          <span class="order-date">24 Mar 2025</span>
+          <span class="order-total">₹299</span>
+        </div>
+        <div class="order-items">
+          <div class="order-item">
+            <div class="item-img">🌿</div>
+            <div class="item-info">
+              <div class="item-name">Coriander Powder</div>
+              <div class="item-meta">100g · Qty: 1</div>
+            </div>
+          </div>
+        </div>
+        <div class="order-footer">
+          <button class="order-action primary">Track Order</button>
+          <button class="order-action">Cancel Order</button>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="order-header">
+          <div class="order-id-wrap">
+            <span class="order-id-label">Order ID</span>
+            <span class="order-id-val">#FM-20501</span>
+          </div>
+          <span class="order-status shipped"> <span class="order-status-dot"></span>Shipped </span>
+          <span class="order-date">18 Mar 2025</span>
+          <span class="order-total">₹530</span>
+        </div>
+        <div class="order-items">
+          <div class="order-item">
+            <div class="item-img">🍚</div>
+            <div class="item-info">
+              <div class="item-name">Biryani Masala</div>
+              <div class="item-meta">100g · Qty: 2</div>
+            </div>
+          </div>
+          <div class="order-item">
+            <div class="item-img">⚫</div>
+            <div class="item-info">
+              <div class="item-name">Black Pepper</div>
+              <div class="item-meta">50g · Qty: 1</div>
+            </div>
+          </div>
+          <span class="order-more">+1 more item</span>
+        </div>
+        <div class="order-footer">
+          <button class="order-action primary">Track Order</button>
+          <button class="order-action">View Details</button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- ── ADDRESSES PANEL ── -->
+  <div class="panel" [class.active]="activeTab === 'addresses'" id="panel-addresses">
+    <div class="section-top">
+      <div>
+        <p class="section-label">Saved Locations</p>
+        <h2 class="section-title">My Addresses</h2>
+      </div>
+      <button class="add-new-btn">+ Add New Address</button>
+    </div>
+
+    <div class="addresses-grid">
+      <!-- Address 1 — default home -->
+      <div class="addr-card default" *ngFor="let address of data.userDetails.addresses">
+        <!-- <div class="addr-top"> -->
+        <!-- <div class="addr-type">
+            <div class="addr-type-icon">🏠</div>
+            Home
+          </div> -->
+        <!-- <span class="default-badge">Default</span> -->
+        <!-- </div> -->
+        <div class="addr-name">{{ address.name }}</div>
+        <div class="addr-line">
+          {{ address.line1 + ', ' + address.line2 }},<br />
+          {{ address.city + ', ' + address.state }} — {{ address.pincode }}
+        </div>
+        <div class="addr-phone">📞 +91 99999 99999</div>
+        <div class="addr-actions">
+          <button class="addr-btn">✏️ Edit</button>
+          <button class="addr-btn danger">🗑 Remove</button>
+        </div>
+      </div>
+
+      <!-- <div class="addr-card">
+        <div class="addr-top">
+          <div class="addr-type">
+            <div class="addr-type-icon">🏢</div>
+            Office
+          </div>
+        </div>
+        <div class="addr-name">Priya Sharma</div>
+        <div class="addr-line">
+          Unit 304, Safal Profitaire,<br />
+          Corporate Road, Prahlad Nagar,<br />
+          Ahmedabad, Gujarat — 380015
+        </div>
+        <div class="addr-phone">📞 +91 98765 43210</div>
+        <div class="addr-actions">
+          <button class="addr-btn">✏️ Edit</button>
+          <button class="addr-btn danger">🗑 Remove</button>
+        </div>
+      </div>
+
+      <div class="addr-card">
+        <div class="addr-top">
+          <div class="addr-type">
+            <div class="addr-type-icon">👨‍👩‍👧</div>
+            Parents
+          </div>
+        </div>
+        <div class="addr-name">Ramesh Sharma</div>
+        <div class="addr-line">
+          12, Navrangpura Society,<br />
+          Opp. Navrangpura Post Office,<br />
+          Ahmedabad, Gujarat — 380009
+        </div>
+        <div class="addr-phone">📞 +91 94276 11234</div>
+        <div class="addr-actions">
+          <button class="addr-btn">✏️ Edit</button>
+          <button class="addr-btn danger">🗑 Remove</button>
+        </div>
+      </div> -->
+
+      <!-- Add new card -->
+      <!-- <div class="addr-add-card">
+        <div class="add-icon">+</div>
+        <div class="add-label">Add New Address</div>
+        <div class="add-sub">Save a new home, office<br />or delivery location</div>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- ── PASSWORD PANEL ── -->
+  <div class="panel" [class.active]="activeTab === 'password'" id="panel-password">
+    <div class="section-top">
+      <div>
+        <p class="section-label">Security</p>
+        <h2 class="section-title">Change Password</h2>
+      </div>
+    </div>
+
+    <div class="password-wrap">
+      <div class="pw-card">
+        <!-- current password -->
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <div class="form-input-wrap">
+            <input type="password" class="form-input" id="currentPw" placeholder="Enter current password" />
+            <button class="eye-btn" type="button">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="eye-currentPw">
+                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- new password -->
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <div class="form-input-wrap">
+            <input
+              type="password"
+              class="form-input"
+              id="newPw"
+              placeholder="Enter new password"
+              oninput="checkStrength(this.value)"
+            />
+            <button class="eye-btn" type="button">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="eye-newPw">
+                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
+              </svg>
+            </button>
+          </div>
+          <!-- strength bar -->
+          <div class="strength-wrap">
+            <div class="strength-bars">
+              <div class="strength-bar" id="sb1"></div>
+              <div class="strength-bar" id="sb2"></div>
+              <div class="strength-bar" id="sb3"></div>
+              <div class="strength-bar" id="sb4"></div>
+            </div>
+            <span class="strength-label" id="strengthLabel">Enter a password</span>
+          </div>
+        </div>
+
+        <!-- confirm password -->
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <div class="form-input-wrap">
+            <input type="password" class="form-input" id="confirmPw" placeholder="Re-enter new password" />
+            <button class="eye-btn" type="button">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="eye-confirmPw">
+                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- rules -->
+        <div class="pw-rules">
+          <div class="pw-rule" id="rule-len">
+            <div class="rule-dot">✓</div>
+            At least 8 characters
+          </div>
+          <div class="pw-rule" id="rule-upper">
+            <div class="rule-dot">✓</div>
+            One uppercase letter
+          </div>
+          <div class="pw-rule" id="rule-num">
+            <div class="rule-dot">✓</div>
+            One number
+          </div>
+          <div class="pw-rule" id="rule-special">
+            <div class="rule-dot">✓</div>
+            One special character (!&#64;#$...)
+          </div>
+        </div>
+
+        <button class="pw-submit">Update Password</button>
+
+        <div class="pw-toast" id="pwToast">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="7" stroke="#3a9a6e" stroke-width="1.4" />
+            <polyline
+              points="4.5,8 7,10.5 11.5,5.5"
+              stroke="#3a9a6e"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Password updated successfully!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

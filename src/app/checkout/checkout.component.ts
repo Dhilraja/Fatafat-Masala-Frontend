@@ -57,7 +57,7 @@ export class CheckoutComponent implements OnInit {
           });
         }
         this.service.getProfile().subscribe((res: any) => {
-          this.addresses = res?.data?.addresses;
+          this.addresses = res?.data?.userDetails?.addresses;
         });
       });
     });
@@ -83,7 +83,9 @@ export class CheckoutComponent implements OnInit {
         verticalPosition: 'bottom',
         panelClass: ['error-snackbar'],
       });
-      this.router.navigateByUrl('/order-placed');
+      this.router.navigate(['/order-placed'], {
+        queryParams: { id: res?.data?._id },
+      });
     });
   }
 

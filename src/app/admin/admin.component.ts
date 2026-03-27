@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,15 +27,18 @@ import imageCompression from 'browser-image-compression';
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, AfterViewInit {
   constructor(private service: AppService) {}
 
   displayedColumns: string[] = ['name', 'mrp', 'price', 'action'];
+  displayedColumns2: string[] = ['orderId', 'customerName', 'quantities', 'totalAmount', 'date'];
 
   products: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
+  dataSource2 = new MatTableDataSource<any>([]);
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('paginator1') paginator!: MatPaginator;
+  @ViewChild('paginator2') paginator2!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('fileInput') fileInputVariable!: ElementRef;
 
@@ -52,6 +55,9 @@ export class AdminComponent implements OnInit {
   statuses = ['Placed', 'Confirmed', 'Processing', 'Shipped', 'Delivered'];
   orders: any[] = [];
   imageLoading = false;
+  totalRevenue = 0;
+  totalQuantities = 0;
+  distinctOrderIds: any[] = [];
 
   ngOnInit(): void {
     this.getProducts();
@@ -69,12 +75,26 @@ export class AdminComponent implements OnInit {
 
   getOrders() {
     this.service.getOrders().subscribe((res: any) => {
-      this.orders = res.data;
+      this.orders = res.data.map((ele: any) => {
+        let totalQuantities = 0;
+        ele.items.forEach((ele: any) => {
+          totalQuantities += ele.quantity;
+        });
+        ele['totalQuantities'] = totalQuantities;
+        this.totalQuantities += totalQuantities;
+        if (!this.distinctOrderIds.includes(ele?.userId)) this.distinctOrderIds.push(ele?.userId);
+        return ele;
+      });
+      res.data.forEach((ele: any) => {
+        this.totalRevenue += ele.totalAmount;
+      });
+      this.dataSource2.data = this.orders;
     });
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
+    this.dataSource2.paginator = this.paginator2;
     this.dataSource.sort = this.sort;
   }
 
@@ -84,6 +104,15 @@ export class AdminComponent implements OnInit {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  applyFilterOrders(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource2.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource2.paginator) {
+      this.dataSource2.paginator.firstPage();
     }
   }
 

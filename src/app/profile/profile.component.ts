@@ -29,13 +29,13 @@ export class ProfileComponent implements OnInit {
       if (!res?.flag) this.router.navigateByUrl('/home');
       else {
         this.service.getProfile().subscribe((res: any) => {
-          this.addresses = res?.data?.addresses;
+          this.data = res?.data;
         });
       }
     });
   }
 
-  addresses: any[] = [];
+  data: any;
   orders: any[] = [];
   //   {
   //     name: 'Aadhil',
@@ -100,5 +100,11 @@ export class ProfileComponent implements OnInit {
       });
       this.ngOnInit();
     });
+  }
+
+  activeTab: string = 'orders'; // default tab
+
+  switchTab(tab: string) {
+    this.activeTab = tab;
   }
 }

@@ -1184,10 +1184,15 @@ footer {
 
 .price-span {
   margin: 10px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted, #9a7560);
+  line-height: 1.5;
 }
 
 .price {

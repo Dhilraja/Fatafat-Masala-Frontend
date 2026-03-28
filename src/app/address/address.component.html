@@ -1,36 +1,55 @@
-<section class="cart-header">
-  <h1>Address Details</h1>
-  <form [formGroup]="cartForm">
-    <div class="form-row three-cols">
-      <div class="input-group">
-        <label class="field-label">Name</label>
-        <input name="name" placeholder="Name" formControlName="name" required />
-        <!-- <span *ngIf="showError && !formModel.name" class="error">Please enter Product name</span> -->
-      </div>
-      <div class="input-group">
-        <label class="field-label">Line 1</label>
-        <input name="line1" placeholder="Line 1" formControlName="line1" required />
-        <!-- <span *ngIf="showError && !formModel.name" class="error">Please enter Product name</span> -->
-      </div>
+<div class="dialog-wrap">
 
-      <div class="input-group">
-        <label class="field-label">Line 2</label>
-        <input name="line2" placeholder="Line 2" formControlName="line2" />
-        <!-- <span *ngIf="showError && !formModel.mrp" class="error">Please enter MRP</span> -->
+  <!-- Header -->
+  <div class="dialog-header">
+    <div>
+      <p class="section-label">{{ data ? 'Update Location' : 'New Location' }}</p>
+      <h2 class="dialog-title">{{ data ? 'Edit Address' : 'Add Address' }}</h2>
+    </div>
+    <button class="close-btn" type="button" (click)="onClose()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="cartForm" class="dialog-form">
+
+    <div class="form-row two-cols">
+      <div class="field-group">
+        <label class="field-label">Full Name</label>
+        <input class="field-input" placeholder="Recipient name" formControlName="name" autocomplete="name" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Phone Number</label>
+        <div class="phone-input-wrap">
+          <span class="phone-prefix">+91</span>
+          <input class="field-input phone-field" placeholder="10-digit mobile number" formControlName="phone" inputmode="numeric" maxlength="10" autocomplete="tel" />
+        </div>
       </div>
     </div>
-    <div class="form-row three-cols">
-      <div class="input-group">
-        <label class="field-label">City</label>
-        <input type="text" name="city" placeholder="City" formControlName="city" required />
-        <!-- <span *ngIf="showError && !formModel.price" class="error">Please enter Price</span> -->
-      </div>
 
-      <div class="input-group">
+    <div class="form-row two-cols">
+      <div class="field-group">
+        <label class="field-label">Address Line 1</label>
+        <input class="field-input" placeholder="House / Flat / Building no." formControlName="line1" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Address Line 2</label>
+        <input class="field-input" placeholder="Street / Area / Colony" formControlName="line2" />
+      </div>
+    </div>
+
+    <div class="form-row three-cols">
+      <div class="field-group">
+        <label class="field-label">City</label>
+        <input class="field-input" placeholder="City" formControlName="city" />
+      </div>
+      <div class="field-group">
         <label class="field-label">State</label>
-        <!-- <input type="text" name="state" placeholder="State" formControlName="state" /> -->
-        <select id="state" name="state" formControlName="state" class="input-field">
-          <option value="" disabled selected>Select State</option>
+        <select class="field-input field-select" formControlName="state">
+          <option value="" disabled selected>Select state</option>
           <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
           <option value="Andhra Pradesh">Andhra Pradesh</option>
           <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -68,18 +87,20 @@
           <option value="Uttarakhand">Uttarakhand</option>
           <option value="West Bengal">West Bengal</option>
         </select>
-        <!-- <span *ngIf="showError && !formModel.mrp" class="error">Please enter MRP</span> -->
       </div>
-
-      <div class="input-group">
+      <div class="field-group">
         <label class="field-label">Pin Code</label>
-        <input maxlength="6" name="pincode" placeholder="Pin Code" formControlName="pincode" required />
-        <!-- <span *ngIf="showError && !formModel.price" class="error">Please enter Price</span> -->
+        <input class="field-input" placeholder="6-digit pincode" formControlName="pincode" maxlength="6" inputmode="numeric" />
       </div>
     </div>
-    <div class="actions">
-      <button class="primary-btn" (click)="onClose()">Close</button>
-      <button class="primary-btn" [disabled]="cartForm.invalid" (click)="onSave()">Save</button>
+
+    <!-- Actions -->
+    <div class="dialog-actions">
+      <button type="button" class="btn-outline" (click)="onClose()">Cancel</button>
+      <button type="button" class="btn-primary" [disabled]="cartForm.invalid" (click)="onSave()">
+        {{ data ? 'Save Changes' : 'Add Address' }}
+      </button>
     </div>
+
   </form>
-</section>
+</div>

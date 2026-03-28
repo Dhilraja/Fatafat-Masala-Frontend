@@ -502,6 +502,8 @@ header {
   padding: 24px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   transition:
     transform 0.3s,
     box-shadow 0.3s;
@@ -572,26 +574,27 @@ header {
 }
 
 .addr-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text);
   margin-bottom: 4px;
 }
 .addr-line {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   line-height: 1.65;
   margin-bottom: 14px;
 }
 .addr-phone {
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--muted);
 }
 
 .addr-actions {
   display: flex;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: auto;
+  padding-top: 16px;
 }
 
 .addr-btn {

@@ -35,6 +35,13 @@ html {
   padding: 0;
 }
 // body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.addr-dialog-panel .mat-mdc-dialog-surface {
+  padding: 0 !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(107, 62, 46, 0.18) !important;
+}
+
 .error-snackbar {
   background-color: #f44336; /* red */
   color: white;

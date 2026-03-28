@@ -156,6 +156,10 @@ export class AppService {
     return this.http.post(this.url + '/address', payload, { withCredentials: true });
   }
 
+  changePassword(payload: { currentPassword: string; newPassword: string }) {
+    return this.http.post(this.url + '/change-password', payload, { withCredentials: true });
+  }
+
   deleteAddress(id: string) {
     const params = new HttpParams().set('id', id);
     return this.http.delete(this.url + '/delete-address', { params: params, withCredentials: true });

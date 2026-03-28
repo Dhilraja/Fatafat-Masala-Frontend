@@ -245,7 +245,7 @@
         <p class="section-label">Saved Locations</p>
         <h2 class="section-title">My Addresses</h2>
       </div>
-      <button class="add-new-btn">+ Add New Address</button>
+      <button class="add-new-btn" (click)="onAdd()">+ Add New Address</button>
     </div>
 
     <div class="addresses-grid">
@@ -263,10 +263,10 @@
           {{ address.line1 + ', ' + address.line2 }},<br />
           {{ address.city + ', ' + address.state }} — {{ address.pincode }}
         </div>
-        <div class="addr-phone">📞 +91 99999 99999</div>
+        <div class="addr-phone" *ngIf="address.phone">📞 +91 {{ address.phone }}</div>
         <div class="addr-actions">
-          <button class="addr-btn">✏️ Edit</button>
-          <button class="addr-btn danger">🗑 Remove</button>
+          <button class="addr-btn" (click)="onEditAddress(address)">✏️ Edit</button>
+          <button class="addr-btn danger" (click)="onDeleteAddress(address._id)">🗑 Remove</button>
         </div>
       </div>
 
@@ -285,8 +285,8 @@
         </div>
         <div class="addr-phone">📞 +91 98765 43210</div>
         <div class="addr-actions">
-          <button class="addr-btn">✏️ Edit</button>
-          <button class="addr-btn danger">🗑 Remove</button>
+          <button class="addr-btn" (click)="onEditAddress(address)">✏️ Edit</button>
+          <button class="addr-btn danger" (click)="onDeleteAddress(address._id)">🗑 Remove</button>
         </div>
       </div>
 
@@ -305,8 +305,8 @@
         </div>
         <div class="addr-phone">📞 +91 94276 11234</div>
         <div class="addr-actions">
-          <button class="addr-btn">✏️ Edit</button>
-          <button class="addr-btn danger">🗑 Remove</button>
+          <button class="addr-btn" (click)="onEditAddress(address)">✏️ Edit</button>
+          <button class="addr-btn danger" (click)="onDeleteAddress(address._id)">🗑 Remove</button>
         </div>
       </div> -->
 
@@ -329,16 +329,18 @@
     </div>
 
     <div class="password-wrap">
-      <div class="pw-card">
+      <form class="pw-card" [formGroup]="pwForm" (ngSubmit)="onChangePassword()">
+
         <!-- current password -->
         <div class="form-group">
           <label class="form-label">Current Password</label>
           <div class="form-input-wrap">
-            <input type="password" class="form-input" id="currentPw" placeholder="Enter current password" />
-            <button class="eye-btn" type="button">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="eye-currentPw">
+            <input [type]="showCurrentPw ? 'text' : 'password'" class="form-input" placeholder="Enter current password" formControlName="currentPassword" />
+            <button class="eye-btn" type="button" (click)="showCurrentPw = !showCurrentPw">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
                 <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
+                <line *ngIf="showCurrentPw" x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
               </svg>
             </button>
           </div>
@@ -348,29 +350,24 @@
         <div class="form-group">
           <label class="form-label">New Password</label>
           <div class="form-input-wrap">
-            <input
-              type="password"
-              class="form-input"
-              id="newPw"
-              placeholder="Enter new password"
-              oninput="checkStrength(this.value)"
-            />
-            <button class="eye-btn" type="button">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="eye-newPw">
+            <input [type]="showNewPw ? 'text' : 'password'" class="form-input" placeholder="Enter new password" formControlName="newPassword" />
+            <button class="eye-btn" type="button" (click)="showNewPw = !showNewPw">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
                 <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
+                <line *ngIf="showNewPw" x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
               </svg>
             </button>
           </div>
           <!-- strength bar -->
           <div class="strength-wrap">
             <div class="strength-bars">
-              <div class="strength-bar" id="sb1"></div>
-              <div class="strength-bar" id="sb2"></div>
-              <div class="strength-bar" id="sb3"></div>
-              <div class="strength-bar" id="sb4"></div>
+              <div class="strength-bar" [class.filled]="pwStrength.score >= 1" [class.weak]="pwStrength.score === 1" [class.medium]="pwStrength.score === 2 || pwStrength.score === 3" [class.strong]="pwStrength.score === 4"></div>
+              <div class="strength-bar" [class.filled]="pwStrength.score >= 2" [class.weak]="pwStrength.score === 1" [class.medium]="pwStrength.score === 2 || pwStrength.score === 3" [class.strong]="pwStrength.score === 4"></div>
+              <div class="strength-bar" [class.filled]="pwStrength.score >= 3" [class.medium]="pwStrength.score === 3" [class.strong]="pwStrength.score === 4"></div>
+              <div class="strength-bar" [class.filled]="pwStrength.score >= 4" [class.strong]="pwStrength.score === 4"></div>
             </div>
-            <span class="strength-label" id="strengthLabel">Enter a password</span>
+            <span class="strength-label">{{ pwStrength.label }}</span>
           </div>
         </div>
 
@@ -378,11 +375,12 @@
         <div class="form-group">
           <label class="form-label">Confirm New Password</label>
           <div class="form-input-wrap">
-            <input type="password" class="form-input" id="confirmPw" placeholder="Re-enter new password" />
-            <button class="eye-btn" type="button">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="eye-confirmPw">
+            <input [type]="showConfirmPw ? 'text' : 'password'" class="form-input" placeholder="Re-enter new password" formControlName="confirmPassword" />
+            <button class="eye-btn" type="button" (click)="showConfirmPw = !showConfirmPw">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
                 <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
+                <line *ngIf="showConfirmPw" x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
               </svg>
             </button>
           </div>
@@ -390,40 +388,37 @@
 
         <!-- rules -->
         <div class="pw-rules">
-          <div class="pw-rule" id="rule-len">
+          <div class="pw-rule" [class.met]="pwRules.len">
             <div class="rule-dot">✓</div>
             At least 8 characters
           </div>
-          <div class="pw-rule" id="rule-upper">
+          <div class="pw-rule" [class.met]="pwRules.upper">
             <div class="rule-dot">✓</div>
             One uppercase letter
           </div>
-          <div class="pw-rule" id="rule-num">
+          <div class="pw-rule" [class.met]="pwRules.num">
             <div class="rule-dot">✓</div>
             One number
           </div>
-          <div class="pw-rule" id="rule-special">
+          <div class="pw-rule" [class.met]="pwRules.special">
             <div class="rule-dot">✓</div>
             One special character (!&#64;#$...)
           </div>
         </div>
 
-        <button class="pw-submit">Update Password</button>
+        <button type="submit" class="pw-submit" [disabled]="pwForm.invalid || pwLoading">
+          {{ pwLoading ? 'Updating...' : 'Update Password' }}
+        </button>
 
-        <div class="pw-toast" id="pwToast">
+        <div class="pw-toast" [class.visible]="pwSuccess">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="7" stroke="#3a9a6e" stroke-width="1.4" />
-            <polyline
-              points="4.5,8 7,10.5 11.5,5.5"
-              stroke="#3a9a6e"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
+            <polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#3a9a6e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           Password updated successfully!
         </div>
-      </div>
+
+      </form>
     </div>
   </div>
 </div>

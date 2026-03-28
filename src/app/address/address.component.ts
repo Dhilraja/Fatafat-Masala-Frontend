@@ -22,11 +22,12 @@ export class AddressComponent implements OnInit {
 
   cartForm = new FormGroup({
     name: new FormControl(null, [Validators.required]),
+    phone: new FormControl(null, [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]),
     line1: new FormControl(null, [Validators.required]),
     line2: new FormControl(null, [Validators.required]),
     city: new FormControl(null, [Validators.required]),
     state: new FormControl(null, [Validators.required]),
-    pincode: new FormControl(null, [Validators.required]),
+    pincode: new FormControl(null, [Validators.required, Validators.pattern(/^\d{6}$/)]),
   });
 
   onSave() {

@@ -72,7 +72,8 @@ export class LoginComponent {
 
   onAnimationCompleteSignUp() {
     this.isLogin = true;
-    this.showPassword = false;
+    this.showLoginPw = false;
+    this.showSignupPw = false;
     this.showSignUpSuccess = false;
     this.showLogInSuccess = false;
     this.cd.detectChanges();
@@ -81,7 +82,8 @@ export class LoginComponent {
   isLogin: boolean | null = true;
   showSignUpSuccess = false;
   showLogInSuccess = false;
-  showPassword = false;
+  showLoginPw = false;
+  showSignupPw = false;
   showError = false;
   showErrorLogin = false;
   existingUsername: any;
@@ -92,11 +94,16 @@ export class LoginComponent {
 
   toggleView() {
     this.isLogin = !this.isLogin;
-    this.showPassword = false;
+    this.showLoginPw = false;
+    this.showSignupPw = false;
   }
 
-  togglePassword() {
-    this.showPassword = !this.showPassword;
+  toggleLoginPw() {
+    this.showLoginPw = !this.showLoginPw;
+  }
+
+  toggleSignupPw() {
+    this.showSignupPw = !this.showSignupPw;
   }
 
   signUpForm = new FormGroup({

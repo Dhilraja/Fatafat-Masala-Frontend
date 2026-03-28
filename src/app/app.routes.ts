@@ -12,7 +12,9 @@ import { RefundPolicyComponent } from './refund-policy/refund-policy.component';
 import { TermsComponent } from './terms/terms.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { AboutUsComponent } from './about-us/about-us.component';
+import { ContactUsComponent } from './contact-us/contact-us.component';
 import { Home2Component } from './home2/home2.component';
+import { OrderDetailsComponent } from './order-details/order-details.component';
 
 export const routes: Routes = [
   {
@@ -72,6 +74,14 @@ export const routes: Routes = [
   {
     path: 'about-us',
     component: AboutUsComponent,
+  },
+  {
+    path: 'contact-us',
+    component: ContactUsComponent,
+  },
+  {
+    path: 'order-details',
+    component: OrderDetailsComponent,
   },
   {
     path: '**',

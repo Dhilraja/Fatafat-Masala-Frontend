@@ -207,7 +207,9 @@ export class CartComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl('/checkout');
     } else {
       this.matDialog.open(LoginComponent, {
-        width: '70%',
+        width: '500px',
+        maxWidth: '95vw',
+        panelClass: 'addr-dialog-panel',
         data: {
           redirectTo: '/checkout',
         },

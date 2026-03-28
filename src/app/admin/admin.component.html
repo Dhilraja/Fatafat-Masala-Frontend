@@ -1,387 +1,306 @@
-<div class="container page">
-  <h1>Admin Dashboard</h1>
-
-  <!-- Stats -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label"><mat-icon>bar_chart</mat-icon> Revenue</div>
-      <p class="stat-value green">&#8377;{{ totalRevenue }}</p>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label"><mat-icon>shopping_cart</mat-icon> Orders</div>
-      <p class="stat-value primary">{{ this.orders.length }}</p>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label"><mat-icon>inventory_2</mat-icon> Products</div>
-      <p class="stat-value secondary">{{ totalQuantities }}</p>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label"><mat-icon>people</mat-icon> Customers</div>
-      <p class="stat-value accent">{{ distinctOrderIds?.length }}</p>
+<div class="page">
+  <!-- PAGE HEADER -->
+  <div class="page-header anim-1">
+    <div>
+      <p class="section-label">Management</p>
+      <h1 class="page-title">Admin Dashboard</h1>
     </div>
   </div>
 
-  <!-- Orders Tab -->
-  <!-- <mat-tab-group animationDuration="200ms">
-    <mat-tab> -->
-  <ng-template mat-tab-label><mat-icon>shopping_cart</mat-icon>&nbsp;Orders</ng-template>
-  <!-- <div class="table-wrap">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Customer</th>
-          <th>Items</th>
-          <th>Total</th>
-          <th>Date</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (o of orders; track o._id) {
-          <tr [attr.data-testid]="'admin-order-' + o._id">
-            <td>{{ o.orderNumber }}</td>
-            <td>{{ o.shippingAddress.name }}</td>
-            <td>{{ o.items?.length }} items</td>
-            <td class="bold">&#8377;{{ o.totalAmount }}</td>
-            <td>{{ o.createdAt | date: 'dd/MM/YYYY' }}</td>
-            <td>
-              <select
-                [value]="o.status"
-                (change)="updateOrderStatus(o._id, $event)"
-                [attr.data-testid]="'order-status-' + o._id"
-              >
-                @for (s of statuses; track s) {
-                  <option [value]="s">{{ s }}</option>
-                }
-              </select>
+  <!-- STATS -->
+  <div class="stats-grid anim-2">
+    <div class="stat-card">
+      <div class="stat-icon revenue"><mat-icon>bar_chart</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value">&#8377;{{ totalRevenue }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon orders"><mat-icon>shopping_cart</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Orders</div>
+        <div class="stat-value">{{ orders.length }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon products"><mat-icon>inventory_2</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Units Sold</div>
+        <div class="stat-value">{{ totalQuantities }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon customers"><mat-icon>people</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Customers</div>
+        <div class="stat-value">{{ distinctOrderIds?.length }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon messages"><mat-icon>mail</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Unread Messages</div>
+        <div class="stat-value">{{ unreadCount }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap anim-3">
+    <button class="tab-btn" [class.active]="activeTab === 'orders'" (click)="switchTab('orders')">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path
+          d="M1 1h2l1.5 7.5h7L13 5H4.5"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <circle cx="6.5" cy="12.5" r="1" fill="currentColor" />
+        <circle cx="11" cy="12.5" r="1" fill="currentColor" />
+      </svg>
+      <span>Orders</span>
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'messages'" (click)="switchTab('messages')">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path
+          d="M1 2h13a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4l-3 2V3a1 1 0 0 1 1-1z"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span>Messages</span>
+      <span class="tab-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'products'" (click)="switchTab('products')">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" />
+        <rect x="8" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" />
+        <rect x="1" y="8" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" />
+        <rect x="8" y="8" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" />
+      </svg>
+      <span>Products</span>
+    </button>
+  </div>
+
+  <!-- ORDERS PANEL -->
+  <div class="panel" [class.active]="activeTab === 'orders'">
+    <div class="section">
+      <div class="section-top">
+        <div>
+          <p class="section-label">Sales</p>
+          <h2 class="section-title">Orders</h2>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <input class="search-input" (keyup)="applyFilterOrders($event)" type="text" placeholder="Search orders…" />
+      </div>
+      <div class="table-scroll">
+        <table mat-table [dataSource]="dataSource2" matSort class="admin-table">
+          <ng-container matColumnDef="orderId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Order ID</th>
+            <td mat-cell *matCellDef="let o">{{ o.orderNumber }}</td>
+          </ng-container>
+          <ng-container matColumnDef="customerName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+            <td mat-cell *matCellDef="let o">{{ o.shippingAddress.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="quantities">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Qty</th>
+            <td mat-cell *matCellDef="let o">{{ o.totalQuantities }}</td>
+          </ng-container>
+          <ng-container matColumnDef="totalAmount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+            <td mat-cell *matCellDef="let o">&#8377;{{ o.totalAmount }}</td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let o">{{ o.createdAt | date: 'dd MMM YYYY' }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+        </table>
+      </div>
+      <mat-paginator #paginator2 [pageSizeOptions]="[5, 10]" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+
+  <div class="panel" [class.active]="activeTab === 'messages'">
+    <!-- CONTACT MESSAGES -->
+    <div class="section">
+      <div class="section-top">
+        <div>
+          <p class="section-label">Enquiries</p>
+          <h2 class="section-title">Contact Messages</h2>
+        </div>
+        <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }} unread</span>
+      </div>
+      <div class="table-scroll">
+        <table mat-table [dataSource]="dataSource3" class="admin-table">
+          <ng-container matColumnDef="contactName">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let c" [class.unread-row]="!c.isRead">{{ c.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="contactEmail">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let c">{{ c.email }}</td>
+          </ng-container>
+          <ng-container matColumnDef="contactPhone">
+            <th mat-header-cell *matHeaderCellDef>Phone</th>
+            <td mat-cell *matCellDef="let c">{{ c.phone || '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="contactMessage">
+            <th mat-header-cell *matHeaderCellDef>Message</th>
+            <td mat-cell *matCellDef="let c" class="message-cell">{{ c.message }}</td>
+          </ng-container>
+          <ng-container matColumnDef="contactDate">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let c">{{ c.createdAt | date: 'dd MMM YYYY, h:mm a' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="contactAction">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let c">
+              <button *ngIf="!c.isRead" class="mark-read-btn" (click)="markRead(c)">Mark Read</button>
+              <span *ngIf="c.isRead" class="read-badge">&#10003; Read</span>
             </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div> -->
-  <div class="outer-container">
-    <div class="search-input-group">
-      <input (keyup)="applyFilterOrders($event)" type="text" placeholder="Search orders" />
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
+        </table>
+      </div>
+      <mat-paginator #paginator3 [pageSizeOptions]="[5, 10]" showFirstLastButtons></mat-paginator>
     </div>
-
-    <table mat-table [dataSource]="dataSource2" matSort class="full-width-table">
-      <!-- ID Column -->
-      <ng-container matColumnDef="sNo">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>S. No.</th>
-        <td mat-cell *matCellDef="let orders; let i = index">{{ i + 1 }}</td>
-      </ng-container>
-
-      <!-- Name Column -->
-      <ng-container matColumnDef="orderId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Order ID</th>
-        <td mat-cell *matCellDef="let orders">{{ orders.orderNumber }}</td>
-      </ng-container>
-
-      <!-- MRP Column -->
-      <ng-container matColumnDef="customerName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</th>
-        <td mat-cell *matCellDef="let orders">{{ orders.shippingAddress.name }}</td>
-      </ng-container>
-
-      <!-- Price Column -->
-      <ng-container matColumnDef="quantities">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantities</th>
-        <td mat-cell *matCellDef="let orders">{{ orders.totalQuantities }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="totalAmount">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Amount</th>
-        <td mat-cell *matCellDef="let orders">{{ orders.totalAmount }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-        <td mat-cell *matCellDef="let orders">{{ orders.createdAt | date: 'dd/MM/YYYY' }}</td>
-      </ng-container>
-
-      <!-- Action Column -->
-      <!-- <ng-container matColumnDef="action">
-      <th mat-header-cell *matHeaderCellDef>Action</th>
-
-      <td mat-cell *matCellDef="let orders; let i = index" class="action-cell">
-        <button mat-icon-button color="red" aria-label="Edit" (click)="onEdit(orders)">
-          <mat-icon style="color: var(--primary)">edit</mat-icon>
-        </button>
-
-        <button mat-icon-button color="warn" aria-label="Delete" (click)="onDelete(orders._id)">
-          <mat-icon style="color: var(--primary)">delete</mat-icon>
-        </button>
-
-        <button
-          *ngIf="!orders.isActive"
-          mat-icon-button
-          color="warn"
-          aria-label="Check"
-          (click)="onEnableDisable(orders._id, true)"
-        >
-          <mat-icon style="color: var(--primary); font-weight: 700">check</mat-icon>
-        </button>
-
-        <button
-          *ngIf="orders.isActive"
-          mat-icon-button
-          color="warn"
-          aria-label="Close"
-          (click)="onEnableDisable(orders._id, false)"
-        >
-          <mat-icon style="color: var(--primary); font-weight: 700">close</mat-icon>
-        </button>
-      </td>
-    </ng-container> -->
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
-      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns2"></tr>
-    </table>
-
-    <mat-paginator #paginator2 [pageSizeOptions]="[5, 10]" showFirstLastButtons> </mat-paginator>
-    <!-- </mat-tab> -->
-
-    <!-- Products Tab -->
-    <!-- <mat-tab>
-      <ng-template mat-tab-label><mat-icon>inventory_2</mat-icon>&nbsp;Products</ng-template>
-      <div class="tab-actions">
-        <button mat-raised-button color="primary" class="btn-tactile" (click)="openProductForm()" data-testid="add-product-btn">
-          <mat-icon>add</mat-icon> Add Product
-        </button>
-      </div>
-      @if (showProductForm) {
-        <div class="product-form">
-          <h3>{{ editingProduct ? 'Edit Product' : 'Add Product' }}</h3>
-          @for (f of productFields; track f[0]) {
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>{{ f[1] }}</mat-label>
-              <input matInput [(ngModel)]="productForm[f[0]]" [attr.data-testid]="'product-field-' + f[0]" />
-            </mat-form-field>
-          }
-          <div class="toggle-row">
-            <mat-slide-toggle [(ngModel)]="productForm.is_featured" data-testid="product-featured-toggle">Featured Product</mat-slide-toggle>
-          </div>
-          <div class="form-actions">
-            <button mat-raised-button color="primary" (click)="saveProduct()" data-testid="save-product-btn">
-              {{ editingProduct ? 'Update' : 'Create' }}
-            </button>
-            <button mat-stroked-button (click)="showProductForm = false">Cancel</button>
-          </div>
-        </div>
-      }
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Featured</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            @for (p of products; track p.id) {
-              <tr [attr.data-testid]="'admin-product-' + p.id">
-                <td><img [src]="p.image_url" class="table-img" /></td>
-                <td class="bold">{{ p.name }}</td>
-                <td>{{ p.category }}</td>
-                <td>&#8377;{{ p.price }}</td>
-                <td>{{ p.stock }}</td>
-                <td><span class="featured-tag" [class.active]="p.is_featured">{{ p.is_featured ? 'Yes' : 'No' }}</span></td>
-                <td>
-                  <button mat-icon-button (click)="openProductForm(p)" [attr.data-testid]="'edit-product-' + p.id"><mat-icon>edit</mat-icon></button>
-                  <button mat-icon-button color="warn" (click)="deleteProduct(p.id)" [attr.data-testid]="'delete-product-' + p.id"><mat-icon>delete</mat-icon></button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    </mat-tab> -->
-
-    <!-- Login History Tab -->
-    <!-- <mat-tab>
-      <ng-template mat-tab-label><mat-icon>history</mat-icon>&nbsp;Login History</ng-template>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead><tr><th>Email</th><th>Action</th><th>Date & Time</th><th>IP Address</th></tr></thead>
-          <tbody>
-            @for (h of history; track h.id) {
-              <tr [attr.data-testid]="'history-' + h.id">
-                <td>{{ h.email }}</td>
-                <td><span class="action-tag" [class.signup]="h.action === 'signup'">{{ h.action }}</span></td>
-                <td>{{ h.timestamp | date:'medium' }}</td>
-                <td>{{ h.ip_address }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    </mat-tab> 
-  </mat-tab-group> -->
   </div>
 
-  <div class="outer-container">
-    <div class="search-input-group">
-      <input (keyup)="applyFilter($event)" type="text" placeholder="Search products" />
-    </div>
-
-    <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
-      <!-- ID Column -->
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>S. No.</th>
-        <td mat-cell *matCellDef="let product; let i = index">{{ i + 1 }}</td>
-      </ng-container>
-
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td mat-cell *matCellDef="let product">{{ product.name }}</td>
-      </ng-container>
-
-      <!-- MRP Column -->
-      <ng-container matColumnDef="mrp">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>MRP</th>
-        <td mat-cell *matCellDef="let product">{{ product.mrp }}</td>
-      </ng-container>
-
-      <!-- Price Column -->
-      <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let product">{{ product.price }}</td>
-      </ng-container>
-
-      <!-- Action Column -->
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Action</th>
-
-        <td mat-cell *matCellDef="let product; let i = index" class="action-cell">
-          <button mat-icon-button color="red" aria-label="Edit" (click)="onEdit(product)">
-            <mat-icon style="color: var(--primary)">edit</mat-icon>
-          </button>
-
-          <button mat-icon-button color="warn" aria-label="Delete" (click)="onDelete(product._id)">
-            <mat-icon style="color: var(--primary)">delete</mat-icon>
-          </button>
-
-          <button
-            *ngIf="!product.isActive"
-            mat-icon-button
-            color="warn"
-            aria-label="Check"
-            (click)="onEnableDisable(product._id, true)"
-          >
-            <mat-icon style="color: var(--primary); font-weight: 700">check</mat-icon>
-          </button>
-
-          <button
-            *ngIf="product.isActive"
-            mat-icon-button
-            color="warn"
-            aria-label="Close"
-            (click)="onEnableDisable(product._id, false)"
-          >
-            <mat-icon style="color: var(--primary); font-weight: 700">close</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator #paginator1 [pageSizeOptions]="[5, 10]" showFirstLastButtons> </mat-paginator>
-
-    <form class="product-form" (ngSubmit)="onSave()" #f="ngForm">
-      <!-- Row 1: 3 inputs -->
-      <div class="form-row three-cols">
-        <div class="input-group">
-          <label class="field-label">Product name</label>
-          <input name="name" placeholder="Name" [(ngModel)]="formModel.name" required />
-          <span *ngIf="showError && !formModel.name" class="error">Please enter Product name</span>
+  <div class="panel" [class.active]="activeTab === 'products'">
+    <!-- PRODUCTS -->
+    <div class="section">
+      <div class="section-top">
+        <div>
+          <p class="section-label">Inventory</p>
+          <h2 class="section-title">Products</h2>
         </div>
-
-        <div class="input-group">
-          <label class="field-label">MRP</label>
-          <input type="number" name="mrp" placeholder="MRP" [(ngModel)]="formModel.mrp" />
-          <span *ngIf="showError && !formModel.mrp" class="error">Please enter MRP</span>
-        </div>
-
-        <div class="input-group">
-          <label class="field-label">Price</label>
-          <input type="number" name="price" placeholder="Price" [(ngModel)]="formModel.price" required />
-          <span *ngIf="showError && !formModel.price" class="error">Please enter Price</span>
-        </div>
-
-        <!-- <div class="input-group">
-        <label class="field-label">Image</label>
-        <input accept="image/*" #fileInput type="file" (change)="onFileSelect($event)" />
-        <span *ngIf="showError && !selectedFile" class="error">Please upload image</span>
-      </div> -->
       </div>
+      <div class="search-wrap">
+        <input class="search-input" (keyup)="applyFilter($event)" type="text" placeholder="Search products…" />
+      </div>
+      <div class="table-scroll">
+        <table mat-table [dataSource]="dataSource" matSort class="admin-table">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let p">{{ p.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="mrp">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>MRP</th>
+            <td mat-cell *matCellDef="let p">&#8377;{{ p.mrp }}</td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+            <td mat-cell *matCellDef="let p">&#8377;{{ p.price }}</td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let p" class="action-cell">
+              <button mat-icon-button (click)="onEdit(p)">
+                <mat-icon class="icon-edit">edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="onDelete(p._id)">
+                <mat-icon class="icon-delete">delete</mat-icon>
+              </button>
+              <button *ngIf="!p.isActive" mat-icon-button (click)="onEnableDisable(p._id, true)">
+                <mat-icon class="icon-enable">check_circle</mat-icon>
+              </button>
+              <button *ngIf="p.isActive" mat-icon-button (click)="onEnableDisable(p._id, false)">
+                <mat-icon class="icon-disable">cancel</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+      <mat-paginator #paginator1 [pageSizeOptions]="[5, 10]" showFirstLastButtons></mat-paginator>
 
-      <!-- Row 2: textarea full width -->
-      <div class="form-row full">
-        <div class="input-group">
-          <div class="description-label-container">
-            <label class="field-label">Description</label>
-            <button
-              class="primary-btn2"
-              mat-button
-              *ngIf="this.formModel.name"
-              type="button"
-              [disabled]="isGenerating"
-              (click)="onGenerate(this.formModel.name)"
-            >
-              <!-- mat-button
-            matFab
-            extended -->
-              Generate 🤖
-            </button>
-            <div *ngIf="isGenerating" class="spinner"></div>
+      <!-- ADD / EDIT FORM -->
+      <div class="product-form">
+        <p class="section-label" style="margin-top: 28px">{{ formModel._id ? 'Edit Product' : 'Add Product' }}</p>
+        <form (ngSubmit)="onSave()" #f="ngForm">
+          <div class="form-grid">
+            <div class="field-group">
+              <label class="field-label">Product Name</label>
+              <input class="field-input" name="name" placeholder="Name" [(ngModel)]="formModel.name" required />
+              <span *ngIf="showError && !formModel.name" class="error-msg">Required</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label">MRP (₹)</label>
+              <input class="field-input" type="number" name="mrp" placeholder="MRP" [(ngModel)]="formModel.mrp" />
+              <span *ngIf="showError && !formModel.mrp" class="error-msg">Required</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Price (₹)</label>
+              <input
+                class="field-input"
+                type="number"
+                name="price"
+                placeholder="Price"
+                [(ngModel)]="formModel.price"
+                required
+              />
+              <span *ngIf="showError && !formModel.price" class="error-msg">Required</span>
+            </div>
           </div>
-          <textarea
-            [disabled]="isGenerating"
-            rows="3"
-            name="description"
-            placeholder="Description"
-            [(ngModel)]="formModel.description"
-          >
-          </textarea>
-          <span *ngIf="showError && !formModel.description" class="error">Please enter Description</span>
-        </div>
-      </div>
-      <div style="margin-top: 1em">
-        <label class="field-label">Image</label>
-      </div>
-      <div class="file-upload-wrapper">
-        <input type="file" #fileInput (change)="onFileSelect($event)" class="hidden-input" accept="image/*" />
-        <button type="button" class="upload-btn" (click)="fileInput.click()">
-          <mat-icon>attach_file</mat-icon>
-          Choose File
-        </button>
-        <span class="file-name">{{ selectedFile?.name || 'No file chosen' }}</span>
-      </div>
-      <div class="preview">
-        <img [src]="previewUrl" (load)="onImageLoad()" />
-        <div *ngIf="imageLoading" class="skeleton-image"></div>
-      </div>
 
-      <!-- Row 3: button full width -->
-      <!-- <div class="form-row actions">
-      <button mat-raised-button color="primary" type="submit">
-        {{ editingIndex !== null ? 'Update' : 'Add' }}
-      </button>
-    </div> -->
-      <div class="actions">
-        <button
-          *ngIf="this.formModel._id !== ''"
-          style="margin-right: 20px"
-          class="primary-btn"
-          type="button"
-          (click)="onStopEditing()"
-        >
-          Stop editing
-        </button>
-        <button class="primary-btn" type="submit">{{ this.formModel._id !== '' ? 'Update' : 'Add' }}</button>
+          <div class="field-group" style="margin-top: 14px">
+            <div class="desc-label-row">
+              <label class="field-label">Description</label>
+              <button
+                class="gen-btn"
+                mat-button
+                *ngIf="formModel.name"
+                type="button"
+                [disabled]="isGenerating"
+                (click)="onGenerate(formModel.name)"
+              >
+                Generate 🤖
+              </button>
+              <div *ngIf="isGenerating" class="spinner"></div>
+            </div>
+            <textarea
+              class="field-input field-textarea"
+              [disabled]="isGenerating"
+              rows="3"
+              name="description"
+              placeholder="Description"
+              [(ngModel)]="formModel.description"
+            ></textarea>
+            <span *ngIf="showError && !formModel.description" class="error-msg">Required</span>
+          </div>
+
+          <div class="field-group" style="margin-top: 14px">
+            <label class="field-label">Image</label>
+            <div class="file-upload-row">
+              <input type="file" #fileInput (change)="onFileSelect($event)" class="hidden-input" accept="image/*" />
+              <button type="button" class="upload-btn" (click)="fileInput.click()">
+                <mat-icon>attach_file</mat-icon> Choose File
+              </button>
+              <span class="file-name">{{ selectedFile?.name || 'No file chosen' }}</span>
+            </div>
+            <span *ngIf="showError && !selectedFile" class="error-msg">Required</span>
+          </div>
+
+          <div class="preview" *ngIf="previewUrl">
+            <img [src]="previewUrl" (load)="onImageLoad()" />
+            <div *ngIf="imageLoading" class="skeleton-image"></div>
+          </div>
+
+          <div class="form-actions">
+            <button *ngIf="formModel._id" type="button" class="btn-outline" (click)="onStopEditing()">Cancel</button>
+            <button class="btn-primary" type="submit">{{ formModel._id ? 'Update Product' : 'Add Product' }}</button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
 </div>

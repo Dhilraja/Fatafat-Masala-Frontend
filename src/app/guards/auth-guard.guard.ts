@@ -28,7 +28,9 @@ export class AuthGuard implements CanActivate {
         }
         this.router.navigate(['/home']);
         this.dialog.open(LoginComponent, {
-          width: '70%',
+          width: '500px',
+          maxWidth: '95vw',
+          panelClass: 'addr-dialog-panel',
           data: {
             redirectTo: '/admin',
           },
@@ -38,7 +40,9 @@ export class AuthGuard implements CanActivate {
       catchError(() => {
         this.router.navigate(['/home']);
         this.dialog.open(LoginComponent, {
-          width: '70%',
+          width: '500px',
+          maxWidth: '95vw',
+          panelClass: 'addr-dialog-panel',
           data: {
             redirectTo: '/admin',
           },

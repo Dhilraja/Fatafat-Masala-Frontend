@@ -241,8 +241,21 @@
   }
 }
 
+/* ── DRAG HANDLE ── */
+.drag-handle {
+  display: none;
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 12px auto 0;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 540px) {
+  .drag-handle {
+    display: block;
+  }
   .dialog-header {
     padding: 22px 20px 0;
   }

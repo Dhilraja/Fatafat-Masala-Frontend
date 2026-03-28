@@ -1,9 +1,15 @@
-<!-- spice-loader.component.html -->
 <div class="overlay" *ngIf="loading$ | async">
-  <div class="spice-bowl">
-    <span class="spice chilli">🌶️</span>
-    <span class="spice turmeric">🫙</span>
-    <span class="spice pepper">🌿</span>
+  <div class="loader-card">
+    <div class="spice-bowl">
+      <span class="spice s1">🌶️</span>
+      <span class="spice s2">🫙</span>
+      <span class="spice s3">🌿</span>
+    </div>
+    <div class="dots">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+    <p class="loader-text">Preparing your spices…</p>
   </div>
-  <!-- <p>Cooking your request...</p> -->
 </div>

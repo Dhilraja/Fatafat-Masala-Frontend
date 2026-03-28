@@ -156,6 +156,18 @@ export class AppService {
     return this.http.post(this.url + '/address', payload, { withCredentials: true });
   }
 
+  submitContact(payload: { name: string; email: string; phone?: string; message: string }) {
+    return this.http.post(this.url + '/contact', payload);
+  }
+
+  getContacts() {
+    return this.http.get(this.url + '/contacts', { withCredentials: true });
+  }
+
+  markContactRead(id: string) {
+    return this.http.patch(this.url + `/contact-read/${id}`, {}, { withCredentials: true });
+  }
+
   changePassword(payload: { currentPassword: string; newPassword: string }) {
     return this.http.post(this.url + '/change-password', payload, { withCredentials: true });
   }

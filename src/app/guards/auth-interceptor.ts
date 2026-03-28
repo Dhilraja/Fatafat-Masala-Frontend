@@ -32,7 +32,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           dialogOpen = true;
           dialog
             .open(LoginComponent, {
-              width: '70%',
+              width: '500px',
+              maxWidth: '95vw',
+              panelClass: 'addr-dialog-panel',
               data: { timedOut },
             })
             .afterClosed()

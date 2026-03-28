@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,17 +28,21 @@ import imageCompression from 'browser-image-compression';
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent implements OnInit, AfterViewInit {
-  constructor(private service: AppService) {}
+  constructor(private service: AppService, private zone: NgZone) {}
 
   displayedColumns: string[] = ['name', 'mrp', 'price', 'action'];
   displayedColumns2: string[] = ['orderId', 'customerName', 'quantities', 'totalAmount', 'date'];
+  displayedColumns3: string[] = ['contactName', 'contactEmail', 'contactPhone', 'contactMessage', 'contactDate', 'contactAction'];
 
   products: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
   dataSource2 = new MatTableDataSource<any>([]);
+  dataSource3 = new MatTableDataSource<any>([]);
+  unreadCount = 0;
 
   @ViewChild('paginator1') paginator!: MatPaginator;
   @ViewChild('paginator2') paginator2!: MatPaginator;
+  @ViewChild('paginator3') paginator3!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('fileInput') fileInputVariable!: ElementRef;
 
@@ -62,6 +66,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getProducts();
     this.getOrders();
+    this.getContacts();
   }
 
   getProducts() {
@@ -70,6 +75,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.selectedFile = null;
       this.products = res.data;
       this.dataSource.data = this.products;
+      if (this.paginator) this.dataSource.paginator = this.paginator;
     });
   }
 
@@ -89,13 +95,45 @@ export class AdminComponent implements OnInit, AfterViewInit {
         this.totalRevenue += ele.totalAmount;
       });
       this.dataSource2.data = this.orders;
+      if (this.paginator2) this.dataSource2.paginator = this.paginator2;
+    });
+  }
+
+  getContacts() {
+    this.service.getContacts().subscribe((res: any) => {
+      this.dataSource3.data = res.data;
+      this.unreadCount = res.data.filter((c: any) => !c.isRead).length;
+      if (this.paginator3) this.dataSource3.paginator = this.paginator3;
+    });
+  }
+
+  markRead(contact: any) {
+    if (contact.isRead) return;
+    this.service.markContactRead(contact._id).subscribe(() => {
+      contact.isRead = true;
+      this.unreadCount = Math.max(0, this.unreadCount - 1);
     });
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource2.paginator = this.paginator2;
+    this.dataSource3.paginator = this.paginator3;
     this.dataSource.sort = this.sort;
+
+    // Staggered entrance animations
+    const els = document.querySelectorAll<HTMLElement>('[class*="anim-"]');
+    els.forEach((el) => {
+      const delay = parseInt(el.className.match(/anim-(\d+)/)?.[1] ?? '1', 10);
+      el.style.animationDelay = `${(delay - 1) * 0.12}s`;
+    });
+
+    // Scroll-reveal for sections
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+      { threshold: 0.08 },
+    );
+    document.querySelectorAll('.section').forEach((el) => observer.observe(el));
   }
 
   applyFilter(event: Event) {
@@ -251,4 +289,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   updateOrderStatus(id: string, event: any) {}
+
+  activeTab = 'orders';
+  switchTab(tab: string) { this.activeTab = tab; }
 }

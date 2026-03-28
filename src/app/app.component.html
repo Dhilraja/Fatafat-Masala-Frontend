@@ -45,9 +45,7 @@
       <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       <a routerLink="/products" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Products</a>
       <a routerLink="/about-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">About Us</a>
-      <a routerLink="/contact-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
-        >Contact Us</a
-      >
+      <a routerLink="/contact-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Contact Us</a>
       <a
         *ngIf="service.userDetails?.role == 'ADMIN'"
         routerLink="/admin"
@@ -57,18 +55,29 @@
       >
     </nav>
 
-    <!-- DESKTOP LOGIN -->
-    <button class="login-button" *ngIf="!service.isLoggedIn" mat-button matFab extended (click)="onLogin()">
-      <mat-icon>login</mat-icon>Login
-    </button>
-    <div *ngIf="service.isLoggedIn" class="profile">
-      <span
-        >Welcome, <span class="name">{{ service.userDetails.name }}!</span></span
-      >
-      <img [matMenuTriggerFor]="beforeMenu" src="../assets/images/account.png" />
-      <mat-menu #beforeMenu="matMenu" xPosition="before">
-        <button mat-menu-item matFab extended (click)="onProfile()"><mat-icon>account_circle</mat-icon>Profile</button>
-        <button mat-menu-item matFab extended (click)="onLogout()"><mat-icon>login</mat-icon>Logout</button>
+    <!-- DESKTOP RIGHT -->
+    <div class="header-right">
+      <button class="btn-login" *ngIf="!service.isLoggedIn" (click)="onLogin()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M5 1H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M9 10l3-3-3-3M12 7H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sign In
+      </button>
+
+      <div *ngIf="service.isLoggedIn" class="nav-profile" [matMenuTriggerFor]="profileMenu">
+        <div class="nav-avatar">{{ service.userDetails?.name?.[0] }}</div>
+        <span class="nav-name">{{ service.userDetails?.name?.split(' ')[0] }}</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <mat-menu #profileMenu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="onProfile()">
+          <mat-icon>account_circle</mat-icon> Profile
+        </button>
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon>logout</mat-icon> Logout
+        </button>
       </mat-menu>
     </div>
 
@@ -82,77 +91,57 @@
 
   <!-- MOBILE DRAWER -->
   <div class="mobile-drawer" id="mobileDrawer" [class.open]="isMenuOpen">
-    <div *ngIf="service.isLoggedIn" class="profile">
-      <span>Welcome, </span>
-      <span class="name">{{ service.userDetails.name }}!</span>
+
+    <!-- User pill when logged in -->
+    <div *ngIf="service.isLoggedIn" class="drawer-user">
+      <div class="drawer-avatar">{{ service.userDetails?.name?.[0] }}</div>
+      <div class="drawer-user-info">
+        <div class="drawer-user-name">{{ service.userDetails?.name }}</div>
+        <div class="drawer-user-email">{{ service.userDetails?.username }}</div>
+      </div>
     </div>
-    <div *ngIf="service.isLoggedIn" class="drawer-divider"></div>
-    <a
-      routerLink="/home"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false"
-      ><mat-icon>home</mat-icon>Home</a
-    >
-    <a
-      routerLink="/products"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false"
-      ><mat-icon>shopping_bag</mat-icon>Products</a
-    >
-    <a
-      routerLink="/about-us"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false"
-      ><mat-icon>info</mat-icon>About Us</a
-    >
-    <a
-      routerLink="/contact-us"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false"
-      ><mat-icon>mail</mat-icon>Contact Us</a
-    >
+
+    <div class="drawer-divider" *ngIf="service.isLoggedIn"></div>
+
+    <!-- Nav links -->
+    <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="isMenuOpen = false">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6.5L8 2l6 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 15V9h4v6" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      Home
+    </a>
+    <a routerLink="/products" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="isMenuOpen = false">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 1h2l1.5 8h7L13 5H4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="13" r="1" fill="currentColor"/><circle cx="11" cy="13" r="1" fill="currentColor"/></svg>
+      Products
+    </a>
+    <a routerLink="/about-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="isMenuOpen = false">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      About Us
+    </a>
+    <a routerLink="/contact-us" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="isMenuOpen = false">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M1 5l7 5 7-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Contact Us
+    </a>
+
     <div class="drawer-divider"></div>
-    <a
-      *ngIf="service.isLoggedIn"
-      routerLink="/profile"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false"
-      ><mat-icon>account_circle</mat-icon>Profile</a
-    >
-    <a
-      *ngIf="service.userDetails?.role == 'ADMIN' && service.isLoggedIn"
-      routerLink="/admin"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false"
-      ><mat-icon>admin_panel_settings</mat-icon>Admin</a
-    >
-    <a *ngIf="service.isLoggedIn" (click)="isMenuOpen = false; onLogout()"><mat-icon>logout</mat-icon>Logout</a>
-    <button
-      class="login-button"
-      *ngIf="!service.isLoggedIn"
-      mat-button
-      matFab
-      extended
-      (click)="isMenuOpen = false; onLogin()"
-    >
-      <mat-icon>login</mat-icon>Login
+
+    <a *ngIf="service.isLoggedIn" routerLink="/profile" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="isMenuOpen = false">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Profile
+    </a>
+    <a *ngIf="service.userDetails?.role == 'ADMIN' && service.isLoggedIn" routerLink="/admin" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="isMenuOpen = false">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1l1.8 3.6 4 .6-2.9 2.8.7 4L8 10l-3.6 1.9.7-4L2.2 5.2l4-.6z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      Admin
+    </a>
+
+    <a *ngIf="service.isLoggedIn" class="drawer-logout" (click)="isMenuOpen = false; onLogout()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Logout
+    </a>
+
+    <button class="drawer-login-btn" *ngIf="!service.isLoggedIn" (click)="isMenuOpen = false; onLogin()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 1H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M9 10l3-3-3-3M12 7H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Sign In
     </button>
-    <!-- <div *ngIf="service.isLoggedIn" class="profile">
-      <span
-        >Welcome, <span class="name">{{ service.userDetails.name }}!</span></span
-      >
-      <img [matMenuTriggerFor]="beforeMenu" src="../assets/images/account.png" />
-      <mat-menu #beforeMenu="matMenu" xPosition="before">
-        <button mat-menu-item matFab extended (click)="onProfile()"><mat-icon>account_circle</mat-icon>Profile</button>
-        <button mat-menu-item matFab extended (click)="onLogout()"><mat-icon>login</mat-icon>Logout</button>
-      </mat-menu>
-    </div> -->
+
   </div>
 
   <div class="spacer"></div>

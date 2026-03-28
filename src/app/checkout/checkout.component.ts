@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppService } from '../app.service';
 import { Router } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { AddressComponent } from '../address/address.component';
 
 @Component({
   selector: 'app-checkout',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
 })
@@ -17,6 +18,7 @@ export class CheckoutComponent implements OnInit {
     private service: AppService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private matDialog: MatDialog,
   ) {}
 
   totalQuantity = 0;
@@ -86,6 +88,25 @@ export class CheckoutComponent implements OnInit {
       this.router.navigate(['/order-placed'], {
         queryParams: { id: res?.data?._id },
       });
+    });
+  }
+
+  onAdd() {
+    const dialog = this.matDialog.open(AddressComponent, {
+      width: '560px',
+      maxWidth: '95vw',
+      panelClass: 'addr-dialog-panel',
+      data: null,
+    });
+    dialog.afterClosed().subscribe((res: any) => {
+      if (res) {
+        res['flag'] = true;
+        this.service.addUpdateAddress(res).subscribe(() => {
+          this.service.getProfile().subscribe((res: any) => {
+            this.addresses = res?.data?.userDetails?.addresses ?? [];
+          });
+        });
+      }
     });
   }
 

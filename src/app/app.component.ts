@@ -74,7 +74,9 @@ export class AppComponent implements OnInit {
 
   onLogin() {
     this.dialog.open(LoginComponent, {
-      width: '95%',
+      width: '500px',
+      maxWidth: '95vw',
+      panelClass: 'addr-dialog-panel',
     });
   }
 

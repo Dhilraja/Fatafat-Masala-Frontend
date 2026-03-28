@@ -1,82 +1,124 @@
-<section class="cart-header">
-  <h1>
-    Your Cart <span>({{ service.getTotalItems() }} item{{ service.getTotalItems() > 1 ? 's' : '' }})</span>
-  </h1>
-  <p>Review your spices before checkout</p>
-</section>
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
 
-<!-- Cart Layout -->
-<section class="cart-container">
-  <!-- LEFT: Cart Items -->
-  <div class="cart-items">
-    <div class="cart-item" *ngFor="let product of cartProducts">
-      <div class="item-img">
-        <img [src]="product.images[0].url" />
-      </div>
+<div class="page">
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <p class="section-label">Your Selection</p>
+    <h1 class="page-title">Your <em>Cart</em></h1>
+  </div>
 
-      <div class="item-info">
-        <h3>{{ product.name }}</h3>
-        <p>100g</p>
-        <button class="remove" (click)="onRemove(product._id)">
-          <img src="../../assets/images/delete.png" />Remove
-        </button>
-      </div>
+  <div class="cart-layout">
+    <!-- LEFT: ITEMS -->
+    <div class="left-col">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <p class="section-label">Review</p>
+            <h2 class="card-title">
+              Cart Items
+              <span class="item-count"
+                >({{ service.getTotalItems() }} item{{ service.getTotalItems() > 1 ? 's' : '' }})</span
+              >
+            </h2>
+          </div>
+        </div>
 
-      <div class="item-actions">
-        <span class="price">₹{{ product.price * product.quantity }}</span>
-        <!-- <div class="qty">
-          <button (click)="onDecrement(product._id)">-</button>
-          <span>{{ product.quantity }}</span>
-          <button (click)="onIncrement(product._id)">+</button>
-        </div> -->
-        <div class="quantity-control">
-          <button class="qty-btn" (click)="onDecrement(product?._id)"><span>−</span></button>
-          <span class="qty-value">{{ product?.quantity }}</span>
-          <button class="qty-btn" (click)="onIncrement(product?._id)"><span>+</span></button>
+        <div class="items-list">
+          <div class="item-row" *ngFor="let product of cartProducts">
+            <div class="item-img">
+              <img [src]="product.images[0].url" [alt]="product.name" />
+            </div>
+
+            <div class="item-info">
+              <div class="item-name">{{ product.name }}</div>
+              <div class="item-meta">100g</div>
+              <!-- <button class="remove-btn" (click)="onDecrement(product._id)">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                Remove
+              </button> -->
+            </div>
+
+            <div class="item-actions">
+              <div class="item-price">₹{{ product.price * product.quantity }}</div>
+              <div class="quantity-control">
+                <button class="qty-btn" (click)="onDecrement(product?._id)"><span>−</span></button>
+                <span class="qty-value">{{ product?.quantity }}</span>
+                <button class="qty-btn" (click)="onIncrement(product?._id)"><span>+</span></button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- TRUST BAR -->
+      <!-- <div class="trust-bar">
+        <div class="trust-item">
+          <img src="../../assets/images/secure-payment.png" />
+          <span>Secure Payments</span>
+        </div>
+        <div class="trust-item">
+          <img src="../../assets/images/leaf.png" />
+          <span>Freshly Packed</span>
+        </div>
+        <div class="trust-item">
+          <img src="../../assets/images/return-box.png" />
+          <span>Easy Returns</span>
+        </div>
+        <div class="trust-item">
+          <img src="../../assets/images/fast-delivery.png" />
+          <span>Fast Delivery</span>
+        </div>
+      </div> -->
     </div>
+
+    <!-- RIGHT: SUMMARY -->
+    <aside class="summary-card">
+      <p class="section-label">Summary</p>
+      <h2 class="card-title" style="margin-bottom: 24px">Order Summary</h2>
+
+      <div class="summary-row">
+        <span
+          >Subtotal
+          <span class="muted"
+            >({{ service.getTotalItems() }} item{{ service.getTotalItems() > 1 ? 's' : '' }})</span
+          ></span
+        >
+        <span>₹{{ totalPrice }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Delivery fee</span>
+        <span>₹{{ deliveryFees }}</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>₹{{ totalPrice + deliveryFees }}</span>
+      </div>
+
+      <button class="checkout-btn" (click)="onCheckout()">
+        Proceed to Checkout
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M3 8h10M9 4l4 4-4 4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      <div class="trust-pills">
+        <div class="trust-pill">🔒 Secure</div>
+        <div class="trust-pill">🚚 Fast Delivery</div>
+        <div class="trust-pill">↩ Easy Returns</div>
+      </div>
+    </aside>
   </div>
-
-  <!-- RIGHT: Order Summary -->
-  <aside class="summary">
-    <h2>Order Summary</h2>
-
-    <div class="row">
-      <span>Subtotal ({{ service.getTotalItems() }} item{{ service.getTotalItems() > 1 ? 's' : '' }})</span>
-      <span>₹{{ totalPrice }}</span>
-    </div>
-
-    <div class="row">
-      <span>Delivery</span>
-      <span>₹{{ deliveryFees }}</span>
-    </div>
-
-    <div class="row total">
-      <span>Total</span>
-      <span>₹{{ totalPrice + deliveryFees }}</span>
-    </div>
-
-    <button class="checkout" (click)="onCheckout()">Proceed to Checkout →</button>
-  </aside>
-</section>
-
-<!-- Trust Bar -->
-<section class="trust">
-  <div class="trust-card">
-    <img src="../../assets/images/secure-payment.png" />
-    <span>Secure Payments</span>
-  </div>
-  <div class="trust-card">
-    <img src="../../assets/images/leaf.png" />
-    <span>Freshly Packed</span>
-  </div>
-  <div class="trust-card">
-    <img src="../../assets/images/return-box.png" />
-    <span>Easy Returns</span>
-  </div>
-  <div class="trust-card">
-    <img src="../../assets/images/fast-delivery.png" />
-    <span>Fast Delivery</span>
-  </div>
-</section>
+</div>

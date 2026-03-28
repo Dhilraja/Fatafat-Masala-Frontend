@@ -1,86 +1,118 @@
-<!-- Cart Layout -->
-<section class="cart-container">
-  <!-- LEFT: Cart Items -->
-  <div class="cart-items">
-    <div class="addresses-heading-container">
-      <h1>Addresses</h1>
-      <span class="address-description">(You can add or update addresses in profile page)</span>
-    </div>
-    <div class="no-address-container">
-      <span class="no-address" *ngIf="addresses.length == 0">No addresses found!</span>
-    </div>
-    <div class="address-outer">
-      <div
-        *ngFor="let address of addresses"
-        class="address-container"
-        [ngClass]="{ selected: address.selected }"
-        (click)="onClickAddress(address)"
-      >
-        <div class="address-right">
-          <div class="name-check">
-            <span class="address-name"
-              ><b>{{ address?.name }},</b></span
-            >
-            <mat-icon *ngIf="address.selected" style="font-weight: 600">check</mat-icon>
-          </div>
-          <span class="address-line">{{
-            address?.line1 +
-              ', ' +
-              address?.line2 +
-              ', ' +
-              address?.city +
-              ', ' +
-              address?.state +
-              ' - ' +
-              address?.pincode
-          }}</span>
-        </div>
-      </div>
-    </div>
-    <h1>
-      Items
-      <span class="items-qty" style="font-weight: normal"
-        >({{ totalQuantity }} item{{ totalQuantity > 1 ? 's' : '' }})</span
-      >
-    </h1>
-    <div class="cart-item" *ngFor="let product of checkoutProducts">
-      <div class="item-img">
-        <img [src]="product?.images?.[0]?.url" />
-      </div>
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
 
-      <div class="item-info">
-        <h3>{{ product.productName }}</h3>
-        <p>100g</p>
-      </div>
-
-      <div class="item-actions">
-        <span class="price">₹{{ product.price }}</span>
-        <div class="qty">
-          <span>{{ product.quantity }}</span>
-        </div>
-      </div>
-    </div>
+<div class="page">
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <p class="section-label">Almost There</p>
+    <h1 class="page-title">Complete your <em>Order</em></h1>
   </div>
 
-  <!-- RIGHT: Order Summary -->
-  <aside class="summary">
-    <h1>Order Summary</h1>
+  <div class="checkout-layout">
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+      <!-- DELIVERY ADDRESS -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <p class="section-label">Step 1</p>
+            <h2 class="card-title">Delivery Address</h2>
+          </div>
+          <button class="add-addr-btn" (click)="onAdd()">+ Add New Address</button>
+        </div>
 
-    <div class="row">
-      <span>Subtotal ({{ totalQuantity }} item{{ totalQuantity > 1 ? 's' : '' }})</span>
-      <span>₹{{ totalPrice }}</span>
+        <div class="checkout-empty-addr" *ngIf="addresses.length == 0">
+          <div class="empty-icon">📍</div>
+          <div class="empty-title">No addresses saved</div>
+          <div class="empty-sub">Add a delivery address to continue checkout.</div>
+          <button class="empty-btn" (click)="onAdd()">+ Add Address</button>
+        </div>
+
+        <div class="addr-grid" *ngIf="addresses.length > 0">
+          <div
+            *ngFor="let address of addresses"
+            class="addr-card"
+            [class.selected]="address.selected"
+            (click)="onClickAddress(address)"
+          >
+            <div class="addr-check" *ngIf="address.selected">✓</div>
+            <div class="addr-name">{{ address?.name }}</div>
+            <div class="addr-line">
+              {{ address?.line1 + ', ' + address?.line2 }},<br />
+              {{ address?.city + ', ' + address?.state }} — {{ address?.pincode }}
+            </div>
+            <div class="addr-phone" *ngIf="address?.phone">📞 +91 {{ address?.phone }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDER ITEMS -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <p class="section-label">Step 2</p>
+            <h2 class="card-title">
+              Your Items <span class="item-count">({{ totalQuantity }})</span>
+            </h2>
+          </div>
+        </div>
+
+        <div class="items-list">
+          <div class="item-row" *ngFor="let product of checkoutProducts">
+            <div class="item-img">
+              <img [src]="product?.images?.[0]?.url" [alt]="product?.productName" />
+            </div>
+            <div class="item-info">
+              <div class="item-name">{{ product.productName }}</div>
+              <div class="item-meta">100g · Qty {{ product.quantity }}</div>
+            </div>
+            <div class="item-price">₹{{ product.price }}</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="row">
-      <span>Delivery</span>
-      <span>₹{{ deliveryFees }}</span>
-    </div>
+    <!-- RIGHT COLUMN: SUMMARY -->
+    <aside class="summary-card">
+      <p class="section-label">Step 3</p>
+      <h2 class="card-title" style="margin-bottom: 24px">Order Summary</h2>
 
-    <div class="row total">
-      <span>Total</span>
-      <span>₹{{ totalPrice + deliveryFees }}</span>
-    </div>
+      <div class="summary-row">
+        <span
+          >Subtotal <span class="muted">({{ totalQuantity }} item{{ totalQuantity > 1 ? 's' : '' }})</span></span
+        >
+        <span>₹{{ totalPrice }}</span>
+      </div>
 
-    <button class="checkout" (click)="onPlaceOrder()">Place Order →</button>
-  </aside>
-</section>
+      <div class="summary-row">
+        <span>Delivery fee</span>
+        <span>₹{{ deliveryFees }}</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>₹{{ totalPrice + deliveryFees }}</span>
+      </div>
+
+      <button class="place-order-btn" (click)="onPlaceOrder()">
+        Place Order
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M3 8h10M9 4l4 4-4 4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      <div class="trust-row">
+        <div class="trust-item">🔒 Secure checkout</div>
+        <div class="trust-item">🚚 Fast delivery</div>
+      </div>
+    </aside>
+  </div>
+</div>

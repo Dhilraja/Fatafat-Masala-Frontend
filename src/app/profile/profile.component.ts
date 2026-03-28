@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AppService } from '../app.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AddressComponent } from '../address/address.component';
@@ -12,7 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
-  imports: [ReactiveFormsModule, MatInputModule, CommonModule, MatIconModule, MatButtonModule, MatSnackBarModule],
+  imports: [ReactiveFormsModule, MatInputModule, CommonModule, MatIconModule, MatButtonModule, MatSnackBarModule, RouterLink],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -80,19 +80,25 @@ export class ProfileComponent implements OnInit {
       return;
     }
     this.pwLoading = true;
-    this.service.changePassword({ currentPassword: currentPassword!, newPassword: newPassword! })
-      .subscribe({
-        next: () => {
-          this.pwLoading = false;
-          this.pwSuccess = true;
-          this.pwForm.reset();
-          setTimeout(() => (this.pwSuccess = false), 4000);
-        },
-        error: (err: any) => {
-          this.pwLoading = false;
-          this.snackBar.open(err?.error?.message ?? 'Failed to update password', 'Close', { duration: 3000 });
-        },
-      });
+    this.service.changePassword({ currentPassword: currentPassword!, newPassword: newPassword! }).subscribe({
+      next: () => {
+        this.pwLoading = false;
+        this.pwSuccess = true;
+        this.pwForm.reset();
+        this.service.logout().subscribe((res: any) => {
+          this.service.isLoggedIn = false;
+          this.service.userDetails = null;
+          this.router.navigate(['/home']);
+          setTimeout(() => {
+            window.location.reload();
+          });
+        });
+      },
+      error: (err: any) => {
+        this.pwLoading = false;
+        this.snackBar.open(err?.error?.message ?? 'Failed to update password', 'Close', { duration: 3000 });
+      },
+    });
   }
 
   // ── ADDRESSES ──
@@ -107,7 +113,12 @@ export class ProfileComponent implements OnInit {
       if (res) {
         res['flag'] = true;
         this.service.addUpdateAddress(res).subscribe((res: any) => {
-          this.snackBar.open(res.message, 'Close', { duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom', panelClass: ['error-snackbar'] });
+          this.snackBar.open(res.message, 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar'],
+          });
           this.ngOnInit();
         });
       }
@@ -126,7 +137,12 @@ export class ProfileComponent implements OnInit {
         res['flag'] = false;
         res['_id'] = address._id;
         this.service.addUpdateAddress(res).subscribe((res: any) => {
-          this.snackBar.open(res.message, 'Close', { duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom', panelClass: ['error-snackbar'] });
+          this.snackBar.open(res.message, 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['error-snackbar'],
+          });
           this.ngOnInit();
         });
       }
@@ -135,7 +151,12 @@ export class ProfileComponent implements OnInit {
 
   onDeleteAddress(id: string) {
     this.service.deleteAddress(id).subscribe((res: any) => {
-      this.snackBar.open(res.message, 'Close', { duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom', panelClass: ['error-snackbar'] });
+      this.snackBar.open(res.message, 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        panelClass: ['error-snackbar'],
+      });
       this.ngOnInit();
     });
   }
@@ -144,5 +165,9 @@ export class ProfileComponent implements OnInit {
 
   switchTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  viewOrderDetails(id: string) {
+    this.router.navigate(['/order-details'], { queryParams: { id } });
   }
 }

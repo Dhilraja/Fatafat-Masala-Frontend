@@ -135,7 +135,14 @@
       </div>
     </div>
 
-    <div class="orders-list">
+    <div class="orders-empty" *ngIf="!data?.orders?.length">
+      <div class="empty-icon">🛒</div>
+      <div class="empty-title">No orders yet</div>
+      <div class="empty-sub">When you place an order, it will appear here.</div>
+      <a class="empty-btn" routerLink="/products">Browse Products</a>
+    </div>
+
+    <div class="orders-list" *ngIf="data?.orders?.length">
       <!-- Order 1 — delivered -->
       <div class="order-card" *ngFor="let order of data?.orders">
         <div class="order-header">
@@ -174,67 +181,9 @@
         </div>
         <div class="order-footer">
           <button class="order-action primary">Track Order</button>
-          <button class="order-action">View Details</button>
+          <button class="order-action" (click)="viewOrderDetails(order._id)">View Details</button>
         </div>
       </div>
-
-      <!-- <div class="order-card">
-        <div class="order-header">
-          <div class="order-id-wrap">
-            <span class="order-id-label">Order ID</span>
-            <span class="order-id-val">#FM-20519</span>
-          </div>
-          <span class="order-status processing"> <span class="order-status-dot"></span>Processing </span>
-          <span class="order-date">24 Mar 2025</span>
-          <span class="order-total">₹299</span>
-        </div>
-        <div class="order-items">
-          <div class="order-item">
-            <div class="item-img">🌿</div>
-            <div class="item-info">
-              <div class="item-name">Coriander Powder</div>
-              <div class="item-meta">100g · Qty: 1</div>
-            </div>
-          </div>
-        </div>
-        <div class="order-footer">
-          <button class="order-action primary">Track Order</button>
-          <button class="order-action">Cancel Order</button>
-        </div>
-      </div>
-
-      <div class="order-card">
-        <div class="order-header">
-          <div class="order-id-wrap">
-            <span class="order-id-label">Order ID</span>
-            <span class="order-id-val">#FM-20501</span>
-          </div>
-          <span class="order-status shipped"> <span class="order-status-dot"></span>Shipped </span>
-          <span class="order-date">18 Mar 2025</span>
-          <span class="order-total">₹530</span>
-        </div>
-        <div class="order-items">
-          <div class="order-item">
-            <div class="item-img">🍚</div>
-            <div class="item-info">
-              <div class="item-name">Biryani Masala</div>
-              <div class="item-meta">100g · Qty: 2</div>
-            </div>
-          </div>
-          <div class="order-item">
-            <div class="item-img">⚫</div>
-            <div class="item-info">
-              <div class="item-name">Black Pepper</div>
-              <div class="item-meta">50g · Qty: 1</div>
-            </div>
-          </div>
-          <span class="order-more">+1 more item</span>
-        </div>
-        <div class="order-footer">
-          <button class="order-action primary">Track Order</button>
-          <button class="order-action">View Details</button>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -245,10 +194,19 @@
         <p class="section-label">Saved Locations</p>
         <h2 class="section-title">My Addresses</h2>
       </div>
-      <button class="add-new-btn" (click)="onAdd()">+ Add New Address</button>
+      <button class="add-new-btn" *ngIf="data?.userDetails?.addresses?.length" (click)="onAdd()">
+        + Add New Address
+      </button>
     </div>
 
-    <div class="addresses-grid">
+    <div class="orders-empty" *ngIf="!data?.userDetails?.addresses?.length">
+      <div class="empty-icon">📍</div>
+      <div class="empty-title">No addresses saved</div>
+      <div class="empty-sub">Add a delivery address to make checkout faster.</div>
+      <button class="empty-btn" (click)="onAdd()">+ Add Address</button>
+    </div>
+
+    <div class="addresses-grid" *ngIf="data?.userDetails?.addresses?.length">
       <!-- Address 1 — default home -->
       <div class="addr-card default" *ngFor="let address of data.userDetails.addresses">
         <!-- <div class="addr-top"> -->
@@ -330,17 +288,30 @@
 
     <div class="password-wrap">
       <form class="pw-card" [formGroup]="pwForm" (ngSubmit)="onChangePassword()">
-
         <!-- current password -->
         <div class="form-group">
           <label class="form-label">Current Password</label>
           <div class="form-input-wrap">
-            <input [type]="showCurrentPw ? 'text' : 'password'" class="form-input" placeholder="Enter current password" formControlName="currentPassword" />
+            <input
+              [type]="showCurrentPw ? 'text' : 'password'"
+              class="form-input"
+              placeholder="Enter current password"
+              formControlName="currentPassword"
+            />
             <button class="eye-btn" type="button" (click)="showCurrentPw = !showCurrentPw">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
                 <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
-                <line *ngIf="showCurrentPw" x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                <line
+                  *ngIf="showCurrentPw"
+                  x1="2"
+                  y1="2"
+                  x2="14"
+                  y2="14"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                />
               </svg>
             </button>
           </div>
@@ -350,22 +321,57 @@
         <div class="form-group">
           <label class="form-label">New Password</label>
           <div class="form-input-wrap">
-            <input [type]="showNewPw ? 'text' : 'password'" class="form-input" placeholder="Enter new password" formControlName="newPassword" />
+            <input
+              [type]="showNewPw ? 'text' : 'password'"
+              class="form-input"
+              placeholder="Enter new password"
+              formControlName="newPassword"
+            />
             <button class="eye-btn" type="button" (click)="showNewPw = !showNewPw">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
                 <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
-                <line *ngIf="showNewPw" x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                <line
+                  *ngIf="showNewPw"
+                  x1="2"
+                  y1="2"
+                  x2="14"
+                  y2="14"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                />
               </svg>
             </button>
           </div>
           <!-- strength bar -->
           <div class="strength-wrap">
             <div class="strength-bars">
-              <div class="strength-bar" [class.filled]="pwStrength.score >= 1" [class.weak]="pwStrength.score === 1" [class.medium]="pwStrength.score === 2 || pwStrength.score === 3" [class.strong]="pwStrength.score === 4"></div>
-              <div class="strength-bar" [class.filled]="pwStrength.score >= 2" [class.weak]="pwStrength.score === 1" [class.medium]="pwStrength.score === 2 || pwStrength.score === 3" [class.strong]="pwStrength.score === 4"></div>
-              <div class="strength-bar" [class.filled]="pwStrength.score >= 3" [class.medium]="pwStrength.score === 3" [class.strong]="pwStrength.score === 4"></div>
-              <div class="strength-bar" [class.filled]="pwStrength.score >= 4" [class.strong]="pwStrength.score === 4"></div>
+              <div
+                class="strength-bar"
+                [class.filled]="pwStrength.score >= 1"
+                [class.weak]="pwStrength.score === 1"
+                [class.medium]="pwStrength.score === 2 || pwStrength.score === 3"
+                [class.strong]="pwStrength.score === 4"
+              ></div>
+              <div
+                class="strength-bar"
+                [class.filled]="pwStrength.score >= 2"
+                [class.weak]="pwStrength.score === 1"
+                [class.medium]="pwStrength.score === 2 || pwStrength.score === 3"
+                [class.strong]="pwStrength.score === 4"
+              ></div>
+              <div
+                class="strength-bar"
+                [class.filled]="pwStrength.score >= 3"
+                [class.medium]="pwStrength.score === 3"
+                [class.strong]="pwStrength.score === 4"
+              ></div>
+              <div
+                class="strength-bar"
+                [class.filled]="pwStrength.score >= 4"
+                [class.strong]="pwStrength.score === 4"
+              ></div>
             </div>
             <span class="strength-label">{{ pwStrength.label }}</span>
           </div>
@@ -375,12 +381,26 @@
         <div class="form-group">
           <label class="form-label">Confirm New Password</label>
           <div class="form-input-wrap">
-            <input [type]="showConfirmPw ? 'text' : 'password'" class="form-input" placeholder="Re-enter new password" formControlName="confirmPassword" />
+            <input
+              [type]="showConfirmPw ? 'text' : 'password'"
+              class="form-input"
+              placeholder="Re-enter new password"
+              formControlName="confirmPassword"
+            />
             <button class="eye-btn" type="button" (click)="showConfirmPw = !showConfirmPw">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3" />
                 <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3" />
-                <line *ngIf="showConfirmPw" x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                <line
+                  *ngIf="showConfirmPw"
+                  x1="2"
+                  y1="2"
+                  x2="14"
+                  y2="14"
+                  stroke="currentColor"
+                  stroke-width="1.3"
+                  stroke-linecap="round"
+                />
               </svg>
             </button>
           </div>
@@ -413,11 +433,16 @@
         <div class="pw-toast" [class.visible]="pwSuccess">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="7" stroke="#3a9a6e" stroke-width="1.4" />
-            <polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#3a9a6e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <polyline
+              points="4.5,8 7,10.5 11.5,5.5"
+              stroke="#3a9a6e"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           Password updated successfully!
         </div>
-
       </form>
     </div>
   </div>

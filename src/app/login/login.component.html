@@ -1,223 +1,297 @@
-<div *ngIf="isLogin === true" class="login-page">
-  <div class="login-wrapper">
-    <div class="login-card">
-      <!-- Illustration -->
-      <div class="illustration">🌶️ 🫙 🌿</div>
+<!-- ── LOGIN VIEW ── -->
+<div *ngIf="isLogin === true" class="dialog-wrap">
+  <div class="dialog-header">
+    <!-- <div class="brand-mark">🌶️🫙🌿</div> -->
+    <p class="eyebrow">Welcome Back</p>
+    <h2 class="dialog-title">Sign in to your <em>account</em></h2>
+    <p *ngIf="data?.timedOut" class="session-msg">Your session expired — please sign in again.</p>
+  </div>
 
-      <h1>Welcome Back!</h1>
-      <p class="subtitle">Sign in to your account</p>
-      <p *ngIf="data?.timedOut" class="subtitle" style="color: red">Session timed out</p>
+  <form [formGroup]="loginForm" class="dialog-form" (ngSubmit)="onLogin()">
+    <div class="field-group">
+      <label class="field-label">Email / Username</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5" />
+          <path
+            d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        <input class="field-input" type="text" placeholder="you@example.com" formControlName="username" />
+      </div>
+      <span *ngIf="showErrorLogin && loginForm.controls.username.hasError('required')" class="error-msg">
+        Please enter your username
+      </span>
+    </div>
 
-      <!-- Login Form -->
-      <form [formGroup]="loginForm">
-        <div class="input-group">
-          <img class="left-icon" src="../../assets/images/user.png" />
-          <input type="text" placeholder="Username" formControlName="username" />
-        </div>
-        <span *ngIf="showErrorLogin && loginForm.controls.username.hasError('required')" class="error-message"
-          >Please enter username</span
-        >
-
-        <div class="input-group">
-          <img class="left-icon" src="../../assets/images/padlock.png" />
-          <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" />
-          <div class="right-icons-container">
-            <img *ngIf="showPassword" (click)="togglePassword()" class="right-icon" src="../../assets/images/eye.png" />
-            <img
-              *ngIf="!showPassword"
-              (click)="togglePassword()"
-              class="right-icon"
-              src="../../assets/images/hidden.png"
+    <div class="field-group">
+      <label class="field-label">Password</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <input
+          class="field-input has-right"
+          [type]="showLoginPw ? 'text' : 'password'"
+          placeholder="••••••••"
+          formControlName="password"
+        />
+        <button type="button" class="eye-btn" (click)="toggleLoginPw()">
+          <svg *ngIf="!showLoginPw" viewBox="0 0 20 20" fill="none" width="18" height="18">
+            <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          <svg *ngIf="showLoginPw" viewBox="0 0 24 24" fill="none" width="18" height="18">
+            <path
+              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             />
-            <span class="forgot" (click)="onForgot()" class="forgot">Forgot?</span>
-          </div>
-        </div>
-        <span *ngIf="showErrorLogin && loginForm.controls.password.hasError('required')" class="error-message"
-          >Please enter password</span
-        >
-
-        <button class="primary-btn" (click)="onLogin()">Login</button>
-
-        <!-- <div class="divider">
-          <span>or</span>
-        </div>
-
-        <button class="secondary-btn">📱 Continue with OTP</button> -->
-      </form>
-
-      <p class="signup">
-        Don’t have an account?
-        <span (click)="toggleView()">Sign Up →</span>
-      </p>
+            <path
+              d="M10.73 10.73A3 3 0 0 0 12 15a3 3 0 0 0 2.27-1.02"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="field-footer">
+        <span *ngIf="showErrorLogin && loginForm.controls.password.hasError('required')" class="error-msg">
+          Please enter your password
+        </span>
+        <span class="forgot-link" (click)="onForgot()">Forgot password?</span>
+      </div>
     </div>
-  </div>
+
+    <button type="submit" class="btn-primary">Sign In</button>
+  </form>
+
+  <p class="switch-view">New here? <span (click)="toggleView()">Create an account →</span></p>
 </div>
-<div *ngIf="isLogin === false" class="login-page">
-  <div class="login-wrapper">
-    <div class="login-card">
-      <!-- Illustration -->
-      <div class="illustration">🌶️ 🫙 🌿</div>
 
-      <h1>Create an Account!</h1>
-      <p class="subtitle">Join us for fresh spices</p>
+<!-- ── SIGN UP VIEW ── -->
+<div *ngIf="isLogin === false" class="dialog-wrap">
+  <div class="dialog-header">
+    <!-- <div class="brand-mark">🌶️🫙🌿</div> -->
+    <p class="eyebrow">Join Us</p>
+    <h2 class="dialog-title">Create your <em>account</em></h2>
+  </div>
 
-      <!-- Login Form -->
-      <form [formGroup]="signUpForm">
-        <div class="input-group">
-          <img class="left-icon" src="../../assets/images/user.png" />
-          <input type="text" placeholder="Name" formControlName="name" />
-        </div>
-        <span *ngIf="showError && signUpForm.controls.name.hasError('required')" class="error-message"
-          >Please enter name</span
-        >
-
-        <div class="input-group">
-          <img class="left-icon" src="../../assets/images/mail.png" />
-          <input type="text" placeholder="Email" formControlName="username" />
-          <button
-            *ngIf="showOtpButton"
-            class="single-right-button"
-            [disabled]="otpDisabled || !signUpForm.controls.username.valid"
-            (click)="onGetOtp()"
-          >
-            {{ otpButtonLabel }}
-          </button>
-        </div>
-        <span *ngIf="showError && signUpForm.controls.username.hasError('required')" class="error-message"
-          >Please enter email</span
-        >
-        <span
-          *ngIf="
-            showError &&
-            signUpForm.controls.username.hasError('pattern') &&
-            !signUpForm.controls.username.hasError('required')
-          "
-          class="error-message"
-          >Please enter a valid email</span
-        >
-        <span
-          *ngIf="
-            showError &&
-            this.signUpForm.controls.username.valid &&
-            this.signUpForm.controls.username.status != 'DISABLED'
-          "
-          class="error-message"
-          >Please verify with OTP</span
-        >
-        <span
-          *ngIf="existingUsername != undefined && existingUsername == signUpForm.controls.username.value"
-          class="error-message"
-          >Username already exists</span
-        >
-
-        <div *ngIf="showOtpInput" class="input-group">
-          <img class="left-icon" src="../../assets/images/password-protection.png" />
-          <input type="text" placeholder="OTP" formControlName="otp" maxlength="6" />
-          <button
-            class="single-right-button"
-            [disabled]="
-              signUpForm.controls.otp.hasError('minlength') ||
-              signUpForm.controls.otp.hasError('required') ||
-              signUpForm.controls.otp.hasError('pattern')
-            "
-            (click)="onValidateOtp()"
-          >
-            Validate OTP
-          </button>
-        </div>
-
-        <div class="input-group">
-          <img class="left-icon" src="../../assets/images/padlock.png" />
-          <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" />
-          <img
-            *ngIf="showPassword"
-            (click)="togglePassword()"
-            class="single-right-icon"
-            src="../../assets/images/eye.png"
+  <form [formGroup]="signUpForm" class="dialog-form" (ngSubmit)="onSignUp()">
+    <div class="field-group">
+      <label class="field-label">Full Name</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5" />
+          <path
+            d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
           />
-          <img
-            *ngIf="!showPassword"
-            (click)="togglePassword()"
-            class="single-right-icon"
-            src="../../assets/images/hidden.png"
-          />
-        </div>
-        <span *ngIf="showError && signUpForm.controls.password.hasError('required')" class="error-message"
-          >Please enter password</span
-        >
-        <span
-          *ngIf="
-            showError &&
-            signUpForm.controls.password.hasError('pattern') &&
-            !signUpForm.controls.password.hasError('required') &&
-            !signUpForm.controls.password.hasError('minlength')
-          "
-          class="error-message"
-          >Password must have atleast one upppercase, one lowercase, one digit and one special character</span
-        >
-        <span
-          *ngIf="
-            showError &&
-            signUpForm.controls.password.hasError('minlength') &&
-            !signUpForm.controls.password.hasError('required')
-          "
-          class="error-message"
-          >Password must have atleast 8 characters</span
-        >
-
-        <div class="input-group">
-          <img class="left-icon" src="../../assets/images/padlock.png" />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            formControlName="confirmPassword"
-            (paste)="$event.preventDefault()"
-          />
-        </div>
-        <span *ngIf="showError && signUpForm.controls.confirmPassword.hasError('required')" class="error-message"
-          >Please re-enter your password</span
-        >
-        <span
-          *ngIf="
-            showError &&
-            signUpForm.controls.confirmPassword.value != signUpForm.controls.password.value &&
-            !signUpForm.controls.confirmPassword.hasError('required')
-          "
-          class="error-message"
-          >Passwords does not match</span
-        >
-
-        <button (click)="onSignUp()" class="primary-btn">Sign Up</button>
-
-        <!-- <div class="divider">
-          <span>or</span>
-        </div>
-
-        <button class="secondary-btn">📱 Continue with OTP</button> -->
-      </form>
-
-      <p class="signup">
-        Already have an account?
-        <span (click)="toggleView()">Log in →</span>
-      </p>
+        </svg>
+        <input class="field-input" type="text" placeholder="Your name" formControlName="name" />
+      </div>
+      <span *ngIf="showError && signUpForm.controls.name.hasError('required')" class="error-msg">
+        Please enter your name
+      </span>
     </div>
-  </div>
-</div>
-<!-- <div *ngIf="showSuccess && isLogin == null" class="success-wrapper login-page">
-  <div class="checkmark">✓</div>
-  <p>Login successful!</p>
-</div> -->
 
+    <div class="field-group">
+      <label class="field-label">Email Address</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <input
+          class="field-input"
+          [class.has-right]="showOtpButton"
+          type="text"
+          placeholder="you@example.com"
+          formControlName="username"
+        />
+        <button
+          *ngIf="showOtpButton"
+          type="button"
+          class="inline-btn"
+          [disabled]="otpDisabled || !signUpForm.controls.username.valid"
+          (click)="onGetOtp()"
+        >
+          {{ otpButtonLabel }}
+        </button>
+      </div>
+      <span *ngIf="showError && signUpForm.controls.username.hasError('required')" class="error-msg"
+        >Please enter your email</span
+      >
+      <span
+        *ngIf="
+          showError &&
+          signUpForm.controls.username.hasError('pattern') &&
+          !signUpForm.controls.username.hasError('required')
+        "
+        class="error-msg"
+        >Please enter a valid email</span
+      >
+      <span
+        *ngIf="showError && signUpForm.controls.username.valid && signUpForm.controls.username.status != 'DISABLED'"
+        class="error-msg"
+        >Please verify your email with OTP</span
+      >
+      <span
+        *ngIf="existingUsername != undefined && existingUsername == signUpForm.controls.username.value"
+        class="error-msg"
+        >This email is already registered</span
+      >
+    </div>
+
+    <div *ngIf="showOtpInput" class="field-group">
+      <label class="field-label">OTP</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M10 2l1.8 3.6 4 .6-2.9 2.8.7 4L10 11l-3.6 1.9.7-4L4.2 6.2l4-.6z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <input
+          class="field-input has-right"
+          type="text"
+          placeholder="6-digit OTP"
+          formControlName="otp"
+          maxlength="6"
+          inputmode="numeric"
+        />
+        <button
+          type="button"
+          class="inline-btn"
+          [disabled]="
+            signUpForm.controls.otp.hasError('minlength') ||
+            signUpForm.controls.otp.hasError('required') ||
+            signUpForm.controls.otp.hasError('pattern')
+          "
+          (click)="onValidateOtp()"
+        >
+          Verify
+        </button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Password</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <input
+          class="field-input has-right"
+          [type]="showSignupPw ? 'text' : 'password'"
+          placeholder="Min 8 characters"
+          formControlName="password"
+        />
+        <button type="button" class="eye-btn" (click)="toggleSignupPw()">
+          <svg *ngIf="!showSignupPw" viewBox="0 0 20 20" fill="none" width="18" height="18">
+            <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          <svg *ngIf="showSignupPw" viewBox="0 0 24 24" fill="none" width="18" height="18">
+            <path
+              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M10.73 10.73A3 3 0 0 0 12 15a3 3 0 0 0 2.27-1.02"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <span *ngIf="showError && signUpForm.controls.password.hasError('required')" class="error-msg"
+        >Please enter a password</span
+      >
+      <span
+        *ngIf="
+          showError &&
+          signUpForm.controls.password.hasError('minlength') &&
+          !signUpForm.controls.password.hasError('required')
+        "
+        class="error-msg"
+        >Password must be at least 8 characters</span
+      >
+      <span
+        *ngIf="
+          showError &&
+          signUpForm.controls.password.hasError('pattern') &&
+          !signUpForm.controls.password.hasError('required') &&
+          !signUpForm.controls.password.hasError('minlength')
+        "
+        class="error-msg"
+        >Must include uppercase, lowercase, number and special character</span
+      >
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Confirm Password</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <input
+          class="field-input"
+          type="password"
+          placeholder="Re-enter password"
+          formControlName="confirmPassword"
+          (paste)="$event.preventDefault()"
+        />
+      </div>
+      <span *ngIf="showError && signUpForm.controls.confirmPassword.hasError('required')" class="error-msg"
+        >Please confirm your password</span
+      >
+      <span
+        *ngIf="
+          showError &&
+          signUpForm.controls.confirmPassword.value != signUpForm.controls.password.value &&
+          !signUpForm.controls.confirmPassword.hasError('required')
+        "
+        class="error-msg"
+        >Passwords do not match</span
+      >
+    </div>
+
+    <button type="submit" class="btn-primary">Create Account</button>
+  </form>
+
+  <p class="switch-view">Already have an account? <span (click)="toggleView()">Sign in →</span></p>
+</div>
+
+<!-- ── SUCCESS ANIMATIONS ── -->
 <ng-lottie
-  style="width: 50%; margin: 0 auto"
+  class="lottie-wrap"
   *ngIf="showSignUpSuccess && isLogin == null"
   [options]="lottieOptions"
   (complete)="onAnimationCompleteSignUp()"
   (animationCreated)="animationCreatedSignUp($event)"
 >
 </ng-lottie>
+
 <ng-lottie
-  style="width: 50%; margin: 0 auto"
+  class="lottie-wrap"
   *ngIf="showLogInSuccess && isLogin == null"
   [options]="lottieOptions"
   (complete)="onAnimationCompleteLogIn()"

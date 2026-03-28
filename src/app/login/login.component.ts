@@ -84,6 +84,7 @@ export class LoginComponent {
   showLogInSuccess = false;
   showLoginPw = false;
   showSignupPw = false;
+  showForgotPw = false;
   showError = false;
   showErrorLogin = false;
   existingUsername: any;
@@ -91,6 +92,27 @@ export class LoginComponent {
   showOtpInput = false;
   showOtpButton = true;
   otpButtonLabel: string = 'Send OTP';
+
+  // Forgot password
+  isForgot = false;
+  forgotStep = 1; // 1 = email, 2 = otp + new password
+  forgotOtpDisabled = false;
+  forgotOtpLabel = 'Send OTP';
+  forgotIntervalId: any;
+  forgotShowOtpFields = false;
+  forgotForm = new FormGroup({
+    email: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/),
+    ]),
+    otp: new FormControl('', [Validators.required, Validators.minLength(6), Validators.pattern('^\\d+$')]),
+    newPassword: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+      Validators.minLength(8),
+    ]),
+    confirmPassword: new FormControl('', Validators.required),
+  });
 
   toggleView() {
     this.isLogin = !this.isLogin;
@@ -288,14 +310,69 @@ export class LoginComponent {
   }
 
   onForgot() {
-    if (this.loginForm.controls.username.invalid) {
-      this.snackBar.open('Please enter username', 'Close', {
-        duration: 3000, // 3 seconds
-        horizontalPosition: 'center',
-        verticalPosition: 'bottom',
-        panelClass: ['error-snackbar'],
-      });
+    this.isForgot = true;
+    this.isLogin = null;
+    // Pre-fill email if user already typed it
+    const typed = this.loginForm.controls.username.value;
+    if (typed) this.forgotForm.controls.email.setValue(typed);
+  }
+
+  onForgotBack() {
+    this.isForgot = false;
+    this.isLogin = true;
+    this.forgotStep = 1;
+    this.forgotShowOtpFields = false;
+    this.forgotOtpDisabled = false;
+    this.forgotOtpLabel = 'Send OTP';
+    clearInterval(this.forgotIntervalId);
+    this.forgotForm.reset();
+  }
+
+  onForgotSendOtp() {
+    if (this.forgotForm.controls.email.invalid) {
+      this.forgotForm.controls.email.markAsTouched();
       return;
     }
+    const payload = { email: this.forgotForm.controls.email.value, resendFlag: this.forgotOtpLabel === 'Resend OTP' };
+    this.service.sendOtp(payload).subscribe((res: any) => {
+      this.service.getSnackbar('Your OTP is ' + res.data);
+      this.forgotShowOtpFields = true;
+      this.forgotOtpDisabled = true;
+      this.forgotOtpLabel = 'Resend in 30';
+      let count = 29;
+      this.forgotIntervalId = setInterval(() => {
+        if (count === 0) {
+          this.forgotOtpLabel = 'Resend OTP';
+          this.forgotOtpDisabled = false;
+          clearInterval(this.forgotIntervalId);
+          return;
+        }
+        this.forgotOtpLabel = `Resend in ${count}`;
+        count--;
+      }, 1000);
+    });
+  }
+
+  onResetPassword() {
+    const { email, otp, newPassword, confirmPassword } = this.forgotForm.controls;
+    if (this.forgotForm.invalid || newPassword.value !== confirmPassword.value) {
+      this.forgotForm.markAllAsTouched();
+      return;
+    }
+    const payload = { email: email.value!, otp: otp.value!, newPassword: newPassword.value! };
+    this.service.resetPassword(payload).subscribe({
+      next: (res: any) => {
+        this.service.getSnackbar('Password reset! Please sign in.');
+        this.onForgotBack();
+      },
+      error: (err: any) => {
+        this.snackBar.open(err.error?.message ?? 'Reset failed', 'Close', {
+          duration: 4000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['error-snackbar'],
+        });
+      },
+    });
   }
 }

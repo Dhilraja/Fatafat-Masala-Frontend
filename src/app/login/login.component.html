@@ -280,10 +280,130 @@
   <p class="switch-view">Already have an account? <span (click)="toggleView()">Sign in →</span></p>
 </div>
 
+<!-- ── FORGOT PASSWORD VIEW ── -->
+<div *ngIf="isForgot && isLogin === null" class="dialog-wrap">
+  <div class="dialog-header">
+    <p class="eyebrow">Account Recovery</p>
+    <h2 class="dialog-title">Reset your <em>password</em></h2>
+  </div>
+
+  <form [formGroup]="forgotForm" class="dialog-form" (ngSubmit)="onResetPassword()">
+
+    <!-- Email field always visible -->
+    <div class="field-group">
+      <label class="field-label">Email Address</label>
+      <div class="input-wrap">
+        <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+          <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <input
+          class="field-input has-right"
+          type="email"
+          placeholder="you@example.com"
+          formControlName="email"
+          [attr.readonly]="forgotShowOtpFields ? true : null"
+        />
+        <button
+          type="button"
+          class="inline-btn"
+          [disabled]="forgotOtpDisabled || forgotForm.controls.email.invalid"
+          (click)="onForgotSendOtp()"
+        >
+          {{ forgotOtpLabel }}
+        </button>
+      </div>
+      <span *ngIf="forgotForm.controls.email.touched && forgotForm.controls.email.hasError('required')" class="error-msg">
+        Please enter your email
+      </span>
+      <span *ngIf="forgotForm.controls.email.touched && forgotForm.controls.email.hasError('pattern') && !forgotForm.controls.email.hasError('required')" class="error-msg">
+        Please enter a valid email
+      </span>
+    </div>
+
+    <!-- OTP + new password fields appear after OTP is sent -->
+    <ng-container *ngIf="forgotShowOtpFields">
+
+      <div class="field-group">
+        <label class="field-label">OTP</label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2l1.8 3.6 4 .6-2.9 2.8.7 4L10 11l-3.6 1.9.7-4L4.2 6.2l4-.6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          </svg>
+          <input
+            class="field-input"
+            type="text"
+            placeholder="6-digit OTP"
+            formControlName="otp"
+            maxlength="6"
+            inputmode="numeric"
+          />
+        </div>
+        <span *ngIf="forgotForm.controls.otp.touched && forgotForm.controls.otp.invalid" class="error-msg">
+          Enter the 6-digit OTP sent to your email
+        </span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">New Password</label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+            <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5" />
+            <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <input
+            class="field-input has-right"
+            [type]="showForgotPw ? 'text' : 'password'"
+            placeholder="Min 8 characters"
+            formControlName="newPassword"
+          />
+          <button type="button" class="eye-btn" (click)="showForgotPw = !showForgotPw">
+            <svg *ngIf="!showForgotPw" viewBox="0 0 20 20" fill="none" width="18" height="18">
+              <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5" />
+            </svg>
+            <svg *ngIf="showForgotPw" viewBox="0 0 24 24" fill="none" width="18" height="18">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M10.73 10.73A3 3 0 0 0 12 15a3 3 0 0 0 2.27-1.02" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+        <span *ngIf="forgotForm.controls.newPassword.touched && forgotForm.controls.newPassword.hasError('required')" class="error-msg">Please enter a new password</span>
+        <span *ngIf="forgotForm.controls.newPassword.touched && forgotForm.controls.newPassword.hasError('minlength') && !forgotForm.controls.newPassword.hasError('required')" class="error-msg">Password must be at least 8 characters</span>
+        <span *ngIf="forgotForm.controls.newPassword.touched && forgotForm.controls.newPassword.hasError('pattern') && !forgotForm.controls.newPassword.hasError('required') && !forgotForm.controls.newPassword.hasError('minlength')" class="error-msg">Must include uppercase, lowercase, number and special character</span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Confirm Password</label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+            <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5" />
+            <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <input
+            class="field-input"
+            type="password"
+            placeholder="Re-enter new password"
+            formControlName="confirmPassword"
+            (paste)="$event.preventDefault()"
+          />
+        </div>
+        <span *ngIf="forgotForm.controls.confirmPassword.touched && forgotForm.controls.confirmPassword.value !== forgotForm.controls.newPassword.value && !forgotForm.controls.confirmPassword.hasError('required')" class="error-msg">Passwords do not match</span>
+      </div>
+
+      <button type="submit" class="btn-primary">Reset Password</button>
+
+    </ng-container>
+
+  </form>
+
+  <p class="switch-view"><span (click)="onForgotBack()">← Back to Sign In</span></p>
+</div>
+
 <!-- ── SUCCESS ANIMATIONS ── -->
 <ng-lottie
   class="lottie-wrap"
-  *ngIf="showSignUpSuccess && isLogin == null"
+  *ngIf="showSignUpSuccess && isLogin == null && !isForgot"
   [options]="lottieOptions"
   (complete)="onAnimationCompleteSignUp()"
   (animationCreated)="animationCreatedSignUp($event)"
@@ -292,7 +412,7 @@
 
 <ng-lottie
   class="lottie-wrap"
-  *ngIf="showLogInSuccess && isLogin == null"
+  *ngIf="showLogInSuccess && isLogin == null && !isForgot"
   [options]="lottieOptions"
   (complete)="onAnimationCompleteLogIn()"
   (animationCreated)="animationCreatedLogIn($event)"

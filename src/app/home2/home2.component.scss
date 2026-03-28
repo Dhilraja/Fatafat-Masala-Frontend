@@ -1118,12 +1118,6 @@ footer {
   .hero-card-main {
     height: fit-content;
   }
-  .back-to-products {
-    padding: 8px 10px !important;
-    span {
-      font-size: 0.8rem !important;
-    }
-  }
   .testimonials-bg {
     padding: 50px 0;
   }
@@ -1274,70 +1268,24 @@ footer {
   padding: 3px 10px;
   border-radius: 20px;
 }
-.back-to-products {
+.back-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  background: transparent;
-  border: 1.5px solid rgb(107 62 46 / 44%);
-  border-radius: 12px;
-  color: var(--primary);
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.4px;
+  color: var(--brown);
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  text-align: right;
-  transition:
-    border-color 0.3s,
-    color 0.3s;
-
-  .arrow {
-    display: inline-block;
-    transition: transform 0.3s ease;
-    font-size: 17px;
-    line-height: 1;
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #d9a441, #f28918);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 0;
-  }
-
-  span {
-    position: relative;
-    z-index: 1;
-    font-size: 0.9rem;
-  }
+  transition: all 0.2s;
 
   &:hover {
-    border-color: transparent;
-    color: white;
-
-    &::before {
-      opacity: 1;
-    }
-
-    .arrow {
-      transform: translateX(4px); // slides left on hover
-    }
-  }
-
-  &:active {
-    transform: scale(0.97);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px #d9a441;
-    border-radius: 12px;
+    background: var(--cream2);
+    border-color: var(--border-mid);
   }
 }
 .view-all-btn-container {

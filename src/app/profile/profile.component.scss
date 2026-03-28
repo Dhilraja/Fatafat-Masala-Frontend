@@ -508,7 +508,13 @@ header {
     transform 0.3s,
     box-shadow 0.3s;
 }
-.addr-card:hover {
+@media (hover: hover) and (pointer: fine) {
+  .addr-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 48px rgba(107, 62, 46, 0.11);
+  }
+}
+.addr-card:active {
   transform: translateY(-5px);
   box-shadow: 0 18px 48px rgba(107, 62, 46, 0.11);
 }
@@ -529,7 +535,12 @@ header {
   transform-origin: left;
   transition: transform 0.35s ease;
 }
-.addr-card:hover::before {
+@media (hover: hover) and (pointer: fine) {
+  .addr-card:hover::before {
+    transform: scaleX(1);
+  }
+}
+.addr-card:active::before {
   transform: scaleX(1);
 }
 
@@ -715,7 +726,9 @@ header {
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
-    transition: opacity 0.2s, transform 0.2s;
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
 
     &:hover {
       opacity: 0.88;
@@ -739,7 +752,13 @@ header {
     box-shadow 0.3s,
     transform 0.3s;
 }
-.order-card:hover {
+@media (hover: hover) and (pointer: fine) {
+  .order-card:hover {
+    box-shadow: 0 16px 48px rgba(107, 62, 46, 0.1);
+    transform: translateY(-3px);
+  }
+}
+.order-card:active {
   box-shadow: 0 16px 48px rgba(107, 62, 46, 0.1);
   transform: translateY(-3px);
 }

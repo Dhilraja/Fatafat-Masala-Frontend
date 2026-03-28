@@ -99,6 +99,7 @@
   text-align: center;
   padding: 60px 24px 48px;
   position: relative;
+  overflow: hidden;
 }
 
 .hero-deco {
@@ -254,6 +255,8 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--brown);
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .card-sub {
@@ -632,5 +635,19 @@
 
   .hero {
     padding: 40px 0 32px;
+  }
+
+  .quote-section {
+    padding: 60px 24px;
+
+    &::before {
+      left: 20px;
+      font-size: 32px;
+    }
+
+    &::after {
+      right: 20px;
+      font-size: 32px;
+    }
   }
 }

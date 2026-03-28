@@ -435,7 +435,12 @@ $red: #e05c5c;
     transition: opacity 0.2s ease; // opacity CAN be transitioned smoothly
     z-index: 0;
   }
-  &:hover::before {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::before {
+      opacity: 1;
+    }
+  }
+  &:active::before {
     opacity: 1;
   }
 }

@@ -150,7 +150,7 @@
             <span class="order-id-label">Order ID</span>
             <span class="order-id-val">#{{ order?.orderNumber }}</span>
           </div>
-          <span class="order-status delivered"> <span class="order-status-dot"></span>{{ order?.status }}</span>
+          <span class="order-status" [ngClass]="order?.status?.toLowerCase()"><span class="order-status-dot"></span>{{ order?.status | titlecase }}</span>
           <span class="order-date">{{ order?.createdAt | date: 'dd MMM YYYY' }}</span>
           <span class="order-total">₹{{ order?.totalAmount }}</span>
         </div>

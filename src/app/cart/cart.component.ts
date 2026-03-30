@@ -24,7 +24,10 @@ export class CartComponent implements OnInit, OnDestroy {
 
   cartProducts: any;
   totalPrice: number = 0;
-  deliveryFees = 50;
+
+  get deliveryFees(): number {
+    return this.totalPrice >= 299 ? 0 : 50;
+  }
   allProducts: any;
   subscription!: Subscription;
 

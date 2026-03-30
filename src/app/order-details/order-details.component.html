@@ -1,15 +1,13 @@
 <div class="page" [class.loaded]="isLoaded">
-
   <!-- BACK -->
   <button class="back-btn" (click)="goBack()">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
     Back to Orders
   </button>
 
   <ng-container *ngIf="order">
-
     <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
@@ -30,7 +28,7 @@
       </div>
       <div class="meta-card">
         <span class="meta-label">Items</span>
-        <span class="meta-value">{{ order.items?.length }} product{{ order.items?.length !== 1 ? 's' : '' }}</span>
+        <span class="meta-value">{{ totalItems }} product{{ totalItems !== 1 ? 's' : '' }}</span>
       </div>
       <div class="meta-card">
         <span class="meta-label">Order Total</span>
@@ -43,11 +41,11 @@
       <p class="section-label">Tracking</p>
       <h2 class="section-title">Order Status</h2>
       <div class="tracker">
-        <div class="tracker-progress"
-             [style.width.%]="currentStepIndex >= 0 ? (currentStepIndex / (steps.length - 1)) * 80 : 0">
-        </div>
-        <div class="track-step" *ngFor="let step of steps; let i = index"
-             [class.done]="i <= currentStepIndex">
+        <div
+          class="tracker-progress"
+          [style.width.%]="currentStepIndex >= 0 ? (currentStepIndex / (steps.length - 1)) * 80 : 0"
+        ></div>
+        <div class="track-step" *ngFor="let step of steps; let i = index" [class.done]="i <= currentStepIndex">
           <div class="track-dot">{{ i <= currentStepIndex ? '✓' : step.icon }}</div>
           <span class="track-label">{{ step.label }}</span>
         </div>
@@ -58,13 +56,14 @@
       <div class="cancelled-inner">
         <div class="cancelled-icon">✕</div>
         <p class="cancelled-title">Order Cancelled</p>
-        <p class="cancelled-desc">This order has been cancelled. If you were charged, a refund will be processed within 5–7 business days.</p>
+        <p class="cancelled-desc">
+          This order has been cancelled. If you were charged, a refund will be processed within 5–7 business days.
+        </p>
       </div>
     </div>
 
     <!-- MAIN CONTENT GRID -->
     <div class="content-grid">
-
       <!-- LEFT: ITEMS -->
       <div class="section items-section">
         <p class="section-label">Products</p>
@@ -87,11 +86,11 @@
         <div class="summary">
           <div class="summary-row">
             <span>Subtotal</span>
-            <span>₹{{ order.totalAmount - 50 }}</span>
+            <span>₹{{ order.totalAmount > 299 ? order.totalAmount : order.totalAmount - 50 }}</span>
           </div>
           <div class="summary-row">
             <span>Delivery</span>
-            <span>₹50</span>
+            <span>₹ {{ order.totalAmount > 299 ? 0 : 50 }}</span>
           </div>
           <div class="summary-row total">
             <span>Total Paid</span>
@@ -110,6 +109,7 @@
           <div class="addr-line" *ngIf="order.shippingAddress?.line2">{{ order.shippingAddress?.line2 }}</div>
           <div class="addr-line">{{ order.shippingAddress?.city }}, {{ order.shippingAddress?.state }}</div>
           <div class="addr-line">{{ order.shippingAddress?.pincode }}</div>
+          <div class="addr-line">+91 {{ order.shippingAddress?.phone }}</div>
         </div>
 
         <div class="order-id-card">
@@ -118,9 +118,7 @@
           <div class="order-date-val">{{ order.createdAt | date: 'dd MMMM YYYY, h:mm a' }}</div>
         </div>
       </div>
-
     </div>
-
   </ng-container>
 
   <!-- SKELETON while loading -->
@@ -129,5 +127,4 @@
     <div class="skeleton-meta"></div>
     <div class="skeleton-section"></div>
   </ng-container>
-
 </div>

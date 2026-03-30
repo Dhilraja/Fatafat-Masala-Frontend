@@ -81,19 +81,27 @@
         <span
           >Subtotal <span class="muted">({{ totalQuantity }} item{{ totalQuantity > 1 ? 's' : '' }})</span></span
         >
-        <span>₹{{ totalPrice }}</span>
+        <span>₹{{ totalPrice > 299 ? totalPrice : totalPrice - 50 }}</span>
       </div>
 
       <div class="summary-row">
         <span>Delivery fee</span>
-        <span>₹{{ deliveryFees }}</span>
+        <span *ngIf="deliveryFees === 0" class="free-tag">FREE</span>
+        <span *ngIf="deliveryFees > 0">₹{{ deliveryFees }}</span>
+      </div>
+
+      <div class="delivery-hint" *ngIf="deliveryFees > 0">
+        🚚 Add ₹{{ 299 - (totalPrice - deliveryFees) }} more for <strong>free delivery</strong>
+      </div>
+      <div class="delivery-hint green" *ngIf="deliveryFees === 0">
+        🎉 You've unlocked <strong>free delivery!</strong>
       </div>
 
       <div class="summary-divider"></div>
 
       <div class="summary-row total">
         <span>Total</span>
-        <span>₹{{ totalPrice + deliveryFees }}</span>
+        <span>₹{{ totalPrice }}</span>
       </div>
 
       <button class="place-order-btn" (click)="onPlaceOrder()">

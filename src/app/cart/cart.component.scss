@@ -306,6 +306,27 @@
   opacity: 0;
 }
 
+.free-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.5px;
+}
+
+.delivery-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: var(--cream2);
+  border-radius: 8px;
+
+  &.green {
+    color: var(--green);
+    background: rgba(58, 154, 110, 0.08);
+  }
+}
+
 .summary-row {
   display: flex;
   justify-content: space-between;

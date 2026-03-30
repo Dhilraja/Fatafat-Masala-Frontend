@@ -31,7 +31,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   constructor(private service: AppService, private zone: NgZone) {}
 
   displayedColumns: string[] = ['name', 'mrp', 'price', 'action'];
-  displayedColumns2: string[] = ['orderId', 'customerName', 'quantities', 'totalAmount', 'date'];
+  displayedColumns2: string[] = ['orderId', 'customerName', 'quantities', 'totalAmount', 'date', 'orderActions'];
   displayedColumns3: string[] = ['contactName', 'contactEmail', 'contactPhone', 'contactMessage', 'contactDate', 'contactAction'];
 
   products: any[] = [];
@@ -292,4 +292,53 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   activeTab = 'orders';
   switchTab(tab: string) { this.activeTab = tab; }
+
+  expandedContact: any = null;
+  openMessage(contact: any) { this.expandedContact = contact; }
+  closeMessage() { this.expandedContact = null; }
+
+  // Order details overlay
+  orderStatuses = ['PLACED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+  expandedOrder: any = null;
+  orderLoading = false;
+
+  openOrder(order: any) {
+    this.orderLoading = true;
+    this.expandedOrder = { ...order, _loadedDetails: false };
+    this.service.getOrderDetails(order._id).subscribe({
+      next: (res: any) => {
+        this.expandedOrder = { ...res.data, _loadedDetails: true };
+        this.orderLoading = false;
+      },
+      error: () => { this.orderLoading = false; }
+    });
+  }
+
+  closeOrder() { this.expandedOrder = null; }
+
+  onStatusChange(status: string) {
+    if (!this.expandedOrder) return;
+    this.service.updateOrderStatus({ id: this.expandedOrder._id, status }).subscribe({
+      next: () => {
+        this.expandedOrder.status = status;
+        // update the table row too
+        const row = this.orders.find((o: any) => o._id === this.expandedOrder._id);
+        if (row) row.status = status;
+        this.service.getSnackbar('Status updated to ' + status);
+      },
+      error: () => { this.service.getSnackbar('Failed to update status'); }
+    });
+  }
+
+  getOrderSubtotal(order: any): number {
+    return order.totalAmount > 299 ? order.totalAmount : order.totalAmount - 50;
+  }
+
+  getOrderDelivery(order: any): number {
+    return order.totalAmount > 299 ? 0 : 50;
+  }
+
+  getItemImage(item: any): string {
+    return item?.productId?.images?.[0]?.url || '../../assets/images/fatafat-masala-logo.jpg';
+  }
 }

@@ -801,35 +801,16 @@ header {
   border-radius: 100px;
   flex-shrink: 0;
 }
-.order-status.delivered {
-  background: var(--green-bg);
-  color: var(--green);
-}
-.order-status.processing {
-  background: rgba(217, 164, 65, 0.12);
-  color: var(--gold);
-}
-.order-status.shipped {
-  background: rgba(107, 62, 46, 0.08);
-  color: var(--brown);
-}
+.order-status.placed    { background: rgba(217, 164, 65, 0.12); color: var(--gold); }
+.order-status.processing { background: rgba(58, 154, 110, 0.12); color: #3a9a6e; }
+.order-status.shipped   { background: rgba(99, 102, 241, 0.12); color: #6366f1; }
+.order-status.delivered { background: rgba(58, 154, 110, 0.15); color: #2e7d5a; }
+.order-status.cancelled { background: rgba(224, 82, 82, 0.1);   color: #e05252; }
 .order-status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: currentColor;
-}
-.order-status.processing .order-status-dot {
-  animation: blink 1.4s ease infinite;
-}
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
 }
 
 .order-date {

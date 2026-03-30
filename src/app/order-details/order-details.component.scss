@@ -111,7 +111,7 @@
   align-self: center;
 
   &.placed    { background: rgba(217,164,65,0.12);  color: var(--gold); }
-  &.paid      { background: rgba(58,154,110,0.12);  color: #3a9a6e; }
+  &.processing { background: rgba(58,154,110,0.12);  color: #3a9a6e; }
   &.shipped   { background: rgba(99,102,241,0.12);  color: #6366f1; }
   &.delivered { background: rgba(58,154,110,0.15);  color: #2e7d5a; }
   &.cancelled { background: rgba(224,82,82,0.1);    color: #e05252; }
@@ -475,7 +475,8 @@
 
   .address-section { position: static; }
 
-  .tracker::before { left: 12%; right: 12%; }
+  .tracker::before { left: 12%; right: 12%; top: 22px; }
+  .tracker-progress { top: 22px; }
   .track-dot { width: 28px; height: 28px; font-size: 11px; }
   .track-label { font-size: 10px; }
 }

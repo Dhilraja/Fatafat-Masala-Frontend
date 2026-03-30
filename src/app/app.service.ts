@@ -189,6 +189,10 @@ export class AppService {
     return this.http.get(this.url + '/get-orders', { withCredentials: true });
   }
 
+  updateOrderStatus(payload: { id: string; status: string }) {
+    return this.http.patch(this.url + '/update-order-status', payload, { withCredentials: true });
+  }
+
   getSnackbar(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 3000, // 3 seconds

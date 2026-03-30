@@ -19,21 +19,31 @@ export class OrderDetailsComponent implements OnInit {
 
   order: any;
   isLoaded = false;
+  totalItems = 0;
 
   readonly steps = [
-    { key: 'PLACED',    label: 'Order\nPlaced',     icon: '🛒' },
-    { key: 'PAID',      label: 'Being\nPrepared',   icon: '🫙' },
-    { key: 'SHIPPED',   label: 'Packed &\nShipped', icon: '📦' },
-    { key: 'DELIVERED', label: 'Delivered\nto You', icon: '🏠' },
+    { key: 'PLACED',     label: 'Order\nPlaced',     icon: '🛒' },
+    { key: 'PROCESSING', label: 'Being\nPrepared',   icon: '🫙' },
+    { key: 'SHIPPED',    label: 'Packed &\nShipped', icon: '📦' },
+    { key: 'DELIVERED',  label: 'Delivered\nto You', icon: '🏠' },
   ];
 
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('id');
-    if (!id) { this.router.navigateByUrl('/profile'); return; }
+    if (!id) {
+      this.router.navigateByUrl('/profile');
+      return;
+    }
     this.service.getOrderDetails(id).subscribe({
       next: (res: any) => {
-        if (!res?.data) { this.router.navigateByUrl('/profile'); return; }
+        if (!res?.data) {
+          this.router.navigateByUrl('/profile');
+          return;
+        }
         this.order = res.data;
+        res?.data?.items?.forEach((ele: any) => {
+          this.totalItems += ele.quantity;
+        });
         setTimeout(() => (this.isLoaded = true), 60);
       },
       error: () => this.router.navigateByUrl('/profile'),
@@ -41,7 +51,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   get currentStepIndex(): number {
-    return this.steps.findIndex(s => s.key === this.order?.status);
+    return this.steps.findIndex((s) => s.key === this.order?.status);
   }
 
   get isCancelled(): boolean {

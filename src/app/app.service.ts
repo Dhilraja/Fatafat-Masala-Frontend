@@ -213,6 +213,6 @@ export class AppService {
 
   getOrderDetails(id: string) {
     const params = new HttpParams().set('id', id);
-    return this.http.get(this.url + '/order-details', { params: params });
+    return this.http.get(this.url + '/order-details', { params: params, withCredentials: true });
   }
 }

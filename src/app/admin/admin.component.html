@@ -44,6 +44,27 @@
         <div class="stat-value">{{ unreadCount }}</div>
       </div>
     </div>
+    <!-- <div class="stat-card">
+      <div class="stat-icon avg"><mat-icon>receipt_long</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Avg Order Value</div>
+        <div class="stat-value">&#8377;{{ avgOrderValue }}</div>
+      </div>
+    </div> -->
+    <div class="stat-card">
+      <div class="stat-icon pending"><mat-icon>hourglass_empty</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Pending Orders</div>
+        <div class="stat-value">{{ pendingOrders }}</div>
+      </div>
+    </div>
+    <!-- <div class="stat-card">
+      <div class="stat-icon cancel"><mat-icon>cancel</mat-icon></div>
+      <div class="stat-body">
+        <div class="stat-label">Cancellation Rate</div>
+        <div class="stat-value">{{ cancellationRate }}%</div>
+      </div>
+    </div> -->
   </div>
 
   <!-- TABS -->
@@ -83,6 +104,21 @@
       </svg>
       <span>Products</span>
     </button>
+    <button class="tab-btn" [class.active]="activeTab === 'insights'" (click)="switchTab('insights')">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <polyline
+          points="1,12 5,7 8,9 11,4 14,4"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+        <line x1="14" y1="4" x2="14" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        <line x1="1" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </svg>
+      <span>Insights</span>
+    </button>
   </div>
 
   <!-- ORDERS PANEL -->
@@ -105,7 +141,7 @@
           </ng-container>
           <ng-container matColumnDef="customerName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
-            <td mat-cell *matCellDef="let o">{{ o.shippingAddress.name }}</td>
+            <td mat-cell *matCellDef="let o">{{ o.userId.name }}</td>
           </ng-container>
           <ng-container matColumnDef="quantities">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Qty</th>
@@ -119,13 +155,18 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
             <td mat-cell *matCellDef="let o">{{ o.createdAt | date: 'dd MMM YYYY' }}</td>
           </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let o">
+              <span class="status-pill status-{{ o.status | lowercase }}">{{ o.status | titlecase }}</span>
+            </td>
+          </ng-container>
           <ng-container matColumnDef="orderActions">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let o">
               <button class="view-msg-btn" (click)="openOrder(o)">View</button>
             </td>
           </ng-container>
-
           <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
         </table>
@@ -134,8 +175,8 @@
     </div>
   </div>
 
+  <!-- MESSAGES PANEL -->
   <div class="panel" [class.active]="activeTab === 'messages'">
-    <!-- CONTACT MESSAGES -->
     <div class="section">
       <div class="section-top">
         <div>
@@ -184,8 +225,8 @@
     </div>
   </div>
 
+  <!-- PRODUCTS PANEL -->
   <div class="panel" [class.active]="activeTab === 'products'">
-    <!-- PRODUCTS -->
     <div class="section">
       <div class="section-top">
         <div>
@@ -213,12 +254,8 @@
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let p" class="action-cell">
-              <button mat-icon-button (click)="onEdit(p)">
-                <mat-icon class="icon-edit">edit</mat-icon>
-              </button>
-              <button mat-icon-button (click)="onDelete(p._id)">
-                <mat-icon class="icon-delete">delete</mat-icon>
-              </button>
+              <button mat-icon-button (click)="onEdit(p)"><mat-icon class="icon-edit">edit</mat-icon></button>
+              <button mat-icon-button (click)="onDelete(p._id)"><mat-icon class="icon-delete">delete</mat-icon></button>
               <button *ngIf="!p.isActive" mat-icon-button (click)="onEnableDisable(p._id, true)">
                 <mat-icon class="icon-enable">check_circle</mat-icon>
               </button>
@@ -313,13 +350,79 @@
       </div>
     </div>
   </div>
+
+  <!-- INSIGHTS PANEL -->
+  <div class="panel" [class.active]="activeTab === 'insights'">
+    <!-- Row 1: Revenue over time + Order status -->
+    <div class="charts-row">
+      <div class="section chart-section chart-lg">
+        <div class="chart-header">
+          <div>
+            <p class="section-label">Trend</p>
+            <h2 class="section-title">Revenue Over Time</h2>
+          </div>
+          <div class="period-toggle">
+            <button class="period-btn" [class.active]="revenuePeriod === '7d'" (click)="setRevenuePeriod('7d')">
+              7D
+            </button>
+            <button class="period-btn" [class.active]="revenuePeriod === '30d'" (click)="setRevenuePeriod('30d')">
+              30D
+            </button>
+            <button class="period-btn" [class.active]="revenuePeriod === '90d'" (click)="setRevenuePeriod('90d')">
+              90D
+            </button>
+          </div>
+        </div>
+        <div class="chart-canvas-wrap" style="height: 260px">
+          <canvas baseChart [data]="revenueChartData" [options]="revenueChartOptions" type="line"> </canvas>
+        </div>
+      </div>
+
+      <div class="section chart-section chart-sm">
+        <div class="chart-header">
+          <div>
+            <p class="section-label">Breakdown</p>
+            <h2 class="section-title">Orders by Status</h2>
+          </div>
+        </div>
+        <div class="chart-canvas-wrap" style="height: 260px">
+          <canvas baseChart [data]="statusChartData" [options]="statusChartOptions" type="doughnut"> </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Top products + Orders per day -->
+    <div class="charts-row">
+      <div class="section chart-section chart-sm">
+        <div class="chart-header">
+          <div>
+            <p class="section-label">Performance</p>
+            <h2 class="section-title">Top Selling Products</h2>
+          </div>
+        </div>
+        <div class="chart-canvas-wrap" style="height: 300px">
+          <canvas baseChart [data]="topProductsChartData" [options]="topProductsChartOptions" type="bar"> </canvas>
+        </div>
+      </div>
+
+      <div class="section chart-section chart-lg">
+        <div class="chart-header">
+          <div>
+            <p class="section-label">Activity</p>
+            <h2 class="section-title">Orders Per Day (Last 30 Days)</h2>
+          </div>
+        </div>
+        <div class="chart-canvas-wrap" style="height: 300px">
+          <canvas baseChart [data]="ordersPerDayChartData" [options]="ordersPerDayChartOptions" type="bar"> </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ORDER DETAILS OVERLAY -->
 <div class="msg-overlay" *ngIf="expandedOrder" (click)="closeOrder()">
   <div class="msg-sheet order-sheet" (click)="$event.stopPropagation()">
-
-    <!-- Header -->
     <div class="msg-sheet-header">
       <div>
         <div class="msg-sheet-name">#{{ expandedOrder.orderNumber }}</div>
@@ -327,12 +430,11 @@
       </div>
       <button class="msg-close-btn" (click)="closeOrder()">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
         </svg>
       </button>
     </div>
 
-    <!-- Status change -->
     <div class="order-status-row">
       <span class="order-status-label">Status</span>
       <select class="status-select" [(ngModel)]="expandedOrder.status" (ngModelChange)="onStatusChange($event)">
@@ -343,8 +445,6 @@
     <div *ngIf="orderLoading" class="order-loading">Loading details…</div>
 
     <ng-container *ngIf="!orderLoading && expandedOrder._loadedDetails">
-
-      <!-- Items -->
       <div class="order-items">
         <div class="order-item-row" *ngFor="let item of expandedOrder.items">
           <img class="order-item-img" [src]="getItemImage(item)" [alt]="item.name" />
@@ -356,11 +456,9 @@
         </div>
       </div>
 
-      <!-- Summary -->
       <div class="order-summary">
         <div class="order-summary-row">
-          <span>Subtotal</span>
-          <span>₹{{ getOrderSubtotal(expandedOrder) }}</span>
+          <span>Subtotal</span><span>₹{{ getOrderSubtotal(expandedOrder) }}</span>
         </div>
         <div class="order-summary-row">
           <span>Delivery</span>
@@ -369,22 +467,25 @@
           </span>
         </div>
         <div class="order-summary-row total">
-          <span>Total</span>
-          <span>₹{{ expandedOrder.totalAmount }}</span>
+          <span>Total</span><span>₹{{ expandedOrder.totalAmount }}</span>
         </div>
       </div>
 
-      <!-- Shipping address -->
       <div class="order-addr">
         <div class="order-addr-label">Ship to</div>
         <div class="order-addr-name">{{ expandedOrder.shippingAddress?.name }}</div>
-        <div class="order-addr-line">{{ expandedOrder.shippingAddress?.line1 }}, {{ expandedOrder.shippingAddress?.line2 }}</div>
-        <div class="order-addr-line">{{ expandedOrder.shippingAddress?.city }}, {{ expandedOrder.shippingAddress?.state }} – {{ expandedOrder.shippingAddress?.pincode }}</div>
-        <div class="order-addr-line" *ngIf="expandedOrder.shippingAddress?.phone">+91 {{ expandedOrder.shippingAddress?.phone }}</div>
+        <div class="order-addr-line">
+          {{ expandedOrder.shippingAddress?.line1 }}, {{ expandedOrder.shippingAddress?.line2 }}
+        </div>
+        <div class="order-addr-line">
+          {{ expandedOrder.shippingAddress?.city }}, {{ expandedOrder.shippingAddress?.state }} –
+          {{ expandedOrder.shippingAddress?.pincode }}
+        </div>
+        <div class="order-addr-line" *ngIf="expandedOrder.shippingAddress?.phone">
+          +91 {{ expandedOrder.shippingAddress?.phone }}
+        </div>
       </div>
-
     </ng-container>
-
   </div>
 </div>
 
@@ -394,17 +495,24 @@
     <div class="msg-sheet-header">
       <div>
         <div class="msg-sheet-name">{{ expandedContact.name }}</div>
-        <div class="msg-sheet-meta">{{ expandedContact.email }}{{ expandedContact.phone ? ' · ' + expandedContact.phone : '' }}</div>
+        <div class="msg-sheet-meta">
+          {{ expandedContact.email }}{{ expandedContact.phone ? ' · ' + expandedContact.phone : '' }}
+        </div>
       </div>
       <button class="msg-close-btn" (click)="closeMessage()">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
         </svg>
       </button>
     </div>
     <div class="msg-sheet-date">{{ expandedContact.createdAt | date: 'dd MMM yyyy, h:mm a' }}</div>
     <p class="msg-sheet-body">{{ expandedContact.message }}</p>
-    <button *ngIf="!expandedContact.isRead" class="mark-read-btn" style="width:100%;margin-top:4px" (click)="markRead(expandedContact); closeMessage()">
+    <button
+      *ngIf="!expandedContact.isRead"
+      class="mark-read-btn"
+      style="width: 100%; margin-top: 4px"
+      (click)="markRead(expandedContact); closeMessage()"
+    >
       Mark as Read
     </button>
   </div>

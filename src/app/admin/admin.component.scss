@@ -961,10 +961,112 @@
   color: #e05252;
 }
 
+/* ── ORDER STATUS PILLS ── */
+.status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+
+  &.status-placed     { background: rgba(99,102,241,0.12);  color: #6366f1; }
+  &.status-processing { background: rgba(242,137,24,0.12);  color: #f28918; }
+  &.status-shipped    { background: rgba(59,130,246,0.12);  color: #3b82f6; }
+  &.status-delivered  { background: rgba(58,154,110,0.12);  color: #3a9a6e; }
+  &.status-cancelled  { background: rgba(224,82,82,0.12);   color: #e05252; }
+}
+
+/* ── EXTRA STAT ICONS ── */
+.stat-icon {
+  &.avg {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+  }
+  &.pending {
+    background: rgba(242, 137, 24, 0.12);
+    color: var(--orange);
+  }
+  &.cancel {
+    background: rgba(224, 82, 82, 0.1);
+    color: #e05252;
+  }
+}
+
+/* ── INSIGHTS: CHART ROWS ── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+
+  &:last-child {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.chart-section {
+  margin-bottom: 0;
+}
+
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.chart-canvas-wrap {
+  position: relative;
+  width: 100%;
+}
+
+/* ── PERIOD TOGGLE ── */
+.period-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--cream2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 3px;
+}
+
+.period-btn {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 100px;
+  border: none;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover:not(.active) {
+    color: var(--text);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, var(--gold), var(--orange));
+    color: white;
+  }
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 1024px) {
   .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .charts-row,
+  .charts-row:last-child {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -976,6 +1078,11 @@
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+  }
+
+  .charts-row,
+  .charts-row:last-child {
+    grid-template-columns: 1fr;
   }
 
   .section {

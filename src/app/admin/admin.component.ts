@@ -10,6 +10,10 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AppService } from '../app.service';
 import { CommonModule } from '@angular/common';
 import imageCompression from 'browser-image-compression';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartData, ChartOptions, Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-admin',
@@ -23,16 +27,35 @@ import imageCompression from 'browser-image-compression';
     ReactiveFormsModule,
     FormsModule,
     CommonModule,
+    BaseChartDirective,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent implements OnInit, AfterViewInit {
-  constructor(private service: AppService, private zone: NgZone) {}
+  constructor(
+    private service: AppService,
+    private zone: NgZone,
+  ) {}
 
   displayedColumns: string[] = ['name', 'mrp', 'price', 'action'];
-  displayedColumns2: string[] = ['orderId', 'customerName', 'quantities', 'totalAmount', 'date', 'orderActions'];
-  displayedColumns3: string[] = ['contactName', 'contactEmail', 'contactPhone', 'contactMessage', 'contactDate', 'contactAction'];
+  displayedColumns2: string[] = [
+    'orderId',
+    'customerName',
+    'quantities',
+    'totalAmount',
+    'date',
+    'status',
+    'orderActions',
+  ];
+  displayedColumns3: string[] = [
+    'contactName',
+    'contactEmail',
+    'contactPhone',
+    'contactMessage',
+    'contactDate',
+    'contactAction',
+  ];
 
   products: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
@@ -63,6 +86,106 @@ export class AdminComponent implements OnInit, AfterViewInit {
   totalQuantities = 0;
   distinctOrderIds: any[] = [];
 
+  // ── Extra insight stats ──
+  avgOrderValue = 0;
+  pendingOrders = 0;
+  cancelledOrders = 0;
+  cancellationRate = 0;
+
+  // ── Revenue over time (Line) ──
+  revenuePeriod: '7d' | '30d' | '90d' = '30d';
+  revenueChartData: ChartData<'line'> = { labels: [], datasets: [] };
+  revenueChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ` ₹${(ctx.parsed.y as number).toLocaleString('en-IN')}`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { font: { family: 'DM Sans', size: 11 }, color: '#9b8a7a', maxTicksLimit: 10 },
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        ticks: {
+          font: { family: 'DM Sans', size: 11 },
+          color: '#9b8a7a',
+          callback: (v) => `₹${v}`,
+        },
+      },
+    },
+  };
+
+  // ── Orders by status (Doughnut) ──
+  statusChartData: ChartData<'doughnut'> = { labels: [], datasets: [] };
+  statusChartOptions: ChartOptions<'doughnut'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '70%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: { family: 'DM Sans', size: 12 },
+          padding: 16,
+          usePointStyle: true,
+          pointStyleWidth: 10,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ` ${ctx.label}: ${ctx.parsed} orders`,
+        },
+      },
+    },
+  };
+
+  // ── Top selling products (Horizontal Bar) ──
+  topProductsChartData: ChartData<'bar'> = { labels: [], datasets: [] };
+  topProductsChartOptions: ChartOptions<'bar'> = {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        ticks: { font: { family: 'DM Sans', size: 11 }, color: '#9b8a7a', stepSize: 1 },
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { family: 'DM Sans', size: 12 }, color: '#4a3728' },
+      },
+    },
+  };
+
+  // ── Orders per day (Bar) ──
+  ordersPerDayChartData: ChartData<'bar'> = { labels: [], datasets: [] };
+  ordersPerDayChartOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { font: { family: 'DM Sans', size: 11 }, color: '#9b8a7a', maxTicksLimit: 10 },
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(0,0,0,0.05)' },
+        ticks: { font: { family: 'DM Sans', size: 11 }, color: '#9b8a7a', stepSize: 1 },
+      },
+    },
+  };
+
   ngOnInit(): void {
     this.getProducts();
     this.getOrders();
@@ -88,7 +211,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
         });
         ele['totalQuantities'] = totalQuantities;
         this.totalQuantities += totalQuantities;
-        if (!this.distinctOrderIds.includes(ele?.userId)) this.distinctOrderIds.push(ele?.userId);
+        if (!this.distinctOrderIds.includes(ele?.userId?._id)) this.distinctOrderIds.push(ele?.userId?._id);
         return ele;
       });
       res.data.forEach((ele: any) => {
@@ -96,6 +219,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       });
       this.dataSource2.data = this.orders;
       if (this.paginator2) this.dataSource2.paginator = this.paginator2;
+      this.buildCharts();
     });
   }
 
@@ -115,22 +239,173 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // ── Chart builders ──
+
+  private buildCharts() {
+    this.computeExtraStats();
+    this.buildRevenueChart();
+    this.buildStatusChart();
+    this.buildTopProductsChart();
+    this.buildOrdersPerDayChart();
+  }
+
+  private computeExtraStats() {
+    this.avgOrderValue = this.orders.length ? Math.round(this.totalRevenue / this.orders.length) : 0;
+    this.pendingOrders = this.orders.filter((o) => o.status === 'PLACED').length;
+    this.cancelledOrders = this.orders.filter((o) => o.status === 'CANCELLED').length;
+    this.cancellationRate = this.orders.length ? Math.round((this.cancelledOrders / this.orders.length) * 100) : 0;
+  }
+
+  private buildRevenueChart() {
+    const days = this.revenuePeriod === '7d' ? 7 : this.revenuePeriod === '30d' ? 30 : 90;
+    const now = new Date();
+    const map = new Map<string, number>();
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      map.set(this.fmtDate(d), 0);
+    }
+    const cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - days);
+    for (const order of this.orders) {
+      const d = new Date(order.createdAt);
+      if (d >= cutoff) {
+        const key = this.fmtDate(d);
+        if (map.has(key)) map.set(key, (map.get(key) ?? 0) + order.totalAmount);
+      }
+    }
+    this.revenueChartData = {
+      labels: Array.from(map.keys()).map((k) => this.shortDate(k)),
+      datasets: [
+        {
+          data: Array.from(map.values()),
+          label: 'Revenue',
+          borderColor: '#d9a441',
+          backgroundColor: 'rgba(217,164,65,0.08)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#d9a441',
+          pointRadius: days > 30 ? 2 : 4,
+          pointHoverRadius: 6,
+        },
+      ],
+    };
+  }
+
+  private buildStatusChart() {
+    const counts = { PLACED: 0, PROCESSING: 0, SHIPPED: 0, DELIVERED: 0, CANCELLED: 0 };
+    for (const o of this.orders) {
+      if (o.status in counts) counts[o.status as keyof typeof counts]++;
+    }
+    this.statusChartData = {
+      labels: ['Placed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
+      datasets: [
+        {
+          data: [counts.PLACED, counts.PROCESSING, counts.SHIPPED, counts.DELIVERED, counts.CANCELLED],
+          backgroundColor: ['#6366f1', '#f28918', '#3b82f6', '#3a9a6e', '#e05252'],
+          borderWidth: 0,
+          hoverOffset: 6,
+        },
+      ],
+    };
+  }
+
+  private buildTopProductsChart() {
+    const map = new Map<string, number>();
+    for (const order of this.orders) {
+      for (const item of order.items) {
+        map.set(item.name, (map.get(item.name) ?? 0) + item.quantity);
+      }
+    }
+    const sorted = Array.from(map.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8);
+    this.topProductsChartData = {
+      labels: sorted.map(([name]) => (name.length > 24 ? name.substring(0, 22) + '…' : name)),
+      datasets: [
+        {
+          data: sorted.map(([, qty]) => qty),
+          label: 'Units Sold',
+          backgroundColor: sorted.map(
+            (_, i) => `rgba(217,164,65,${(0.45 + ((sorted.length - i) / sorted.length) * 0.5).toFixed(2)})`,
+          ),
+          borderColor: '#d9a441',
+          borderWidth: 1,
+          borderRadius: 6,
+        },
+      ],
+    };
+  }
+
+  private buildOrdersPerDayChart() {
+    const now = new Date();
+    const map = new Map<string, number>();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      map.set(this.fmtDate(d), 0);
+    }
+    const cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - 30);
+    for (const order of this.orders) {
+      const d = new Date(order.createdAt);
+      if (d >= cutoff) {
+        const key = this.fmtDate(d);
+        if (map.has(key)) map.set(key, (map.get(key) ?? 0) + 1);
+      }
+    }
+    this.ordersPerDayChartData = {
+      labels: Array.from(map.keys()).map((k) => this.shortDate(k)),
+      datasets: [
+        {
+          data: Array.from(map.values()),
+          label: 'Orders',
+          backgroundColor: 'rgba(107,62,46,0.7)',
+          borderColor: '#6b3e2e',
+          borderWidth: 0,
+          borderRadius: 6,
+        },
+      ],
+    };
+  }
+
+  private fmtDate(d: Date): string {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  private shortDate(dateStr: string): string {
+    const [, m, day] = dateStr.split('-');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${parseInt(day)} ${months[parseInt(m) - 1]}`;
+  }
+
+  setRevenuePeriod(period: '7d' | '30d' | '90d') {
+    this.revenuePeriod = period;
+    this.buildRevenueChart();
+  }
+
+  // ── Existing methods ──
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource2.paginator = this.paginator2;
     this.dataSource3.paginator = this.paginator3;
     this.dataSource.sort = this.sort;
 
-    // Staggered entrance animations
     const els = document.querySelectorAll<HTMLElement>('[class*="anim-"]');
     els.forEach((el) => {
       const delay = parseInt(el.className.match(/anim-(\d+)/)?.[1] ?? '1', 10);
       el.style.animationDelay = `${(delay - 1) * 0.12}s`;
     });
 
-    // Scroll-reveal for sections
     const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
+          }
+        }),
       { threshold: 0.08 },
     );
     document.querySelectorAll('.section').forEach((el) => observer.observe(el));
@@ -139,23 +414,17 @@ export class AdminComponent implements OnInit, AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
   applyFilterOrders(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource2.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource2.paginator) {
-      this.dataSource2.paginator.firstPage();
-    }
+    if (this.dataSource2.paginator) this.dataSource2.paginator.firstPage();
   }
 
   onEdit(product: any) {
-    this.formModel = { ...product }; // clone
+    this.formModel = { ...product };
     this.previewUrl = product.images?.[0]?.url;
     if (this.previewUrl) this.imageLoading = true;
   }
@@ -165,9 +434,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.getProducts();
     });
   }
-  // this.products[this.editingIndex] = { ...this.formModel };
+
   onSave() {
-    // if (this.editingIndex !== null) {
     if (
       !this.formModel.name ||
       !this.formModel.mrp ||
@@ -192,7 +460,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
         this.showError = false;
       });
     } else {
-      // add new
       const formData = new FormData();
       formData.append('name', this.formModel.name);
       formData.append('mrp', this.formModel.mrp);
@@ -208,14 +475,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   resetForm() {
-    this.formModel = {
-      _id: '',
-      name: '',
-      mrp: '',
-      price: '',
-      description: '',
-      images: [],
-    };
+    this.formModel = { _id: '', name: '', mrp: '', price: '', description: '', images: [] };
     this.editingIndex = null;
     this.previewUrl = '';
     this.selectedFile = null;
@@ -223,26 +483,16 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   onEnableDisable(id: string, flag: boolean) {
-    const payload = {
-      id: id,
-      flag: flag,
-    };
-    this.service.enableDisableProduct(payload).subscribe((res: any) => {
+    this.service.enableDisableProduct({ id, flag }).subscribe((res: any) => {
       this.getProducts();
     });
   }
 
   onStopEditing() {
-    this.formModel = {
-      _id: '',
-      name: '',
-      mrp: '',
-      price: '',
-      description: '',
-      images: [],
-    };
+    this.formModel = { _id: '', name: '', mrp: '', price: '', description: '', images: [] };
     this.editingIndex = null;
   }
+
   isGenerating = false;
 
   onGenerate(input: string) {
@@ -258,15 +508,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   async onFileSelect(event: any) {
     const file: File = event.target.files[0];
-    const options = {
-      maxSizeMB: 0.5, // compress to max 500KB
-      maxWidthOrHeight: 1200, // resize large images
-      useWebWorker: true,
-    };
+    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true };
     try {
       const compressedFile = await imageCompression(file, options);
-      console.log('Original size:', file.size / 1024, 'KB');
-      console.log('Compressed size:', compressedFile.size / 1024, 'KB');
       this.selectedFile = compressedFile.size < file.size ? compressedFile : file;
       this.previewUrl = URL.createObjectURL(compressedFile);
     } catch (error) {
@@ -278,7 +522,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   upload() {
     const formData = new FormData();
     if (this.selectedFile) formData.append('image', this.selectedFile);
-    console.log('formData-------->', formData);
     this.service.uploadImage(formData).subscribe((res: any) => {
       this.service.getSnackbar(res.url);
     });
@@ -291,13 +534,18 @@ export class AdminComponent implements OnInit, AfterViewInit {
   updateOrderStatus(id: string, event: any) {}
 
   activeTab = 'orders';
-  switchTab(tab: string) { this.activeTab = tab; }
+  switchTab(tab: string) {
+    this.activeTab = tab;
+  }
 
   expandedContact: any = null;
-  openMessage(contact: any) { this.expandedContact = contact; }
-  closeMessage() { this.expandedContact = null; }
+  openMessage(contact: any) {
+    this.expandedContact = contact;
+  }
+  closeMessage() {
+    this.expandedContact = null;
+  }
 
-  // Order details overlay
   orderStatuses = ['PLACED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
   expandedOrder: any = null;
   orderLoading = false;
@@ -310,23 +558,30 @@ export class AdminComponent implements OnInit, AfterViewInit {
         this.expandedOrder = { ...res.data, _loadedDetails: true };
         this.orderLoading = false;
       },
-      error: () => { this.orderLoading = false; }
+      error: () => {
+        this.orderLoading = false;
+      },
     });
   }
 
-  closeOrder() { this.expandedOrder = null; }
+  closeOrder() {
+    this.expandedOrder = null;
+  }
 
   onStatusChange(status: string) {
     if (!this.expandedOrder) return;
     this.service.updateOrderStatus({ id: this.expandedOrder._id, status }).subscribe({
       next: () => {
         this.expandedOrder.status = status;
-        // update the table row too
         const row = this.orders.find((o: any) => o._id === this.expandedOrder._id);
         if (row) row.status = status;
+        if (status == 'PLACED') this.pendingOrders++;
+        else this.pendingOrders--;
         this.service.getSnackbar('Status updated to ' + status);
       },
-      error: () => { this.service.getSnackbar('Failed to update status'); }
+      error: () => {
+        this.service.getSnackbar('Failed to update status');
+      },
     });
   }
 

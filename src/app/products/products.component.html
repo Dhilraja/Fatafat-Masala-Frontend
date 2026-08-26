@@ -2,7 +2,6 @@
 <div class="bg-blob bg-blob-2"></div>
 
 <div class="page">
-
   <!-- PAGE HEADER -->
   <div class="page-top">
     <div class="page-heading">
@@ -19,19 +18,15 @@
         <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4" />
         <path d="M10.5 10.5l3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
       </svg>
-      <input
-        type="text"
-        [(ngModel)]="search"
-        class="search-input"
-        placeholder="Search — turmeric, cumin, masala..."
-      />
+      <input type="text" [(ngModel)]="search" class="search-input" placeholder="Search — turmeric, cumin, masala..." />
     </div>
-    <span class="results-count">{{ filteredProducts?.length }} product{{ filteredProducts?.length !== 1 ? 's' : '' }}</span>
+    <span class="results-count"
+      >{{ filteredProducts?.length }} product{{ filteredProducts?.length !== 1 ? 's' : '' }}</span
+    >
   </div>
 
   <!-- PRODUCT GRID -->
   <div class="products-grid">
-
     <!-- Empty state -->
     <div class="empty-state" *ngIf="filteredProducts?.length === 0">
       <div class="empty-icon">🔍</div>
@@ -54,7 +49,7 @@
       <!-- Info -->
       <div class="prod-info">
         <div class="prod-name">{{ product.name }}</div>
-        <div class="prod-weight">100g · Net Weight</div>
+        <div class="prod-weight">{{ product.variant || '100g' }} · Net Weight</div>
 
         <div class="prod-pricing">
           <div class="prod-price">₹{{ product.price }}</div>
@@ -70,9 +65,15 @@
             (click)="addToCart(product._id); $event.stopPropagation()"
           >
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-              <path d="M1 1h2l1.5 7.5h7L13 5H4.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="6.5" cy="12.5" r="1" fill="white"/>
-              <circle cx="11" cy="12.5" r="1" fill="white"/>
+              <path
+                d="M1 1h2l1.5 7.5h7L13 5H4.5"
+                stroke="white"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="6.5" cy="12.5" r="1" fill="white" />
+              <circle cx="11" cy="12.5" r="1" fill="white" />
             </svg>
             Add to Cart
           </button>
@@ -89,6 +90,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>

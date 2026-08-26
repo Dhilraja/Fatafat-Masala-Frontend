@@ -74,6 +74,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     name: '',
     mrp: '',
     price: '',
+    variant: '',
     description: '',
     images: [],
   };
@@ -217,7 +218,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       res.data.forEach((ele: any) => {
         this.totalRevenue += ele.totalAmount;
       });
-      this.dataSource2.data = this.orders;
+      this.dataSource2.data = [...this.orders].reverse();
       if (this.paginator2) this.dataSource2.paginator = this.paginator2;
       this.buildCharts();
     });
@@ -426,6 +427,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   onEdit(product: any) {
     this.formModel = { ...product };
     this.previewUrl = product.images?.[0]?.url;
+    this.selectedFile = product.images?.[0]?.url;
     if (this.previewUrl) this.imageLoading = true;
   }
 
@@ -441,6 +443,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       !this.formModel.mrp ||
       !this.formModel.price ||
       !this.formModel.description ||
+      !this.formModel.variant ||
       !this.selectedFile
     ) {
       this.showError = true;
@@ -453,6 +456,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       formData.append('mrp', this.formModel.mrp);
       formData.append('price', this.formModel.price);
       formData.append('description', this.formModel.description);
+      formData.append('variant', this.formModel.variant);
       formData.append('image', this.selectedFile);
       this.service.updateProduct(formData).subscribe((res: any) => {
         this.getProducts();
@@ -465,6 +469,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       formData.append('mrp', this.formModel.mrp);
       formData.append('price', this.formModel.price);
       formData.append('description', this.formModel.description);
+      formData.append('variant', this.formModel.variant);
       formData.append('image', this.selectedFile);
       this.service.saveProduct(formData).subscribe((res: any) => {
         this.getProducts();
@@ -475,7 +480,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   resetForm() {
-    this.formModel = { _id: '', name: '', mrp: '', price: '', description: '', images: [] };
+    this.formModel = { _id: '', name: '', mrp: '', price: '', description: '', variant: '', images: [] };
     this.editingIndex = null;
     this.previewUrl = '';
     this.selectedFile = null;
@@ -489,8 +494,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   onStopEditing() {
-    this.formModel = { _id: '', name: '', mrp: '', price: '', description: '', images: [] };
+    this.formModel = { _id: '', name: '', mrp: '', price: '', description: '', variant: '', images: [] };
     this.editingIndex = null;
+    this.selectedFile = null;
+    this.previewUrl = '';
   }
 
   isGenerating = false;

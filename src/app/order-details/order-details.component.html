@@ -73,6 +73,7 @@
             <img class="item-img" [src]="getItemImage(item)" [alt]="item.name" />
             <div class="item-info">
               <div class="item-name">{{ item.name }}</div>
+              <div class="item-variant">{{ item.variant || '100g' }}</div>
               <div class="item-meta">Qty: {{ item.quantity }}</div>
             </div>
             <div class="item-price">

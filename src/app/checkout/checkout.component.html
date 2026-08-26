@@ -64,7 +64,7 @@
             </div>
             <div class="item-info">
               <div class="item-name">{{ product.productName }}</div>
-              <div class="item-meta">100g · Qty {{ product.quantity }}</div>
+              <div class="item-meta">{{ product.variant || '100g' }} · Qty {{ product.quantity }}</div>
             </div>
             <div class="item-price">₹{{ product.price }}</div>
           </div>

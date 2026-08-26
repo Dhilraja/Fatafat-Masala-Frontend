@@ -150,7 +150,9 @@
             <span class="order-id-label">Order ID</span>
             <span class="order-id-val">#{{ order?.orderNumber }}</span>
           </div>
-          <span class="order-status" [ngClass]="order?.status?.toLowerCase()"><span class="order-status-dot"></span>{{ order?.status | titlecase }}</span>
+          <span class="order-status" [ngClass]="order?.status?.toLowerCase()"
+            ><span class="order-status-dot"></span>{{ order?.status | titlecase }}</span
+          >
           <span class="order-date">{{ order?.createdAt | date: 'dd MMM YYYY' }}</span>
           <span class="order-total">₹{{ order?.totalAmount }}</span>
         </div>
@@ -162,7 +164,9 @@
             />
             <div class="item-info">
               <div class="item-name">{{ order?.items?.[0]?.name }}</div>
-              <div class="item-meta">100g · Qty: {{ order?.items?.[0]?.quantity }}</div>
+              <div class="item-meta">
+                {{ order?.items?.[0]?.variant || '100g' }} · Qty: {{ order?.items?.[0]?.quantity }}
+              </div>
             </div>
           </div>
           <div class="order-item" *ngIf="order?.items?.length > 1">
@@ -172,7 +176,9 @@
             />
             <div class="item-info">
               <div class="item-name">{{ order?.items?.[1]?.name }}</div>
-              <div class="item-meta">100g · Qty: {{ order?.items?.[1]?.quantity }}</div>
+              <div class="item-meta">
+                {{ order?.items?.[1]?.variant || '100g' }} · Qty: {{ order?.items?.[1]?.quantity }}
+              </div>
             </div>
           </div>
           <span class="order-more" *ngIf="order?.items?.length > 2"

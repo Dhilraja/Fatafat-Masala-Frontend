@@ -285,6 +285,8 @@
               <input class="field-input" type="number" name="mrp" placeholder="MRP" [(ngModel)]="formModel.mrp" />
               <span *ngIf="showError && !formModel.mrp" class="error-msg">Required</span>
             </div>
+          </div>
+          <div class="form-grid">
             <div class="field-group">
               <label class="field-label">Price (₹)</label>
               <input
@@ -296,6 +298,17 @@
                 required
               />
               <span *ngIf="showError && !formModel.price" class="error-msg">Required</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Variant</label>
+              <input
+                class="field-input"
+                name="variant"
+                placeholder="Variant"
+                [(ngModel)]="formModel.variant"
+                required
+              />
+              <span *ngIf="showError && !formModel.variant" class="error-msg">Required</span>
             </div>
           </div>
 
@@ -450,6 +463,7 @@
           <img class="order-item-img" [src]="getItemImage(item)" [alt]="item.name" />
           <div class="order-item-info">
             <div class="order-item-name">{{ item.name }}</div>
+            <div class="order-item-variant">{{ item.variant || '100g' }}</div>
             <div class="order-item-meta">Qty: {{ item.quantity }} · ₹{{ item.price }} each</div>
           </div>
           <div class="order-item-total">₹{{ item.total }}</div>
